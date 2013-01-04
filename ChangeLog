@@ -1,2 +1,9 @@
 stomp ChangeLog
 ========================================================================
+
+* QA-Release, 2010-09-18 = 1.2.1 @thekid
+* Support selectors in subscribe(), 2010-05-14 = 1.2.0 @thekid
+* Fix payload reading, 2010-05-12 = 1.1.1 @thekid
+* Timeouts for receive() 2010-04-07 = 1.1.0 @thekid
+* Initial release, 2010-04-01 = 1.0.0 @kiesel
+* Protocol support, 2010-03-31 = 0.0.9 @kiesel

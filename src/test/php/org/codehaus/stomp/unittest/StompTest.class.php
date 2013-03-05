@@ -16,6 +16,7 @@
   /**
    * Tests STOMP protocol
    *
+   * @see   http://stomp.github.com/stomp-specification-1.1.html#STOMP_Frames
    * @see   xp://org.codehaus.stomp.StompConnection
    */
   class StompTest extends TestCase {
@@ -294,6 +295,57 @@
       $this->fixture->disconnect();
 
       $this->assertEquals("DISCONNECT\n\n\0", $this->fixture->readSentBytes());
+    }
+
+    /**
+     * Tests message without trailing "\n"
+     *
+     */
+    #[@test]
+    public function withContentLengthNoTrailingEOL() {
+      $this->fixture->setResponseBytes(
+        "ERROR\ncontent-length:11\n\nLine1\nLine2\0".
+        "DISCONNECT\n\n\0"
+      );
+
+      $response= $this->fixture->recvFrame();
+      $disconnect= $this->fixture->recvFrame();
+      $this->assertEquals("Line1\nLine2", $response->getBody());
+      $this->assertEquals('', $disconnect->getBody());
+    }
+
+    /**
+     * Tests message with one trailing "\n"
+     *
+     */
+    #[@test]
+    public function withContentLengthOneTrailingEOL() {
+      $this->fixture->setResponseBytes(
+        "ERROR\ncontent-length:11\n\nLine1\nLine2\0\n".
+        "DISCONNECT\n\n\0\n"
+      );
+
+      $response= $this->fixture->recvFrame();
+      $disconnect= $this->fixture->recvFrame();
+      $this->assertEquals("Line1\nLine2", $response->getBody());
+      $this->assertEquals('', $disconnect->getBody());
+    }
+
+    /**
+     * Tests message with two trailing "\n"s
+     *
+     */
+    #[@test]
+    public function withContentLengthTwoTrailingEOLs() {
+      $this->fixture->setResponseBytes(
+        "ERROR\ncontent-length:11\n\nLine1\nLine2\0\n\n".
+        "DISCONNECT\n\n\0\n\n"
+      );
+
+      $response= $this->fixture->recvFrame();
+      $disconnect= $this->fixture->recvFrame();
+      $this->assertEquals("Line1\nLine2", $response->getBody());
+      $this->assertEquals('', $disconnect->getBody());
     }
   }
 ?>

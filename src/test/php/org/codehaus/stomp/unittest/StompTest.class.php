@@ -305,13 +305,13 @@
     public function withContentLengthNoTrailingEOL() {
       $this->fixture->setResponseBytes(
         "ERROR\ncontent-length:11\n\nLine1\nLine2\0".
-        "DISCONNECT\n\n\0"
+        "RECEIPT\nreceipt-id:77\n\n\0\n\n"
       );
 
       $response= $this->fixture->recvFrame();
-      $disconnect= $this->fixture->recvFrame();
+      $receipt= $this->fixture->recvFrame();
       $this->assertEquals("Line1\nLine2", $response->getBody());
-      $this->assertEquals('', $disconnect->getBody());
+      $this->assertEquals('', $receipt->getBody());
     }
 
     /**
@@ -322,13 +322,13 @@
     public function withContentLengthOneTrailingEOL() {
       $this->fixture->setResponseBytes(
         "ERROR\ncontent-length:11\n\nLine1\nLine2\0\n".
-        "DISCONNECT\n\n\0\n"
+        "RECEIPT\nreceipt-id:77\n\n\0\n\n"
       );
 
       $response= $this->fixture->recvFrame();
-      $disconnect= $this->fixture->recvFrame();
+      $receipt= $this->fixture->recvFrame();
       $this->assertEquals("Line1\nLine2", $response->getBody());
-      $this->assertEquals('', $disconnect->getBody());
+      $this->assertEquals('', $receipt->getBody());
     }
 
     /**
@@ -339,13 +339,13 @@
     public function withContentLengthTwoTrailingEOLs() {
       $this->fixture->setResponseBytes(
         "ERROR\ncontent-length:11\n\nLine1\nLine2\0\n\n".
-        "DISCONNECT\n\n\0\n\n"
+        "RECEIPT\nreceipt-id:77\n\n\0\n\n"
       );
 
       $response= $this->fixture->recvFrame();
-      $disconnect= $this->fixture->recvFrame();
+      $receipt= $this->fixture->recvFrame();
       $this->assertEquals("Line1\nLine2", $response->getBody());
-      $this->assertEquals('', $disconnect->getBody());
+      $this->assertEquals('', $receipt->getBody());
     }
   }
 ?>

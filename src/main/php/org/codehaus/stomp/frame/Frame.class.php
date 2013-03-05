@@ -117,10 +117,9 @@
         // stream and assert that it is followed by a chr(0) byte.
         $data= $in->read($this->getHeader('content-length'));
 
-        if ("\0\n" != $in->read(2)) throw new ProtocolException(
-          'Expected chr(0) and newline after frame w/ given content-length'
+        if ("\0" != $in->read(1)) throw new ProtocolException(
+          'Expected chr(0) after frame w/ given content-length'
         );
-
       } else {
       
         // Read line-wise as we know that \0\n marks the end

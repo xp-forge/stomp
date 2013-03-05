@@ -109,8 +109,19 @@
       $frame= XPClass::forName(sprintf('org.codehaus.stomp.frame.%sFrame', ucfirst(strtolower(trim($line)))))
         ->newInstance()
       ;
-
       $frame->fromWire($this->in);
+
+      // Check for any leftover EOLs and read them
+      $c= '';
+      while (
+        ($this->socket instanceof Socket ? $this->socket->canRead(0.01) : $this->in->getStream()->available()) &&
+        "\n" === ($c= $this->in->read(1))
+      ) {
+        // Skip
+      }
+      $f= $this->in->getClass()->getField('buf')->setAccessible(TRUE);
+      $f->set($this->in, $c.$f->get($this->in));
+
       return $frame;
     }
 

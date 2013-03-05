@@ -13,12 +13,85 @@
     protected
       $fixture  = NULL;
 
+    protected static
+      $serverProcess = NULL,
+      $bindAddress   = NULL;
+
+    /**
+     * Sets up test case
+     *
+     */
+    #[@beforeClass]
+    public static function startStompServer() {
+
+      // Arguments to server process
+      $args= array(
+        'debugServerProtocolToFile' => NULL,   
+      );
+
+      // Start server process
+      self::$serverProcess= Runtime::getInstance()->newInstance(
+        NULL, 
+        'class', 
+        'org.codehaus.stomp.unittest.TestingServer',
+        array_values($args)
+      );
+      self::$serverProcess->in->close();
+
+      // Check if startup succeeded
+      $status= self::$serverProcess->out->readLine();
+      if (1 != sscanf($status, '+ Service %[0-9.:]', self::$bindAddress)) {
+        try {
+          self::shutdownStompServer();
+        } catch (IllegalStateException $e) {
+          $status.= $e->getMessage();
+        }
+        throw new PrerequisitesNotMetError('Cannot start STOMP server: '.$status, NULL);
+      }
+    }
+
+    /**
+     * Shut down FTP server
+     *
+     */
+    #[@afterClass]
+    public static function shutdownStompServer() {
+      sscanf(self::$bindAddress, '%s:%d', $host, $port);
+
+      // Tell the STOMP server to shut down
+      try {
+        $c= new StompConnection($host, $port);
+        $c->connect('admin', 'admin');
+        $c->sendFrame(newinstance('org.codehaus.stomp.frame.Frame', arrray(), '{
+          public function command() { return "SHUTDOWN"; }
+          public function requiresImmediateResponse() { return FALSE; }
+        }'));
+        $c->disconnect();
+      } catch (Throwable $ignored) {
+        // Fall through, below should terminate the process anyway
+      }
+
+      $status= self::$serverProcess->out->readLine();
+      if (!strlen($status) || '+' != $status{0}) {
+        while ($l= self::$serverProcess->out->readLine()) {
+          $status.= $l;
+        }
+        while ($l= self::$serverProcess->err->readLine()) {
+          $status.= $l;
+        }
+        self::$serverProcess->close();
+        throw new IllegalStateException($status);
+      }
+      self::$serverProcess->close();
+    }
+
     #[@beforeClass]
     public static function logger() {
       // Logger::getInstance()->getCategory()->addAppender(new ColoredConsoleAppender());
     }
 
     public function setUp() {
+      sscanf(self::$bindAddress, '%s:%d', $host, $port);
       $this->fixture= new StompConnection('localhost', 61613);
       $this->fixture->setTrace(Logger::getInstance()->getCategory());
       $this->fixture->connect('system', 'manager');

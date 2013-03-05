@@ -111,7 +111,11 @@
       ;
       $frame->fromWire($this->in);
 
-      // Check for any leftover EOLs and read them
+      // According to the STOMP protocol, the NUL ("\0") delimiter may be followed
+      // by any number of EOL ("\n") characters. Read them here but be careful not
+      // to read across past a socket's current stream end!
+      // FIXME: This conflicts with heart-beating, we might be swallowing that here
+      // but not reacting correctly in other places!
       $c= '';
       while (
         ($this->socket instanceof Socket ? $this->socket->canRead(0.01) : $this->in->getStream()->available()) &&

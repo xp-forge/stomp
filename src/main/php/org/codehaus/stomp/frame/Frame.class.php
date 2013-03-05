@@ -122,14 +122,14 @@
         );
       } else {
       
-        // Read line-wise as we know that \0\n marks the end
+        // Read byte-wise until we find \0
         $data= '';
         do {
-          if (NULL === ($line= $in->readLine())) throw new ProtocolException(
+          if (NULL === ($c= $in->read(1))) throw new ProtocolException(
             'Received EOF before payload end delimiter \0\n'
           );
-          $data.= $line."\n";
-        } while ("\0" !== $line{strlen($line)- 1});
+          $data.= $c;
+        } while ("\0" !== $c);
       }
 
       $this->setBody(rtrim($data, "\n\0"));

@@ -109,8 +109,23 @@
       $frame= XPClass::forName(sprintf('org.codehaus.stomp.frame.%sFrame', ucfirst(strtolower(trim($line)))))
         ->newInstance()
       ;
-
       $frame->fromWire($this->in);
+
+      // According to the STOMP protocol, the NUL ("\0") delimiter may be followed
+      // by any number of EOL ("\n") characters. Read them here but be careful not
+      // to read across past a socket's current stream end!
+      // FIXME: This conflicts with heart-beating, we might be swallowing that here
+      // but not reacting correctly in other places!
+      $c= '';
+      while (
+        ($this->socket instanceof Socket ? $this->socket->canRead(0.01) : $this->in->getStream()->available()) &&
+        "\n" === ($c= $this->in->read(1))
+      ) {
+        // Skip
+      }
+      $f= $this->in->getClass()->getField('buf')->setAccessible(TRUE);
+      $f->set($this->in, $c.$f->get($this->in));
+
       return $frame;
     }
 

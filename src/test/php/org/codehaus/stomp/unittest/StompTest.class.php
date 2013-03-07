@@ -16,6 +16,7 @@
   /**
    * Tests STOMP protocol
    *
+   * @see   http://stomp.github.com/stomp-specification-1.1.html#STOMP_Frames
    * @see   xp://org.codehaus.stomp.StompConnection
    */
   class StompTest extends TestCase {
@@ -294,6 +295,108 @@
       $this->fixture->disconnect();
 
       $this->assertEquals("DISCONNECT\n\n\0", $this->fixture->readSentBytes());
+    }
+
+    /**
+     * Tests message without trailing "\n"
+     *
+     */
+    #[@test]
+    public function noTrailingEOL() {
+      $this->fixture->setResponseBytes(
+        "ERROR\n\nLine1\nLine2\0".
+        "RECEIPT\nreceipt-id:77\n\n\0\n\n"
+      );
+
+      $response= $this->fixture->recvFrame();
+      $receipt= $this->fixture->recvFrame();
+      $this->assertEquals("Line1\nLine2", $response->getBody());
+      $this->assertEquals('', $receipt->getBody());
+    }
+
+    /**
+     * Tests message without trailing "\n"
+     *
+     */
+    #[@test]
+    public function withContentLengthNoTrailingEOL() {
+      $this->fixture->setResponseBytes(
+        "ERROR\ncontent-length:11\n\nLine1\nLine2\0".
+        "RECEIPT\nreceipt-id:77\n\n\0\n\n"
+      );
+
+      $response= $this->fixture->recvFrame();
+      $receipt= $this->fixture->recvFrame();
+      $this->assertEquals("Line1\nLine2", $response->getBody());
+      $this->assertEquals('', $receipt->getBody());
+    }
+
+    /**
+     * Tests message with one trailing "\n"
+     *
+     */
+    #[@test]
+    public function oneTrailingEOL() {
+      $this->fixture->setResponseBytes(
+        "ERROR\n\nLine1\nLine2\0\n".
+        "RECEIPT\nreceipt-id:77\n\n\0\n\n"
+      );
+
+      $response= $this->fixture->recvFrame();
+      $receipt= $this->fixture->recvFrame();
+      $this->assertEquals("Line1\nLine2", $response->getBody());
+      $this->assertEquals('', $receipt->getBody());
+    }
+
+    /**
+     * Tests message with one trailing "\n"
+     *
+     */
+    #[@test]
+    public function withContentLengthOneTrailingEOL() {
+      $this->fixture->setResponseBytes(
+        "ERROR\ncontent-length:11\n\nLine1\nLine2\0\n".
+        "RECEIPT\nreceipt-id:77\n\n\0\n\n"
+      );
+
+      $response= $this->fixture->recvFrame();
+      $receipt= $this->fixture->recvFrame();
+      $this->assertEquals("Line1\nLine2", $response->getBody());
+      $this->assertEquals('', $receipt->getBody());
+    }
+
+    /**
+     * Tests message with two trailing "\n"s
+     *
+     */
+    #[@test]
+    public function twoTrailingEOLs() {
+      $this->fixture->setResponseBytes(
+        "ERROR\n\nLine1\nLine2\0\n\n".
+        "RECEIPT\nreceipt-id:77\n\n\0\n\n"
+      );
+
+      $response= $this->fixture->recvFrame();
+      $receipt= $this->fixture->recvFrame();
+      $this->assertEquals("Line1\nLine2", $response->getBody());
+      $this->assertEquals('', $receipt->getBody());
+    }
+
+    /**
+     * Tests message with two trailing "\n"s
+     *
+     */
+    #[@test]
+    public function withContentLengthTwoTrailingEOLs() {
+      $this->fixture->setResponseBytes(
+        "ERROR\ncontent-length:11\n\nLine1\nLine2\0\n\n".
+        "RECEIPT\nreceipt-id:77\n\n\0\n\n"
+      );
+
+      $response= $this->fixture->recvFrame();
+      $receipt= $this->fixture->recvFrame();
+      $this->assertEquals("Line1\nLine2", $response->getBody());
+      $this->assertEquals('', $receipt->getBody());
     }
   }
 ?>

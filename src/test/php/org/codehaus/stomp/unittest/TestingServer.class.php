@@ -37,6 +37,7 @@
       $protocol= newinstance('peer.server.ServerProtocol', array(), '{
         protected $frames= NULL;
         protected $handlers= array();
+        protected $cat= NULL;
         public $messages= array();
 
         public function initialize() { 
@@ -78,9 +79,11 @@
         }
 
         public function handleConnect($socket) {
+          $this->cat && $this->cat->debug("Connect", $socket);
         }
 
         public function handleDisconnect($socket) {
+          $this->cat && $this->cat->debug("Disconnect", $socket);
         }
 
         public function frame($name) {
@@ -100,7 +103,7 @@
 
           $request= $this->frame($line);
           $request->fromWire(new StringReader($socket->getInputStream()));
-          Console::writeLine("<<< ", $request);
+          $this->cat && $this->cat->info("<<<", $request);
 
           if ($handler= $this->handlers[$request->command()]) {
             $response= $handler($request, $this);
@@ -108,7 +111,7 @@
             $response= $this->frame("ERROR");
           }
 
-          Console::writeLine(">>> ", $response);
+          $this->cat && $this->cat->info(">>>", $response);
           if (NULL === $response) {
             return NULL;
           } else if (is_array($response)) {
@@ -123,7 +126,16 @@
 
         public function handleError($socket, $e) {
         }
+
+        public function setTrace($cat) {
+          $this->cat= $cat;
+        }
       }');
+
+      // Trace file
+      if (isset($args[0])) {
+        $protocol->setTrace(create(new LogCategory())->withAppender(new FileAppender($args[0])));
+      }
 
       $s= new Server('127.0.0.1', 0);
       try {

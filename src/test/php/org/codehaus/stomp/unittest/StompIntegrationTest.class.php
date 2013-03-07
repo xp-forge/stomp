@@ -61,8 +61,8 @@
       // Tell the STOMP server to shut down
       try {
         $c= new StompConnection($host, $port);
-        $c->connect('admin', 'admin');
-        $c->sendFrame(newinstance('org.codehaus.stomp.frame.Frame', arrray(), '{
+        $c->connect('test', 'test');
+        $c->sendFrame(newinstance('org.codehaus.stomp.frame.Frame', array(), '{
           public function command() { return "SHUTDOWN"; }
           public function requiresImmediateResponse() { return FALSE; }
         }'));
@@ -91,10 +91,10 @@
     }
 
     public function setUp() {
-      sscanf(self::$bindAddress, '%s:%d', $host, $port);
-      $this->fixture= new StompConnection('localhost', 61613);
+      sscanf(self::$bindAddress, '%[^:]:%d', $host, $port);
+      $this->fixture= new StompConnection($host, $port);
       $this->fixture->setTrace(Logger::getInstance()->getCategory());
-      $this->fixture->connect('system', 'manager');
+      $this->fixture->connect('test', 'test');
     }
 
     public function tearDown() {

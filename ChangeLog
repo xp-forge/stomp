@@ -1,6 +1,7 @@
 stomp ChangeLog
 ========================================================================
 
+* Fix issue #1 and #2, 2013-03-18 = 1.2.2 @thekid
 * QA-Release, 2010-09-18 = 1.2.1 @thekid
 * Support selectors in subscribe(), 2010-05-14 = 1.2.0 @thekid
 * Fix payload reading, 2010-05-12 = 1.1.1 @thekid

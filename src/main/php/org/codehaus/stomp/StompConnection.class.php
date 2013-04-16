@@ -181,6 +181,11 @@
         );
       }
 
+      $this->cat && $this->cat->debug($this->getClassName(), '~ Connected to server; server '.($frame->getProtocolVersion()
+        ? 'chose protocol version '.$frame->getProtocolVersion()
+        : 'did not indicate protocol version'
+      ));
+
       return TRUE;
     }
 

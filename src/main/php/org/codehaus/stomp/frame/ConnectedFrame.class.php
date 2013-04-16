@@ -20,5 +20,15 @@
     public function command() {
       return 'CONNECTED';
     }
+
+    /**
+     * Retrieve protocol version
+     *
+     * @return  string
+     */
+    public function getProtocolVersion() {
+      if (!$this->hasHeader('version')) return NULL;
+      return $this->getHeader('version');
+    }
   }
 ?>

@@ -118,6 +118,7 @@
         "login:user\n".
         "passcode:pass\n".
         "accept-version:1.0,1.1\n".
+        "host:localhost\n".
         "\n\0",
         $this->fixture->readSentBytes()
       );
@@ -142,6 +143,7 @@
         "login:user\n".
         "passcode:pass\n".
         "accept-version:1.0,1.1\n".
+        "host:localhost\n".
         "\n\0",
         $this->fixture->readSentBytes()
       );

@@ -67,12 +67,16 @@
      */
     public function getHeaders() {
       $hdrs= array(
-        'login'  => $this->user,
+        'login'     => $this->user,
         'passcode'  => $this->pass
       );
 
       if ($this->versions) {
         $hdrs['accept-version']= implode(',', $this->versions);
+      }
+
+      if ($this->host) {
+        $hdrs['host']= $this->host;
       }
 
       return array_merge($hdrs, parent::getHeaders());

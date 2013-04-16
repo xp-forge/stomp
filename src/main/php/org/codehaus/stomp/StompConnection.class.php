@@ -23,6 +23,7 @@
     'org.codehaus.stomp.frame.CommitFrame',
     'org.codehaus.stomp.frame.AbortFrame',
     'org.codehaus.stomp.frame.AckFrame',
+    'org.codehaus.stomp.frame.NackFrame',
     'org.codehaus.stomp.frame.DisconnectFrame'
   );
 
@@ -263,6 +264,15 @@
     }
 
     /**
+     * Acknowledge a message
+     *
+     * @param   string messageId
+     */
+    public function nack($messageId) {
+      return $this->sendFrame(new org·codehaus·stomp·frame·NackFrame($messageId));
+    }
+
+    /**
      * Receive a message
      *
      * @param   double timeout default 0.2 pass NULL for no timeout
@@ -271,7 +281,7 @@
     public function receive($timeout= 0.2) {
       return $this->recvFrame($timeout);
     }
-    
+
     /**
      * Creates a string representation of this object
      *

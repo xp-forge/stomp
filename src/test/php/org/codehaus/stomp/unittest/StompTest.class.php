@@ -333,9 +333,38 @@
      *
      */
     #[@test]
+    public function nack() {
+      $this->sendWithReceiptFrame(new org搾odehaus新tomp搭rame意ackFrame('0xefefef'));
+      $this->assertEquals("NACK\n".
+        "message-id:0xefefef\n".
+        "\n\0"
+        , $this->fixture->readSentBytes()
+      );
+    }
+
+    /**
+     * Tests ack message
+     *
+     */
+    #[@test]
     public function ackWithinTransaction() {
       $this->sendWithReceiptFrame(new org搾odehaus新tomp搭rame嫂ckFrame('0xefefef', "some-transaction"));
       $this->assertEquals("ACK\n".
+        "message-id:0xefefef\n".
+        "transaction:some-transaction\n".
+        "\n\0"
+        , $this->fixture->readSentBytes()
+      );
+    }
+
+    /**
+     * Tests ack message
+     *
+     */
+    #[@test]
+    public function nackWithinTransaction() {
+      $this->sendWithReceiptFrame(new org搾odehaus新tomp搭rame意ackFrame('0xefefef', "some-transaction"));
+      $this->assertEquals("NACK\n".
         "message-id:0xefefef\n".
         "transaction:some-transaction\n".
         "\n\0"

@@ -100,7 +100,62 @@
       );
       $this->fixture->connect('user', 'pass');
     }
-    
+
+    /**
+     * Tests connect message
+     *
+     */
+    #[@test]
+    public function connect_and_negotiate_version() {
+      $this->fixture->setResponseBytes("CONNECTED\n".
+        "session-id:0xdeadbeef\n".
+        "version:1.1\n".
+        "\n\0"
+      );
+      $this->fixture->connect('user', 'pass', 'localhost', array('1.0', '1.1'));
+
+      $this->assertEquals("CONNECT\n".
+        "login:user\n".
+        "passcode:pass\n".
+        "accept-version:1.0,1.1\n".
+        "\n\0",
+        $this->fixture->readSentBytes()
+      );
+    }
+
+    /**
+     * Tests connect message
+     *
+     */
+    #[@test, @expect('peer.AuthenticationException')]
+    public function connect_and_negotiate_version_but_fails() {
+      $this->fixture->setResponseBytes("ERROR\n".
+        "version:1.1\n".
+        "content-type:text/plain\n".
+        "\n".
+        "Supported protocol versions are: 1.2".
+        "\n\0"
+      );
+      $this->fixture->connect('user', 'pass', 'localhost', array('1.0', '1.1'));
+
+      $this->assertEquals("CONNECT\n".
+        "login:user\n".
+        "passcode:pass\n".
+        "accept-version:1.0,1.1\n".
+        "\n\0",
+        $this->fixture->readSentBytes()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= '/Versions required when specifying hostname/')]
+    public function connect_with_host_requires_versions() {
+      $this->fixture->connect('user', 'pass', 'host');
+    }
+
     /**
      * Tests send message
      *

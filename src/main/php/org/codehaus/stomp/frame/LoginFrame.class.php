@@ -15,7 +15,8 @@
     protected
       $user     = NULL,
       $pass     = NULL,
-      $versions = NULL;
+      $versions = NULL,
+      $host     = NULL;
 
     /**
      * Constructor
@@ -23,9 +24,14 @@
      * @param   string user
      * @param   string pass
      */
-    public function __construct($user, $pass, $versions= NULL) {
+    public function __construct($user, $pass, $host= NULL, $versions= NULL) {
+      if ($host && !$versions) {
+        throw new IllegalArgumentException('Versions required when specifying hostname (stomp 1.1 feature)');
+      }
+
       $this->user= $user;
       $this->pass= $pass;
+      $this->host= $host;
       if ($versions) $this->setSupportedVersions($versions);
     }
 
@@ -66,7 +72,7 @@
       );
 
       if ($this->versions) {
-        $hdrs['versions']= implode(',', $this->versions);
+        $hdrs['accept-version']= implode(',', $this->versions);
       }
 
       return array_merge($hdrs, parent::getHeaders());

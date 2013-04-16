@@ -161,18 +161,23 @@
      * @return  bool
      * @throws  peer.AuthenticationException if login failed
      */
-    public function connect($user, $pass, $protoVersions= NULL) {
+    public function connect($user, $pass, $host= NULL, $protoVersions= NULL) {
       $this->_connect();
 
-      $frame= $this->sendFrame(new org·codehaus·stomp·frame·LoginFrame($user, $pass, $protoVersions));
+      $frame= $this->sendFrame(new org·codehaus·stomp·frame·LoginFrame($user, $pass, $host, $protoVersions));
       if (!$frame instanceof org·codehaus·stomp·frame·Frame) {
         throw new ProtocolException('Did not receive frame, got: '.xp::stringOf($frame));
+      }
+      if ($frame instanceof org·codehaus·stomp·frame·ErrorFrame) {
+        throw new AuthenticationException(
+          'Could not establish connection to broker "'.$this->server.':'.$this->port.'": '.$frame->getBody(),
+          $user, ''
+        );
       }
       if (!$frame instanceof org·codehaus·stomp·frame·ConnectedFrame) {
         throw new AuthenticationException(
           'Could not log in to stomp broker "'.$this->server.':'.$this->port.'": Got "'.$frame->command().'" frame',
-          $user,
-          $pass
+          $user, ''
         );
       }
 

@@ -13,8 +13,9 @@
    */
   class org·codehaus·stomp·frame·LoginFrame extends org·codehaus·stomp·frame·Frame {
     protected
-      $user = NULL,
-      $pass = NULL;
+      $user     = NULL,
+      $pass     = NULL,
+      $versions = NULL;
 
     /**
      * Constructor
@@ -22,9 +23,19 @@
      * @param   string user
      * @param   string pass
      */
-    public function __construct($user, $pass) {
+    public function __construct($user, $pass, $versions= NULL) {
       $this->user= $user;
       $this->pass= $pass;
+      if ($versions) $this->setSupportedVersions($versions);
+    }
+
+    /**
+     * Set supported STOMP versions
+     *
+     * @param   [:string] v list of supported versions
+     */
+    public function setSupportedVersions(array $v) {
+      $this->versions= $v;
     }
 
     /**
@@ -49,12 +60,16 @@
      * @return  <string,string>[]
      */
     public function getHeaders() {
-      return array_merge(array(
+      $hdrs= array(
         'login'  => $this->user,
         'passcode'  => $this->pass
-        ),
-        parent::getHeaders()
       );
+
+      if ($this->versions) {
+        $hdrs['versions']= implode(',', $this->versions);
+      }
+
+      return array_merge($hdrs, parent::getHeaders());
     }
   }
 ?>

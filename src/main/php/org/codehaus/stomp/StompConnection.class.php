@@ -157,13 +157,14 @@
      *
      * @param   string user
      * @param   string pass
+     * @param   string[] protoVersions list of supported protocol versions default NULL
      * @return  bool
      * @throws  peer.AuthenticationException if login failed
      */
-    public function connect($user, $pass) {
+    public function connect($user, $pass, $protoVersions= NULL) {
       $this->_connect();
 
-      $frame= $this->sendFrame(new org·codehaus·stomp·frame·LoginFrame($user, $pass));
+      $frame= $this->sendFrame(new org·codehaus·stomp·frame·LoginFrame($user, $pass, $protoVersions));
       if (!$frame instanceof org·codehaus·stomp·frame·Frame) {
         throw new ProtocolException('Did not receive frame, got: '.xp::stringOf($frame));
       }

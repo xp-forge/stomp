@@ -31,10 +31,21 @@
       $this->selector= $selector;
     }
 
+    /**
+     * Retrieve subscription id
+     *
+     * @return string
+     */
     public function getId() {
       return $this->id;
     }
 
+    /**
+     * Create a subscription on a destination
+     *
+     * @param  org.codehaus.stomp.StompConnection $conn
+     * @throws lang.Throwable If any error occurrs
+     */
     public function subscribe(StompConnection $conn) {
       try {
         $this->id= uniqid('xp.stomp.subscription.');
@@ -51,6 +62,11 @@
       }
     }
 
+    /**
+     * Unsubscribe
+     *
+     * @throws  lang.IllegalStateException when not subscribed
+     */
     public function unsubscribe() {
       if (!$this->id) {
         throw new \lang\IllegalStateException('Cannot unsubscribe when not subscribed.');
@@ -61,6 +77,10 @@
       $this->conn= NULL;
     }
 
+    /**
+     * Destructor
+     *
+     */
     public function __destruct() {
       if ($this->id && $this->conn instanceof StompConnection) {
         $this->unsubscribe();

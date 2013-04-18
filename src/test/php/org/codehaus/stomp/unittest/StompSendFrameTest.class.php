@@ -1,13 +1,4 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
-
-  uses(
-    'unittest.TestCase',
-    'org.codehaus.stomp.frame.SendFrame'
-  );
+<?php namespace org\codehaus\stomp\unittest;
 
   /**
    * Tests STOMP SendFrame class
@@ -15,7 +6,7 @@
    * @see   xp://org.codehaus.stomp.unittest.StompFrameTest
    * @see   xp://org.codehaus.stomp.frame.SendFrame
    */
-  class StompSendFrameTest extends TestCase {
+  class StompSendFrameTest extends \unittest\TestCase {
     protected $fixture= NULL;
 
     /**
@@ -23,7 +14,7 @@
      *
      */
     public function setUp() {
-      $this->fixture= new org·codehaus·stomp·frame·SendFrame('/queue/test');
+      $this->fixture= new \org\codehaus\stomp\frame\SendFrame('/queue/test');
     }
 
     /**

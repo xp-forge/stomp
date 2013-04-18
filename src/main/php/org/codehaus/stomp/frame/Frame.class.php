@@ -1,17 +1,11 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$
- */
-
-  $package= 'org.codehaus.stomp.frame';
+<?php namespace org\codehaus\stomp\frame;
 
   /**
    * Abstract frame base class
    *
    * @test  xp://org.codehaus.stomp.unittest.StompFrameTest
    */
-  abstract class org·codehaus·stomp·frame·Frame extends Object {
+  abstract class Frame extends \lang\Object {
     protected
       $headers  = array(),
       $body     = NULL;
@@ -49,7 +43,7 @@
      * @throws  lang.IllegalArgumentException if header does not exist
      */
     public function getHeader($key) {
-      if (!isset($this->headers[$key])) throw new IllegalArgumentException(
+      if (!isset($this->headers[$key])) throw new \lang\IllegalArgumentException(
         'No such header "'.$key.'"'
       );
       return $this->headers[$key];
@@ -98,7 +92,7 @@
      *
      * @param   io.streams.InputStreamReader in
      */
-    public function fromWire(InputStreamReader $in) {
+    public function fromWire(\io\streams\InputStreamReader $in) {
 
       // Read headers
       $line= $in->readLine();
@@ -117,7 +111,7 @@
         // stream and assert that it is followed by a chr(0) byte.
         $data= $in->read($this->getHeader('content-length'));
 
-        if ("\0" != $in->read(1)) throw new ProtocolException(
+        if ("\0" != $in->read(1)) throw new \peer\ProtocolException(
           'Expected chr(0) after frame w/ given content-length'
         );
       } else {
@@ -125,7 +119,7 @@
         // Read byte-wise until we find \0
         $data= '';
         do {
-          if (NULL === ($c= $in->read(1))) throw new ProtocolException(
+          if (NULL === ($c= $in->read(1))) throw new \peer\ProtocolException(
             'Received EOF before payload end delimiter \0\n'
           );
           $data.= $c;
@@ -140,7 +134,7 @@
      *
      * @param   io.streams.OutputStreamWriter out
      */
-    public function write(OutputStreamWriter $out) {
+    public function write(\io\streams\OutputStreamWriter $out) {
       $out->write($this->command()."\n");
 
       foreach ($this->getHeaders() as $key => $value) {

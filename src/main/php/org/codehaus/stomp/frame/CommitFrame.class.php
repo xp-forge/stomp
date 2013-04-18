@@ -1,17 +1,10 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$
- */
-  uses('org.codehaus.stomp.frame.Frame');
-
-  $package= 'org.codehaus.stomp.frame';
+<?php namespace org\codehaus\stomp\frame;
 
   /**
    * Commit frame
    *
    */
-  class org·codehaus·stomp·frame·CommitFrame extends org·codehaus·stomp·frame·Frame {
+  class CommitFrame extends Frame {
 
     /**
      * Constructor

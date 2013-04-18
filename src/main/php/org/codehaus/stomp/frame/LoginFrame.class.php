@@ -1,17 +1,10 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$
- */
-  uses('org.codehaus.stomp.frame.Frame');
-
-  $package= 'org.codehaus.stomp.frame';
+<?php namespace org\codehaus\stomp\frame;
 
   /**
    * Login frame
    *
    */
-  class org·codehaus·stomp·frame·LoginFrame extends org·codehaus·stomp·frame·Frame {
+  class LoginFrame extends Frame {
     protected
       $user     = NULL,
       $pass     = NULL,
@@ -26,7 +19,7 @@
      */
     public function __construct($user, $pass, $host= NULL, $versions= NULL) {
       if ($host && !$versions) {
-        throw new IllegalArgumentException('Versions required when specifying hostname (stomp 1.1 feature)');
+        throw new \lang\IllegalArgumentException('Versions required when specifying hostname (stomp 1.1 feature)');
       }
 
       $this->user= $user;

@@ -1,18 +1,10 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$
- */
-
-  $package= 'org.codehaus.stomp.frame';
-
-  uses('org.codehaus.stomp.frame.Frame', 'org.codehaus.stomp.AckMode');
+<?php namespace org\codehaus\stomp\frame;
 
   /**
    * Subscribe frame
    *
    */
-  class org·codehaus·stomp·frame·SubscribeFrame extends org·codehaus·stomp·frame·Frame {
+  class SubscribeFrame extends Frame {
 
     /**
      * Constructor
@@ -22,7 +14,7 @@
      * @param   string ack default 'auto'
      * @param   string selector default NULL
      */
-    public function __construct($queue, $ack= AckMode::AUTO, $selector= NULL) {
+    public function __construct($queue, $ack= \org\codehaus\stomp\AckMode::AUTO, $selector= NULL) {
       $this->setDestination($queue);
       $this->setAck($ack);
       if (NULL !== $selector) $this->setSelector($selector);

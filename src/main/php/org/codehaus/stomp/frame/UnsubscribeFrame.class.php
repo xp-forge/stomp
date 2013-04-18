@@ -1,17 +1,10 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$
- */
-  uses('org.codehaus.stomp.frame.Frame');
-
-  $package= 'org.codehaus.stomp.frame';
+<?php namespace org\codehaus\stomp\frame;
 
   /**
    * Unsubscribe frame
    *
    */
-  class org·codehaus·stomp·frame·UnsubscribeFrame extends org·codehaus·stomp·frame·Frame {
+  class UnsubscribeFrame extends Frame {
 
     /**
      * Constructor
@@ -20,7 +13,7 @@
      * @param   string id default NULL
      */
     public function __construct($queue, $id= NULL) {
-      if (NULL === $queue && NULL === $id) throw new IllegalArgumentException(
+      if (NULL === $queue && NULL === $id) throw new \lang\IllegalArgumentException(
         'Either destination or id must be given.'
       );
 

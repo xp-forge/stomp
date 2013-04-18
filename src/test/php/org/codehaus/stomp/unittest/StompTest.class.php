@@ -1,17 +1,6 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace org\codehaus\stomp\unittest;
 
-  uses(
-    'unittest.TestCase',
-    'org.codehaus.stomp.StompConnection',
-    'io.streams.StringReader',
-    'io.streams.StringWriter',
-    'io.streams.MemoryInputStream',
-    'io.streams.MemoryOutputStream'
-  );
+  use org\codehaus\stomp\StompConnection;
 
   /**
    * Tests STOMP protocol
@@ -19,7 +8,7 @@
    * @see   http://stomp.github.com/stomp-specification-1.1.html#STOMP_Frames
    * @see   xp://org.codehaus.stomp.StompConnection
    */
-  class StompTest extends TestCase {
+  class StompTest extends \unittest\TestCase {
     protected $fixture= NULL;
 
     /**
@@ -39,8 +28,8 @@
         }
 
         protected function _connect() {
-          $this->in= new StringReader(new MemoryInputStream($this->response));
-          $this->out= new StringWriter(new MemoryOutputStream());
+          $this->in= new \\io\\streams\\StringReader(new \\io\\streams\\MemoryInputStream($this->response));
+          $this->out= new \\io\\streams\\StringWriter(new \\io\\streams\\MemoryOutputStream());
         }
 
         protected function _disconnect() {
@@ -50,7 +39,7 @@
         }
 
         public function setResponseBytes($s) {
-          $this->in= new StringReader(new MemoryInputStream($s));
+          $this->in= new \\io\\streams\\StringReader(new \\io\\streams\\MemoryInputStream($s));
           $this->response= $s;
         }
 
@@ -169,7 +158,7 @@
         "\n\0"
       );
 
-      $this->fixture->sendFrame(new org·codehaus·stomp·frame·SendFrame('/queue/a', 'my-data'));
+      $this->fixture->sendFrame(new \org\codehaus\stomp\frame\SendFrame('/queue/a', 'my-data'));
       $this->assertEquals("SEND\n".
         "destination:/queue/a\n".
         "\nmy-data\0",
@@ -235,7 +224,7 @@
      *
      * @param   org.codehaus.stomp.frame.Frame fram
      */
-    protected function sendWithReceiptFrame(org·codehaus·stomp·frame·Frame $frame) {
+    protected function sendWithReceiptFrame(\org\codehaus\stomp\frame\Frame $frame) {
       $this->fixture->setResponseBytes("RECEIPT\n".
         "receipt-id:message-id\n".
         "\n\0"
@@ -250,7 +239,7 @@
      */
     #[@test]
     public function subscribe() {
-      $this->sendWithReceiptFrame(new org·codehaus·stomp·frame·SubscribeFrame('/queue/a'));
+      $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\SubscribeFrame('/queue/a'));
       $this->assertEquals("SUBSCRIBE\n".
         "destination:/queue/a\n".
         "ack:auto\n".
@@ -266,7 +255,7 @@
      */
     #[@test]
     public function unsubscribe() {
-      $this->sendWithReceiptFrame(new org·codehaus·stomp·frame·UnsubscribeFrame('/queue/a'));
+      $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\UnsubscribeFrame('/queue/a'));
       $this->assertEquals("UNSUBSCRIBE\n".
         "destination:/queue/a\n".
         "\n".
@@ -281,7 +270,7 @@
      */
     #[@test]
     public function beginTransaction() {
-      $this->sendWithReceiptFrame(new org·codehaus·stomp·frame·BeginFrame('my-transaction'));
+      $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\BeginFrame('my-transaction'));
       $this->assertEquals("BEGIN\n".
         "transaction:my-transaction\n\n\0"
         , $this->fixture->readSentBytes()
@@ -294,7 +283,7 @@
      */
     #[@test]
     public function abortTransaction() {
-      $this->sendWithReceiptFrame(new org·codehaus·stomp·frame·AbortFrame('my-transaction'));
+      $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\AbortFrame('my-transaction'));
       $this->assertEquals("ABORT\n".
         "transaction:my-transaction\n\n\0"
         , $this->fixture->readSentBytes()
@@ -307,7 +296,7 @@
      */
     #[@test]
     public function commitTransaction() {
-      $this->sendWithReceiptFrame(new org·codehaus·stomp·frame·CommitFrame('my-transaction'));
+      $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\CommitFrame('my-transaction'));
       $this->assertEquals("COMMIT\n".
         "transaction:my-transaction\n\n\0"
         , $this->fixture->readSentBytes()
@@ -320,7 +309,7 @@
      */
     #[@test]
     public function ack() {
-      $this->sendWithReceiptFrame(new org·codehaus·stomp·frame·AckFrame('0xefefef'));
+      $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\AckFrame('0xefefef'));
       $this->assertEquals("ACK\n".
         "message-id:0xefefef\n".
         "\n\0"
@@ -334,7 +323,7 @@
      */
     #[@test]
     public function nack() {
-      $this->sendWithReceiptFrame(new org·codehaus·stomp·frame·NackFrame('0xefefef'));
+      $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\NackFrame('0xefefef'));
       $this->assertEquals("NACK\n".
         "message-id:0xefefef\n".
         "\n\0"
@@ -348,7 +337,7 @@
      */
     #[@test]
     public function ackWithinTransaction() {
-      $this->sendWithReceiptFrame(new org·codehaus·stomp·frame·AckFrame('0xefefef', "some-transaction"));
+      $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\AckFrame('0xefefef', "some-transaction"));
       $this->assertEquals("ACK\n".
         "message-id:0xefefef\n".
         "transaction:some-transaction\n".
@@ -363,7 +352,7 @@
      */
     #[@test]
     public function nackWithinTransaction() {
-      $this->sendWithReceiptFrame(new org·codehaus·stomp·frame·NackFrame('0xefefef', "some-transaction"));
+      $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\NackFrame('0xefefef', "some-transaction"));
       $this->assertEquals("NACK\n".
         "message-id:0xefefef\n".
         "transaction:some-transaction\n".

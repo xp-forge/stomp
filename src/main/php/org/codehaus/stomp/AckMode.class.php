@@ -1,8 +1,4 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace org\codehaus\stomp;
 
   /**
    * Ack modes

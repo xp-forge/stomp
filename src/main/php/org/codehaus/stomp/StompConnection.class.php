@@ -1,31 +1,35 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$
- */
+<?php namespace org\codehaus\stomp;
 
-  uses(
-    'util.log.Traceable',
-    'peer.Socket',
-    'peer.SocketInputStream',
-    'peer.SocketOutputStream',
-    'io.streams.MemoryOutputStream',
-    'io.streams.StringReader',
-    'io.streams.StringWriter',
-    'peer.AuthenticationException',
-    'peer.ProtocolException',
-    'org.codehaus.stomp.AckMode',
-    'org.codehaus.stomp.frame.LoginFrame',
-    'org.codehaus.stomp.frame.SendFrame',
-    'org.codehaus.stomp.frame.SubscribeFrame',
-    'org.codehaus.stomp.frame.UnsubscribeFrame',
-    'org.codehaus.stomp.frame.BeginFrame',
-    'org.codehaus.stomp.frame.CommitFrame',
-    'org.codehaus.stomp.frame.AbortFrame',
-    'org.codehaus.stomp.frame.AckFrame',
-    'org.codehaus.stomp.frame.NackFrame',
-    'org.codehaus.stomp.frame.DisconnectFrame'
-  );
+  use util\log\Traceable;
+  use peer\Socket;
+  use peer\SocketInputStream;
+  use peer\SocketOutputStream;
+  use io\streams\MemoryOutputStream;
+  use io\streams\StringReader;
+  use io\streams\StringWriter;
+
+  // uses(
+  //   'util.log.Traceable',
+  //   'peer.Socket',
+  //   'peer.SocketInputStream',
+  //   'peer.SocketOutputStream',
+  //   'io.streams.MemoryOutputStream',
+  //   'io.streams.StringReader',
+  //   'io.streams.StringWriter',
+  //   'peer.AuthenticationException',
+  //   'peer.ProtocolException',
+  //   'org.codehaus.stomp.AckMode',
+  //   'org.codehaus.stomp.frame.LoginFrame',
+  //   'org.codehaus.stomp.frame.SendFrame',
+  //   'org.codehaus.stomp.frame.SubscribeFrame',
+  //   'org.codehaus.stomp.frame.UnsubscribeFrame',
+  //   'org.codehaus.stomp.frame.BeginFrame',
+  //   'org.codehaus.stomp.frame.CommitFrame',
+  //   'org.codehaus.stomp.frame.AbortFrame',
+  //   'org.codehaus.stomp.frame.AckFrame',
+  //   'org.codehaus.stomp.frame.NackFrame',
+  //   'org.codehaus.stomp.frame.DisconnectFrame'
+  // );
 
   /**
    * Low level API to the STOMP protocol
@@ -33,7 +37,7 @@
    * @see   http://stomp.codehaus.org/Protocol
    * @test  xp://org.codehaus.stomp.unittest.StompTest
    */
-  class StompConnection extends Object implements Traceable {
+  class StompConnection extends \lang\Object implements Traceable {
     protected
       $server = NULL,
       $port   = NULL;
@@ -105,9 +109,9 @@
       $line= $this->in->readLine();
       $this->cat && $this->cat->debug($this->getClassName(), '<<<', 'Have "'.trim($line).'" command.');
 
-      if (0 == strlen($line)) throw new ProtocolException('Expected frame token, got "'.xp::stringOf($line).'"');
+      if (0 == strlen($line)) throw new \peer\ProtocolException('Expected frame token, got "'.xp::stringOf($line).'"');
 
-      $frame= XPClass::forName(sprintf('org.codehaus.stomp.frame.%sFrame', ucfirst(strtolower(trim($line)))))
+      $frame= \lang\XPClass::forName(sprintf('org.codehaus.stomp.frame.%sFrame', ucfirst(strtolower(trim($line)))))
         ->newInstance()
       ;
       $frame->fromWire($this->in);
@@ -134,7 +138,7 @@
      * Send a frame to server
      *
      */
-    public function sendFrame(org·codehaus·stomp·frame·Frame $frame) {
+    public function sendFrame(frame\Frame $frame) {
 
       // Trace
       if ($this->cat) {
@@ -165,18 +169,18 @@
     public function connect($user, $pass, $host= NULL, $protoVersions= NULL) {
       $this->_connect();
 
-      $frame= $this->sendFrame(new org·codehaus·stomp·frame·LoginFrame($user, $pass, $host, $protoVersions));
-      if (!$frame instanceof org·codehaus·stomp·frame·Frame) {
-        throw new ProtocolException('Did not receive frame, got: '.xp::stringOf($frame));
+      $frame= $this->sendFrame(new frame\LoginFrame($user, $pass, $host, $protoVersions));
+      if (!$frame instanceof Frame) {
+        throw new \peer\ProtocolException('Did not receive frame, got: '.\xp::stringOf($frame));
       }
-      if ($frame instanceof org·codehaus·stomp·frame·ErrorFrame) {
-        throw new AuthenticationException(
+      if ($frame instanceof ErrorFrame) {
+        throw new \peer\AuthenticationException(
           'Could not establish connection to broker "'.$this->server.':'.$this->port.'": '.$frame->getBody(),
           $user, ''
         );
       }
-      if (!$frame instanceof org·codehaus·stomp·frame·ConnectedFrame) {
-        throw new AuthenticationException(
+      if (!$frame instanceof ConnectedFrame) {
+        throw new \peer\AuthenticationException(
           'Could not log in to stomp broker "'.$this->server.':'.$this->port.'": Got "'.$frame->command().'" frame',
           $user, ''
         );
@@ -200,7 +204,7 @@
       if (!$this->out instanceof OutputStreamWriter) return;
 
       // Send disconnect frame and exit
-      create(new org·codehaus·stomp·frame·DisconnectFrame())->write($this->out);
+      create(new \org\codehaus\stomp\frame\DisconnectFrame())->write($this->out);
       $this->_disconnect();
     }
 
@@ -210,7 +214,7 @@
      * @param   string transaction
      */
     public function begin($transaction) {
-      return $this->sendFrame(new org·codehaus·stomp·frame·BeginFrame($transaction));
+      return $this->sendFrame(new \org\codehaus\stmop\frame\BeginFrame($transaction));
     }
 
     /**
@@ -219,7 +223,7 @@
      * @param   string transaction
      */
     public function abort($transaction) {
-      return $this->sendFrame(new org·codehaus·stomp·frame·AbortFrame($transaction));
+      return $this->sendFrame(new \org\codehaus\stmop\frame\AbortFrame($transaction));
     }
 
     /**
@@ -228,7 +232,7 @@
      * @param   string transaction
      */
     public function commit($transaction) {
-      return $this->sendFrame(new org·codehaus·stomp·frame·CommitFrame($transaction));
+      return $this->sendFrame(new \org\codehaus\stmop\frame\CommitFrame($transaction));
     }
 
     /**
@@ -239,7 +243,7 @@
      * @param   [:string] headers
      */
     public function send($destination, $body, $headers= array()) {
-      return $this->sendFrame(new org·codehaus·stomp·frame·SendFrame($destination, $body, $headers));
+      return $this->sendFrame(new \org\codehaus\stmop\frame\SendFrame($destination, $body, $headers));
     }
 
     /**
@@ -252,7 +256,7 @@
      * @deprecated  Please use StompSubscription class
      */
     public function subscribeFrame($destination, $ackMode= AckMode::AUTO, $selector= NULL) {
-      return $this->sendFrame(new org·codehaus·stomp·frame·SubscribeFrame($destination, $ackMode, $selector));
+      return $this->sendFrame(new \org\codehaus\stmop\frame\SubscribeFrame($destination, $ackMode, $selector));
     }
 
     /**
@@ -271,7 +275,7 @@
      * @param   string messageId
      */
     public function ack($messageId) {
-      return $this->sendFrame(new org·codehaus·stomp·frame·AckFrame($messageId));
+      return $this->sendFrame(new \org\codehaus\stmop\frame\AckFrame($messageId));
     }
 
     /**
@@ -280,7 +284,7 @@
      * @param   string messageId
      */
     public function nack($messageId) {
-      return $this->sendFrame(new org·codehaus·stomp·frame·NackFrame($messageId));
+      return $this->sendFrame(new \org\codehaus\stmop\frame\NackFrame($messageId));
     }
 
     /**

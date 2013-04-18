@@ -5,6 +5,7 @@
   use peer\SocketInputStream;
   use peer\SocketOutputStream;
   use io\streams\MemoryOutputStream;
+  use io\streams\OutputStreamWriter;
   use io\streams\StringReader;
   use io\streams\StringWriter;
 
@@ -109,7 +110,7 @@
       $line= $this->in->readLine();
       $this->cat && $this->cat->debug($this->getClassName(), '<<<', 'Have "'.trim($line).'" command.');
 
-      if (0 == strlen($line)) throw new \peer\ProtocolException('Expected frame token, got "'.xp::stringOf($line).'"');
+      if (0 == strlen($line)) throw new \peer\ProtocolException('Expected frame token, got "'.\xp::stringOf($line).'"');
 
       $frame= \lang\XPClass::forName(sprintf('org.codehaus.stomp.frame.%sFrame', ucfirst(strtolower(trim($line)))))
         ->newInstance()
@@ -170,16 +171,16 @@
       $this->_connect();
 
       $frame= $this->sendFrame(new frame\LoginFrame($user, $pass, $host, $protoVersions));
-      if (!$frame instanceof Frame) {
+      if (!$frame instanceof frame\Frame) {
         throw new \peer\ProtocolException('Did not receive frame, got: '.\xp::stringOf($frame));
       }
-      if ($frame instanceof ErrorFrame) {
+      if ($frame instanceof frame\ErrorFrame) {
         throw new \peer\AuthenticationException(
           'Could not establish connection to broker "'.$this->server.':'.$this->port.'": '.$frame->getBody(),
           $user, ''
         );
       }
-      if (!$frame instanceof ConnectedFrame) {
+      if (!$frame instanceof frame\ConnectedFrame) {
         throw new \peer\AuthenticationException(
           'Could not log in to stomp broker "'.$this->server.':'.$this->port.'": Got "'.$frame->command().'" frame',
           $user, ''
@@ -204,7 +205,7 @@
       if (!$this->out instanceof OutputStreamWriter) return;
 
       // Send disconnect frame and exit
-      create(new \org\codehaus\stomp\frame\DisconnectFrame())->write($this->out);
+      create(new frame\DisconnectFrame())->write($this->out);
       $this->_disconnect();
     }
 
@@ -214,7 +215,7 @@
      * @param   string transaction
      */
     public function begin($transaction) {
-      return $this->sendFrame(new \org\codehaus\stmop\frame\BeginFrame($transaction));
+      return $this->sendFrame(new frame\BeginFrame($transaction));
     }
 
     /**
@@ -223,7 +224,7 @@
      * @param   string transaction
      */
     public function abort($transaction) {
-      return $this->sendFrame(new \org\codehaus\stmop\frame\AbortFrame($transaction));
+      return $this->sendFrame(new frame\AbortFrame($transaction));
     }
 
     /**
@@ -232,7 +233,7 @@
      * @param   string transaction
      */
     public function commit($transaction) {
-      return $this->sendFrame(new \org\codehaus\stmop\frame\CommitFrame($transaction));
+      return $this->sendFrame(new frame\CommitFrame($transaction));
     }
 
     /**
@@ -243,7 +244,7 @@
      * @param   [:string] headers
      */
     public function send($destination, $body, $headers= array()) {
-      return $this->sendFrame(new \org\codehaus\stmop\frame\SendFrame($destination, $body, $headers));
+      return $this->sendFrame(new frame\SendFrame($destination, $body, $headers));
     }
 
     /**
@@ -256,15 +257,16 @@
      * @deprecated  Please use StompSubscription class
      */
     public function subscribeFrame($destination, $ackMode= AckMode::AUTO, $selector= NULL) {
-      return $this->sendFrame(new \org\codehaus\stmop\frame\SubscribeFrame($destination, $ackMode, $selector));
+      return $this->sendFrame(new frame\SubscribeFrame($destination, $ackMode, $selector));
     }
 
     /**
      * Create new subscription
+     *
      * @param  org.codehaus.stomp.StompSubscription $subscription
      * @return org.codehaus.stomp.StompSubscription
      */
-    public function subscribe(StompSubscription $subscription) {
+    public function subscribe(Subscription $subscription) {
       $subscription->send($this);
       return $subscription;
     }
@@ -275,7 +277,7 @@
      * @param   string messageId
      */
     public function ack($messageId) {
-      return $this->sendFrame(new \org\codehaus\stmop\frame\AckFrame($messageId));
+      return $this->sendFrame(new frame\AckFrame($messageId));
     }
 
     /**
@@ -284,7 +286,7 @@
      * @param   string messageId
      */
     public function nack($messageId) {
-      return $this->sendFrame(new \org\codehaus\stmop\frame\NackFrame($messageId));
+      return $this->sendFrame(new frame\NackFrame($messageId));
     }
 
     /**

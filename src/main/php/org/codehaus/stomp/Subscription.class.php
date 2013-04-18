@@ -1,14 +1,6 @@
-<?php
-/*
- * This class is part of the XP Framework
- *
- */
+<?php namespace org\codehaus\stomp;
 
-  uses(
-    'org.codehaus.stomp.frame.SubscribeFrame'
-  );
-
-  class StompSubscription extends Object {
+  class Subscription extends \lang\Object {
     protected $id         = NULL;
     protected $destination= NULL;
     protected $ackMode    = NULL;
@@ -26,13 +18,13 @@
      */
     public function __construct($destination, $ackMode= AckMode::INDIVIDUAL, $selector= NULL) {
       if (empty($destination)) {
-        throw new IllegalArgumentException('Invalid destination given: "'.$destination.'"');
+        throw new \lang\IllegalArgumentException('Invalid destination given: "'.$destination.'"');
       }
 
       $this->destination= $destination;
 
       if (!in_array($ackMode, array(AckMode::AUTO, AckMode::CLIENT, AckMode::INDIVIDUAL))) {
-        throw new IllegalArgumentException('Invalid ackMode given: "'.$ackMode.'"');
+        throw new \lang\IllegalArgumentException('Invalid ackMode given: "'.$ackMode.'"');
       }
 
       $this->ackMode= $ackMode;
@@ -43,17 +35,17 @@
       return $this->id;
     }
 
-    public function send(StompConnection $conn) {
+    public function send($conn) {
       try {
         $this->id= uniqid(__CLASS__.'.');
 
-        $frame= new org·codehaus·stomp·frame·SubscribeFrame($this->destination, $this->ackMode, $this->selector);
+        $frame= new \org\codehaus\stomp\frame\SubscribeFrame($this->destination, $this->ackMode, $this->selector);
         $frame->setId($this->id);
 
         $this->conn= $conn;
 
         $this->conn->sendFrame($frame);
-      } catch (Throwable $t) {
+      } catch (\lang\Throwable $t) {
         $this->id= NULL;
         throw $t;
       }

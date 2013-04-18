@@ -1,15 +1,8 @@
-<?php
-/*
- * This class is part of the XP Framework
- *
- */
+<?php namespace org\codehaus\stomp\unittest;
 
-  uses(
-    'unittest.TestCase',
-    'org.codehaus.stomp.StompSubscription'
-  );
+  use \org\codehaus\stomp\Subscription;
 
-  class StompSubscriptionTest extends TestCase {
+  class StompSubscriptionTest extends \unittest\TestCase {
 
     /**
      * Sets up unittest and creates fixture
@@ -28,8 +21,8 @@
         }
 
         protected function _connect() {
-          $this->in= new StringReader(new MemoryInputStream($this->response));
-          $this->out= new StringWriter(new MemoryOutputStream());
+          $this->in= new \\io\\streams\\StringReader(new \\io\\streams\\MemoryInputStream($this->response));
+          $this->out= new \\io\\streams\\StringWriter(new \\io\\streams\\MemoryOutputStream());
         }
 
         protected function _disconnect() {
@@ -39,7 +32,7 @@
         }
 
         public function setResponseBytes($s) {
-          $this->in= new StringReader(new MemoryInputStream($s));
+          $this->in= new \\io\\streams\\StringReader(new \\io\\streams\\MemoryInputStream($s));
           $this->response= $s;
         }
 
@@ -63,7 +56,7 @@
      */
     #[@test]
     public function create() {
-      new StompSubscription('/queue/foo');
+      new Subscription('/queue/foo');
     }
 
     /**
@@ -72,7 +65,7 @@
      */
     #[@test]
     public function subscribe() {
-      $subscription= $this->fixture->subscribe(new StompSubscription('/queue/foo'));
+      $subscription= $this->fixture->subscribe(new Subscription('/queue/foo'));
 
       $this->assertEquals("SUBSCRIBE\n".
         "destination:/queue/foo\n".

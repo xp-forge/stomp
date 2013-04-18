@@ -9,29 +9,6 @@
   use io\streams\StringReader;
   use io\streams\StringWriter;
 
-  // uses(
-  //   'util.log.Traceable',
-  //   'peer.Socket',
-  //   'peer.SocketInputStream',
-  //   'peer.SocketOutputStream',
-  //   'io.streams.MemoryOutputStream',
-  //   'io.streams.StringReader',
-  //   'io.streams.StringWriter',
-  //   'peer.AuthenticationException',
-  //   'peer.ProtocolException',
-  //   'org.codehaus.stomp.AckMode',
-  //   'org.codehaus.stomp.frame.LoginFrame',
-  //   'org.codehaus.stomp.frame.SendFrame',
-  //   'org.codehaus.stomp.frame.SubscribeFrame',
-  //   'org.codehaus.stomp.frame.UnsubscribeFrame',
-  //   'org.codehaus.stomp.frame.BeginFrame',
-  //   'org.codehaus.stomp.frame.CommitFrame',
-  //   'org.codehaus.stomp.frame.AbortFrame',
-  //   'org.codehaus.stomp.frame.AckFrame',
-  //   'org.codehaus.stomp.frame.NackFrame',
-  //   'org.codehaus.stomp.frame.DisconnectFrame'
-  // );
-
   /**
    * Low level API to the STOMP protocol
    *
@@ -267,7 +244,7 @@
      * @return org.codehaus.stomp.StompSubscription
      */
     public function subscribe(Subscription $subscription) {
-      $subscription->send($this);
+      $subscription->subscribe($this);
       return $subscription;
     }
 

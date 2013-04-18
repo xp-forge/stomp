@@ -35,9 +35,9 @@
       return $this->id;
     }
 
-    public function send($conn) {
+    public function subscribe(StompConnection $conn) {
       try {
-        $this->id= uniqid(__CLASS__.'.');
+        $this->id= uniqid('xp.stomp.subscription.');
 
         $frame= new \org\codehaus\stomp\frame\SubscribeFrame($this->destination, $this->ackMode, $this->selector);
         $frame->setId($this->id);
@@ -48,6 +48,22 @@
       } catch (\lang\Throwable $t) {
         $this->id= NULL;
         throw $t;
+      }
+    }
+
+    public function unsubscribe() {
+      if (!$this->id) {
+        throw new \lang\IllegalStateException('Cannot unsubscribe when not subscribed.');
+      }
+
+      $this->conn->sendFrame(new frame\UnsubscribeFrame(NULL, $this->id));
+      $this->id= NULL;
+      $this->conn= NULL;
+    }
+
+    public function __destruct() {
+      if ($this->id && $this->conn instanceof StompConnection) {
+        $this->unsubscribe();
       }
     }
   }

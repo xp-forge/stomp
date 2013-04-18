@@ -245,13 +245,24 @@
     /**
      * Subscribe to destination
      *
-     * @see     xp://org.codehaus.stomp.AckMode
-     * @param   string destination
-     * @param   string ackMode default 'auto'
-     * @param   string selector default NULL
+     * @see         xp://org.codehaus.stomp.AckMode
+     * @param       string destination
+     * @param       string ackMode default 'auto'
+     * @param       string selector default NULL
+     * @deprecated  Please use StompSubscription class
      */
-    public function subscribe($destination, $ackMode= AckMode::AUTO, $selector= NULL) {
+    public function subscribeFrame($destination, $ackMode= AckMode::AUTO, $selector= NULL) {
       return $this->sendFrame(new org·codehaus·stomp·frame·SubscribeFrame($destination, $ackMode, $selector));
+    }
+
+    /**
+     * Create new subscription
+     * @param  org.codehaus.stomp.StompSubscription $subscription
+     * @return org.codehaus.stomp.StompSubscription
+     */
+    public function subscribe(StompSubscription $subscription) {
+      $subscription->send($this);
+      return $subscription;
     }
 
     /**

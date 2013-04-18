@@ -4,7 +4,9 @@
  *
  */
 
-  uses();
+  uses(
+    'org.codehaus.stomp.frame.SubscribeFrame'
+  );
 
   class StompSubscription extends Object {
     protected $id         = NULL;
@@ -37,18 +39,15 @@
       $this->selector= $selector;
     }
 
-    /**
-     * Create subscription
-     *
-     * @param   type name
-     * @return  type
-     * @throws  type description
-     */
-    public function create(StompConnection $conn) {
+    public function getId() {
+      return $this->id;
+    }
+
+    public function send(StompConnection $conn) {
       try {
         $this->id= uniqid(__CLASS__.'.');
 
-        $frame= new org路codehaus路stomp路frame路SubscribeFrame($this->destionation, $this->ackMode, $this->selector);
+        $frame= new org穋odehaus穝tomp穎rame稴ubscribeFrame($this->destination, $this->ackMode, $this->selector);
         $frame->setId($this->id);
 
         $this->conn= $conn;
@@ -59,7 +58,5 @@
         throw $t;
       }
     }
-
-
   }
 ?>

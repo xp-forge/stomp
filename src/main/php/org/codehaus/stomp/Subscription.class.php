@@ -73,6 +73,7 @@
       }
 
       $this->conn->sendFrame(new frame\UnsubscribeFrame(NULL, $this->id));
+      $this->conn->unsubscribe($this);
       $this->id= NULL;
       $this->conn= NULL;
     }
@@ -81,10 +82,10 @@
      * Destructor
      *
      */
-    public function __destruct() {
+    /*public function __destruct() {
       if ($this->id && $this->conn instanceof StompConnection) {
         $this->unsubscribe();
       }
-    }
+    }*/
   }
 ?>

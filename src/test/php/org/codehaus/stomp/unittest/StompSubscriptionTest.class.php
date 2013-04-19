@@ -34,6 +34,17 @@
      * Test
      *
      */
+    #[@test]
+    public function subscription_registered_in_connection() {
+      $subscription= $this->fixture->subscribe(new Subscription('/queue/foo'));
+
+      $this->assertEquals($subscription, $this->fixture->subscriptionById($subscription->getId()));
+    }
+
+    /**
+     * Test
+     *
+     */
     #[@test, @expect('lang.IllegalStateException')]
     public function unsubscribe_not_possible_when_not_subscribed() {
       create(new Subscription('foo'))->unsubscribe();
@@ -71,7 +82,7 @@
      * Test
      *
      */
-    #[@test]
+    #[@test, @ignore('cycling reference preventing this')]
     public function destructor_removes_subscription() {
       $id= $this->createSubscription();
 
@@ -85,6 +96,28 @@
         "\n\0",
         $this->fixture->readSentBytes()
       );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function subscribe_registeres_in_connection() {
+      $id= $this->createSubscription();
+      $this->assertInstanceOf('org.codehaus.stomp.Subscription', $this->fixture->subscriptionById($id));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('org.codehaus.stomp.Exception')]
+    public function subscribe_also_unregisteres_in_connection() {
+      $id= $this->createSubscription();
+      $this->fixture->subscriptionById($id)->unsubscribe();
+
+      $this->fixture->subscriptionById($id);
     }
   }
 ?>

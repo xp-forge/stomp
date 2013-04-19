@@ -30,6 +30,26 @@ class MessageTest extends BaseTest {
     );
 
     $m= $this->fixture->receive();
-    var_dump($m);
+    $this->assertInstanceOf('org.codehaus.stomp.Message', $m);
+  }
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function receive_message_with_subscription() {
+    $s= $this->fixture->subscribe(new Subscription('/queue/foobar'));
+    $this->fixture->setResponseBytes("MESSAGE\n".
+      "destination:/queue/foo\n".
+      "message-id:12345\n".
+      "subscription:".$s->getId()."\n".
+      "\n".
+      "Hello World!\n".
+      "\n\0"
+    );
+
+    $m= $this->fixture->receive();
+    $this->assertEquals($s, $m->getSubscription());
   }
 }

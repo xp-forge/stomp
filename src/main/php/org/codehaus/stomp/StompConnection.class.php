@@ -23,7 +23,8 @@
     protected
       $socket = NULL,
       $in     = NULL,
-      $out    = NULL;
+      $out    = NULL,
+      $subscriptions = array();
 
     protected
       $cat    = NULL;
@@ -215,7 +216,20 @@
      */
     public function subscribe(Subscription $subscription) {
       $subscription->subscribe($this);
+      $this->subscriptions[$subscription->getId()]= $subscription;
       return $subscription;
+    }
+
+    public function unsubscribe(Subscription $subscription) {
+      unset($this->subscriptions[$subscription->getId()]);
+    }
+
+    public function subscriptionById($id) {
+      if (!isset($this->subscriptions[$id])) {
+        throw new Exception('No such subscription: "'.$id.'"');
+      }
+
+      return $this->subscriptions[$id];
     }
 
     /**
@@ -247,7 +261,7 @@
 
       if ($frame instanceof frame\MessageFrame) {
         $msg= new Message();
-        $msg->withFrame($frame);
+        $msg->withFrame($frame, $this);
         return $msg;
       }
 

@@ -191,8 +191,9 @@
      *
      * @param   string transaction
      */
-    public function begin($transaction) {
-      return $this->sendFrame(new frame\BeginFrame($transaction));
+    public function begin(Transaction $transaction) {
+      $transaction->begin($this);
+      return $transaction;
     }
 
     /**
@@ -222,19 +223,6 @@
      */
     public function send($destination, $body, $headers= array()) {
       return $this->sendFrame(new frame\SendFrame($destination, $body, $headers));
-    }
-
-    /**
-     * Subscribe to destination
-     *
-     * @see         xp://org.codehaus.stomp.AckMode
-     * @param       string destination
-     * @param       string ackMode default 'auto'
-     * @param       string selector default NULL
-     * @deprecated  Please use StompSubscription class
-     */
-    public function subscribeFrame($destination, $ackMode= AckMode::AUTO, $selector= NULL) {
-      return $this->sendFrame(new frame\SubscribeFrame($destination, $ackMode, $selector));
     }
 
     /**

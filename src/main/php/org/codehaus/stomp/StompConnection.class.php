@@ -246,8 +246,12 @@
       $frame= $this->recvFrame($timeout);
 
       if ($frame instanceof frame\MessageFrame) {
-
+        $msg= new Message();
+        $msg->withFrame($frame);
+        return $msg;
       }
+
+      return $frame;
     }
 
     /**

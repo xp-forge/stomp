@@ -117,7 +117,7 @@
         "\nmy-data\0",
         $this->fixture->readSentBytes()
       );
-      $response= $this->fixture->receive();
+      $response= $this->fixture->recvFrame();
 
       $this->assertInstanceOf('org.codehaus.stomp.frame.ReceiptFrame', $response);
     }

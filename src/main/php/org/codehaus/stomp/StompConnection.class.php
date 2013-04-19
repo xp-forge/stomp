@@ -197,24 +197,6 @@
     }
 
     /**
-     * Abort transaction
-     *
-     * @param   string transaction
-     */
-    public function abort($transaction) {
-      return $this->sendFrame(new frame\AbortFrame($transaction));
-    }
-
-    /**
-     * Commit transaction
-     *
-     * @param   string transaction
-     */
-    public function commit($transaction) {
-      return $this->sendFrame(new frame\CommitFrame($transaction));
-    }
-
-    /**
      * Send new message to destination
      *
      * @param   string destination
@@ -261,7 +243,11 @@
      * @return  org.codehaus.stomp.frame.Frame
      */
     public function receive($timeout= 0.2) {
-      return $this->recvFrame($timeout);
+      $frame= $this->recvFrame($timeout);
+
+      if ($frame instanceof frame\MessageFrame) {
+
+      }
     }
 
     /**

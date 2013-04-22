@@ -185,4 +185,24 @@ class MessageTest extends BaseTest {
     $m= new Message();
     $m->nack();
   }
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function send() {
+    $m= new Message( 'Hello World.', 'text/plain');
+    $m->setDestination('/queue/foobar');
+
+    $m->send($this->fixture);
+    $this->assertEquals("SEND\n".
+      "content-type:text/plain\n".
+      "destination:/queue/foobar\n".
+      "\n".
+      "Hello World.".
+      "\n\0",
+      $this->fixture->readSentBytes()
+    );
+  }
 }

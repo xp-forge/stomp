@@ -233,24 +233,6 @@
     }
 
     /**
-     * Acknowledge a message
-     *
-     * @param   string messageId
-     */
-    public function ack($messageId) {
-      return $this->sendFrame(new frame\AckFrame($messageId));
-    }
-
-    /**
-     * Acknowledge a message
-     *
-     * @param   string messageId
-     */
-    public function nack($messageId) {
-      return $this->sendFrame(new frame\NackFrame($messageId));
-    }
-
-    /**
      * Receive a message
      *
      * @param   double timeout default 0.2 pass NULL for no timeout

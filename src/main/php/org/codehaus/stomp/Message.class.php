@@ -22,6 +22,7 @@ class Message extends \lang\Object {
     }
 
     $this->body= $frame->getBody();
+    $this->conn= $conn;
   }
 
   public function getSubscription() {
@@ -30,5 +31,33 @@ class Message extends \lang\Object {
 
   public function setSubscription(Subscription $s) {
     $this->subscription= $s;
+  }
+
+  public function getMessageId() {
+    return $this->messageId;
+  }
+
+  public function ack(Transaction $t= NULL) {
+    $this->assertConnection();
+    $frame= new frame\AckFrame($this->getMessageId());
+    if ($t) {
+      $frame->setTransaction($t->getName());
+    }
+    $this->conn->sendFrame($frame);
+  }
+
+  public function nack(Transaction $t= NULL) {
+    $this->assertConnection();
+    $frame= new frame\NackFrame($this->getMessageId());
+    if ($t) {
+      $frame->setTransaction($t->getName());
+    }
+    $this->conn->sendFrame($frame);
+  }
+
+  protected function assertConnection() {
+    if (!$this->conn instanceof StompConnection) {
+      throw new \lang\IllegalStateException('Cannot ack message without connection');
+    }
   }
 }

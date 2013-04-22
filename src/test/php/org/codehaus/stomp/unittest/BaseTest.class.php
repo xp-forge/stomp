@@ -46,6 +46,11 @@
 
           return $this->out->getStream()->getBytes();
         }
+
+        public function clearSentBytes() {
+          $this->_connect();
+          $this->sent= NULL;
+        }
       }');
     }
   }

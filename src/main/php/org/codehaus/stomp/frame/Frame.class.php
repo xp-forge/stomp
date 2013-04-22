@@ -23,7 +23,7 @@
      * @return  bool
      */
     public function requiresImmediateResponse() {
-      return $this->hasHeader('receipt');
+      return $this->hasHeader(Header::RECEIPT);
     }
 
     /**
@@ -105,11 +105,11 @@
       }
 
       // Now, read payload
-      if ($this->hasHeader('content-length')) {
+      if ($this->hasHeader(Header::CONTENTLENGTH)) {
 
         // If content-length is given, read that many bytes as body from
         // stream and assert that it is followed by a chr(0) byte.
-        $data= $in->read($this->getHeader('content-length'));
+        $data= $in->read($this->getHeader(Header::CONTENTLENGTH));
 
         if ("\0" != $in->read(1)) throw new \peer\ProtocolException(
           'Expected chr(0) after frame w/ given content-length'

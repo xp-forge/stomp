@@ -192,7 +192,7 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function send() {
-    $m= new Message( 'Hello World.', 'text/plain');
+    $m= new Message('Hello World.', 'text/plain');
     $m->setDestination('/queue/foobar');
 
     $m->send($this->fixture);

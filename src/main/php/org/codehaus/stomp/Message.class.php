@@ -94,10 +94,10 @@ class Message extends \lang\Object {
   public function send(StompConnection $conn) {
     $headers= array();
     if ($this->getContentType()) {
-      $headers['content-type']= $this->getContentType();
+      $headers[Header::CONTENTTYPE]= $this->getContentType();
     }
     if ($this->getPersistence()) {
-      $headers['persistence']= 'true';
+      $headers[Header::PERSISTENCE]= 'true';
     }
 
     $frame= new frame\SendFrame(

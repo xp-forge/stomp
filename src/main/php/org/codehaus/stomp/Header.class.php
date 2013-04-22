@@ -2,8 +2,12 @@
 
 interface Header {
   const CONTENTTYPE   = 'content-type';
+  const CONTENTLENGTH = 'content-length';
   const DESTINATION   = 'destination';
   const SUBSCRIPTION  = 'subscription';
   const CONTENTLENGTH = 'content-length';
   const MESSAGEID     = 'message-id';
+  const RECEIPT       = 'receipt';
+  const RECEIPTID     = 'receipt-id';
+  const PERSISTENCE   = 'persistence';
 }

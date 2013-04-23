@@ -1,6 +1,6 @@
 <?php namespace org\codehaus\stomp;
 
-class Message extends \lang\Object {
+abstract class Message extends \lang\Object {
   protected $destination  = NULL;
   protected $subscription = NULL;
   protected $messageId    = NULL;
@@ -13,42 +13,6 @@ class Message extends \lang\Object {
     if ($body) {
       $this->setBody($body, $contentType);
     }
-  }
-
-  public function withFrame(frame\MessageFrame $frame, StompConnection $conn) {
-    $this->frame= $frame;
-    $this->destination= $frame->getHeader(Header::DESTINATION);
-    $this->messageId= $frame->getHeader(Header::MESSAGEID);
-
-    if ($frame->hasHeader(Header::CONTENTTYPE)) {
-      $this->contentType= $frame->getHeader(Header::CONTENTTYPE);
-    }
-
-    if ($frame->hasHeader(Header::SUBSCRIPTION)) {
-      $this->setSubscription($conn->subscriptionById($frame->getHeader(Header::SUBSCRIPTION)));
-    }
-
-    $this->setPersistence(FALSE);
-    if ($frame->hasHeader(Header::PERSISTENCE)) {
-      $this->setPersistence('true' === $frame->getHeader(Header::PERSISTENCE));
-    }
-
-    $skipHeaders= array(
-      Header::DESTINATION   => TRUE,
-      Header::MESSAGEID     => TRUE,
-      Header::CONTENTTYPE   => TRUE,
-      Header::SUBSCRIPTION  => TRUE,
-      Header::CONTENTLENGTH => TRUE
-    );
-
-    foreach ($frame->getHeaders() as $name => $value) {
-      if (isset($skipHeaders[$name])) continue;
-
-      $this->addHeader($name, $value);
-    }
-
-    $this->body= $frame->getBody();
-    $this->conn= $conn;
   }
 
   public function getSubscription() {
@@ -69,6 +33,10 @@ class Message extends \lang\Object {
 
   public function getMessageId() {
     return $this->messageId;
+  }
+
+  public function setMessageId($id) {
+    $this->messageId= $id;
   }
 
   public function setBody($body, $contentType= NULL) {
@@ -107,56 +75,10 @@ class Message extends \lang\Object {
     return $this->customHeader;
   }
 
-  public function ack(Transaction $t= NULL) {
-    $this->assertConnection();
-    $frame= new frame\AckFrame($this->getMessageId());
-    if ($t) {
-      $frame->setTransaction($t->getName());
-    }
-    $this->conn->sendFrame($frame);
-  }
-
-  public function nack(Transaction $t= NULL) {
-    $this->assertConnection();
-    $frame= new frame\NackFrame($this->getMessageId());
-    if ($t) {
-      $frame->setTransaction($t->getName());
-    }
-    $this->conn->sendFrame($frame);
-  }
-
   protected function assertConnection() {
     if (!$this->conn instanceof StompConnection) {
       throw new \lang\IllegalStateException('Cannot ack message without connection');
     }
-  }
-
-  public function send(StompConnection $conn) {
-    $headers= array();
-    if ($this->getMessageId()) {
-      $headers[Header::MESSAGEID]= $this->getMessageId();
-    }
-
-    $headers[Header::CONTENTLENGTH]= 0;  // Will be auto-calculated
-
-    if ($this->getContentType()) {
-      $headers[Header::CONTENTTYPE]= $this->getContentType();
-    }
-
-    if ($this->getPersistence()) {
-      $headers[Header::PERSISTENCE]= 'true';
-    }
-
-    $headers= array_merge($headers, $this->getHeaders());
-
-    $frame= new frame\SendFrame(
-      $this->getDestination(),
-      $this->getBody(),
-      $headers
-    );
-
-
-    $conn->sendFrame($frame);
   }
 
   public function toString() {

@@ -1,6 +1,8 @@
 <?php namespace org\codehaus\stomp\unittest;
 
 use \org\codehaus\stomp\Message;
+use \org\codehaus\stomp\SendableMessage;
+use \org\codehaus\stomp\ReceivedMessage;
 use \org\codehaus\stomp\Subscription;
 use \org\codehaus\stomp\Transaction;
 
@@ -12,7 +14,7 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function create() {
-    new Message();
+    new SendableMessage();
   }
 
   /**
@@ -172,7 +174,7 @@ class MessageTest extends BaseTest {
    */
   #[@test, @expect(class= 'lang.IllegalStateException', withMessage= '/Cannot ack message without connection/')]
   public function ack_fails_without_connection() {
-    $m= new Message();
+    $m= new ReceivedMessage();
     $m->ack();
   }
 
@@ -182,7 +184,7 @@ class MessageTest extends BaseTest {
    */
   #[@test, @expect(class= 'lang.IllegalStateException', withMessage= '/Cannot ack message without connection/')]
   public function nack_fails_without_connection() {
-    $m= new Message();
+    $m= new ReceivedMessage();
     $m->nack();
   }
 
@@ -192,7 +194,7 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function send() {
-    $m= new Message('Hello World.', 'text/plain');
+    $m= new SendableMessage('Hello World.', 'text/plain');
     $m->setDestination('/queue/foobar');
 
     $m->send($this->fixture);
@@ -214,7 +216,7 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function send_with_content_length() {
-    $m= new Message('Hello World.', 'text/plain');
+    $m= new SendableMessage('Hello World.', 'text/plain');
     $m->setDestination('/queue/foobar');
 
     $m->send($this->fixture);
@@ -248,7 +250,7 @@ class MessageTest extends BaseTest {
       "\n\0"
     );
 
-    $m= $this->fixture->receive();
+    $m= $this->fixture->receive()->toSendable();
     $this->fixture->clearSentBytes();
 
     $m->setDestination('/queue/another');
@@ -285,7 +287,7 @@ class MessageTest extends BaseTest {
       "\n\0"
     );
 
-    $m= $this->fixture->receive();
+    $m= $this->fixture->receive()->toSendable();
     $this->fixture->clearSentBytes();
 
     $m->setDestination('/queue/another');

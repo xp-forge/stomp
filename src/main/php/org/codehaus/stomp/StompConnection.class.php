@@ -242,7 +242,7 @@ class StompConnection extends \lang\Object implements Traceable {
     $frame= $this->recvFrame($timeout);
 
     if ($frame instanceof frame\MessageFrame) {
-      $msg= new Message();
+      $msg= new ReceivedMessage();
       $msg->withFrame($frame, $this);
       return $msg;
     }

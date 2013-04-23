@@ -7,14 +7,11 @@ class Message extends \lang\Object {
   protected $contentType  = NULL;
   protected $body         = NULL;
   protected $persistence  = TRUE;
+  protected $customHeader = array();
 
   public function __construct($body= NULL, $contentType= NULL) {
     if ($body) {
-      $this->body= $body;
-
-      if ($contentType) {
-        $this->contentType= $contentType;
-      }
+      $this->setBody($body, $contentType);
     }
   }
 
@@ -29,6 +26,20 @@ class Message extends \lang\Object {
 
     if ($frame->hasHeader(Header::SUBSCRIPTION)) {
       $this->setSubscription($conn->subscriptionById($frame->getHeader(Header::SUBSCRIPTION)));
+    }
+
+    $skipHeaders= array(
+      Header::DESTINATION   => TRUE,
+      Header::MESSAGEID     => TRUE,
+      Header::CONTENTTYPE   => TRUE,
+      Header::SUBSCRIPTION  => TRUE,
+      Header::CONTENTLENGTH => TRUE
+    );
+
+    foreach ($frame->getHeaders() as $name => $value) {
+      if (isset($skipHeaders[$name])) continue;
+
+      $this->addHeader($name, $value);
     }
 
     $this->body= $frame->getBody();
@@ -55,6 +66,18 @@ class Message extends \lang\Object {
     return $this->messageId;
   }
 
+  public function setBody($body, $contentType= NULL) {
+    $this->body= $body;
+
+    if ($contentType) {
+      $this->setContentType($contentType);
+    }
+  }
+
+  public function setContentType($c) {
+    $this->contentType= $c;
+  }
+
   public function getBody() {
     return $this->body;
   }
@@ -65,6 +88,14 @@ class Message extends \lang\Object {
 
   public function getPersistence() {
     return $this->persistence;
+  }
+
+  public function addHeader($name, $value) {
+    $this->customHeader[$name]= $value;
+  }
+
+  public function getHeaders() {
+    return $this->customHeader;
   }
 
   public function ack(Transaction $t= NULL) {
@@ -93,18 +124,42 @@ class Message extends \lang\Object {
 
   public function send(StompConnection $conn) {
     $headers= array();
+    if ($this->getMessageId()) {
+      $headers[Header::MESSAGEID]= $this->getMessageId();
+    }
+
+    $headers[Header::CONTENTLENGTH]= 0;  // Will be auto-calculated
+
     if ($this->getContentType()) {
       $headers[Header::CONTENTTYPE]= $this->getContentType();
     }
+
     if ($this->getPersistence()) {
       $headers[Header::PERSISTENCE]= 'true';
     }
+
+    $headers= array_merge($headers, $this->getHeaders());
 
     $frame= new frame\SendFrame(
       $this->getDestination(),
       $this->getBody(),
       $headers
     );
+
+
     $conn->sendFrame($frame);
+  }
+
+  public function toString() {
+    $s= $this->getClassName().'('.$this->hashCode().") {\n";
+    $s.= "  [  destination ] ".$this->getDestination()."\n";
+    $s.= "  [ subscription ] ".\xp::stringOf($this->getSubscription())."\n";
+    $s.= "  [         conn ] ".\xp::stringOf($this->conn)."\n";
+    $s.= "  [  persistence ] ".\xp::stringOf($this->getPersistence())."\n";
+    $s.= "  [ content-type ] ".$this->getContentType()."\n";
+    $s.= "  [         body ] ".$this->getBody()."\n";
+    $s.= "  [      headers ] ".\xp::stringOf($this->getHeaders())."\n";
+
+    return $s.'}';
   }
 }

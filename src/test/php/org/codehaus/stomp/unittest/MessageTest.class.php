@@ -197,11 +197,71 @@ class MessageTest extends BaseTest {
 
     $m->send($this->fixture);
     $this->assertEquals("SEND\n".
+      "content-length:12\n".
       "content-type:text/plain\n".
+      "persistence:true\n".
       "destination:/queue/foobar\n".
       "\n".
       "Hello World.".
-      "\n\0",
+      "\0",
+      $this->fixture->readSentBytes()
+    );
+  }
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function send_with_content_length() {
+    $m= new Message('Hello World.', 'text/plain');
+    $m->setDestination('/queue/foobar');
+
+    $m->send($this->fixture);
+    $this->assertEquals("SEND\n".
+      "content-length:12\n".
+      "content-type:text/plain\n".
+      "persistence:true\n".
+      "destination:/queue/foobar\n".
+      "\n".
+      "Hello World.".
+      "\0",
+      $this->fixture->readSentBytes()
+    );
+  }
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function receive_and_resend() {
+    $s= $this->fixture->subscribe(new Subscription('/queue/foobar'));
+    $this->fixture->setResponseBytes("MESSAGE\n".
+      "destination:/queue/foo\n".
+      "message-id:12345\n".
+      "subscription:".$s->getId()."\n".
+      "persistence:true\n".
+      "x-xp-customheader:6100\n".
+      "\n".
+      "Hello World!\n".
+      "\n\0"
+    );
+
+    $m= $this->fixture->receive();
+    $this->fixture->clearSentBytes();
+
+    $m->setDestination('/queue/another');
+
+    $m->send($this->fixture);
+    $this->assertEquals("SEND\n".
+      "message-id:12345\n".
+      "content-length:12\n".
+      "persistence:true\n".
+      "x-xp-customheader:6100\n".
+      "destination:/queue/another\n".
+      "\n".
+      "Hello World!\0",
       $this->fixture->readSentBytes()
     );
   }

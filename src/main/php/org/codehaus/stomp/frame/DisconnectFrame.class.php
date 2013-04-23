@@ -1,17 +1,16 @@
 <?php namespace org\codehaus\stomp\frame;
 
+/**
+ * Disconnect frame
+ *
+ */
+class DisconnectFrame extends Frame {
+
   /**
-   * Disconnect frame
+   * Frame command
    *
    */
-  class DisconnectFrame extends Frame {
-
-    /**
-     * Frame command
-     *
-     */
-    public function command() {
-      return 'DISCONNECT';
-    }
+  public function command() {
+    return 'DISCONNECT';
   }
-?>
+}

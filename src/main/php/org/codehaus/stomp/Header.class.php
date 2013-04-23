@@ -9,4 +9,13 @@ interface Header {
   const RECEIPT       = 'receipt';
   const RECEIPTID     = 'receipt-id';
   const PERSISTENCE   = 'persistence';
+  const TRANSACTION   = 'transaction';
+  const VERSION       = 'version';
+  const LOGIN         = 'login';
+  const PASSCODE      = 'passcode';
+  const ACCEPTVERSION = 'accept-version';
+  const HOST          = 'host';
+  const SELECTOR      = 'selector';
+  const ACK           = 'ack';
+  const ID            = 'id';
 }

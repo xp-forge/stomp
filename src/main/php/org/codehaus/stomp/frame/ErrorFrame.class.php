@@ -1,17 +1,16 @@
 <?php namespace org\codehaus\stomp\frame;
 
+/**
+ * Error frame
+ *
+ */
+class ErrorFrame extends Frame {
+
   /**
-   * Error frame
+   * Frame command
    *
    */
-  class ErrorFrame extends Frame {
-
-    /**
-     * Frame command
-     *
-     */
-    public function command() {
-      return 'ERROR';
-    }
+  public function command() {
+    return 'ERROR';
   }
-?>
+}

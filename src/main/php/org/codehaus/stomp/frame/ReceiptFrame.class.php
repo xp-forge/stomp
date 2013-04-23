@@ -1,17 +1,16 @@
 <?php namespace org\codehaus\stomp\frame;
 
+/**
+ * Receipt frame
+ *
+ */
+class ReceiptFrame extends Frame {
+
   /**
-   * Receipt frame
+   * Frame command
    *
    */
-  class ReceiptFrame extends Frame {
-
-    /**
-     * Frame command
-     *
-     */
-    public function command() {
-      return 'RECEIPT';
-    }
+  public function command() {
+    return 'RECEIPT';
   }
-?>
+}

@@ -1,17 +1,16 @@
 <?php namespace org\codehaus\stomp\frame;
 
+/**
+ * Message frame
+ *
+ */
+class MessageFrame extends Frame {
+
   /**
-   * Message frame
+   * Frame command
    *
    */
-  class MessageFrame extends Frame {
-
-    /**
-     * Frame command
-     *
-     */
-    public function command() {
-      return 'MESSAGE';
-    }
+  public function command() {
+    return 'MESSAGE';
   }
-?>
+}

@@ -1,17 +1,16 @@
 <?php namespace org\codehaus\stomp\frame;
 
+/**
+ * Nack frame
+ *
+ */
+class NackFrame extends AckFrame {
+
   /**
-   * Nack frame
+   * Frame command
    *
    */
-  class NackFrame extends AckFrame {
-
-    /**
-     * Frame command
-     *
-     */
-    public function command() {
-      return 'NACK';
-    }
+  public function command() {
+    return 'NACK';
   }
-?>
+}

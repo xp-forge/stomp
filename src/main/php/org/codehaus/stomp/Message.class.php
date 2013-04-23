@@ -28,6 +28,11 @@ class Message extends \lang\Object {
       $this->setSubscription($conn->subscriptionById($frame->getHeader(Header::SUBSCRIPTION)));
     }
 
+    $this->setPersistence(FALSE);
+    if ($frame->hasHeader(Header::PERSISTENCE)) {
+      $this->setPersistence('true' === $frame->getHeader(Header::PERSISTENCE));
+    }
+
     $skipHeaders= array(
       Header::DESTINATION   => TRUE,
       Header::MESSAGEID     => TRUE,
@@ -88,6 +93,10 @@ class Message extends \lang\Object {
 
   public function getPersistence() {
     return $this->persistence;
+  }
+
+  public function setPersistence($p) {
+    $this->persistence= (bool)$p;
   }
 
   public function addHeader($name, $value) {

@@ -265,4 +265,41 @@ class MessageTest extends BaseTest {
       $this->fixture->readSentBytes()
     );
   }
+
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function receive_and_resend_nonpersistence() {
+    $s= $this->fixture->subscribe(new Subscription('/queue/foobar'));
+    $this->fixture->setResponseBytes("MESSAGE\n".
+      "destination:/queue/foo\n".
+      "content-type:application/text; charset=utf-8\n".
+      "message-id:12345\n".
+      "subscription:".$s->getId()."\n".
+      "x-xp-customheader:6100\n".
+      "\n".
+      "Hello World!\n".
+      "\n\0"
+    );
+
+    $m= $this->fixture->receive();
+    $this->fixture->clearSentBytes();
+
+    $m->setDestination('/queue/another');
+
+    $m->send($this->fixture);
+    $this->assertEquals("SEND\n".
+      "message-id:12345\n".
+      "content-length:12\n".
+      "content-type:application/text; charset=utf-8\n".
+      "x-xp-customheader:6100\n".
+      "destination:/queue/another\n".
+      "\n".
+      "Hello World!\0",
+      $this->fixture->readSentBytes()
+    );
+  }
 }

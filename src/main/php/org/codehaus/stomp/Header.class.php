@@ -5,7 +5,6 @@ interface Header {
   const CONTENTLENGTH = 'content-length';
   const DESTINATION   = 'destination';
   const SUBSCRIPTION  = 'subscription';
-  const CONTENTLENGTH = 'content-length';
   const MESSAGEID     = 'message-id';
   const RECEIPT       = 'receipt';
   const RECEIPTID     = 'receipt-id';

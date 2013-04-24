@@ -426,4 +426,37 @@ class StompTest extends BaseTest {
     $this->assertEquals("Line1\nLine2", $response->getBody());
     $this->assertEquals('', $receipt->getBody());
   }
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function acquire_destination() {
+    $this->assertInstanceOf('org.codehaus.stomp.Destination', $this->fixture->acquireDestination('/queue/unittest'));
+  }
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function destination_holds_name() {
+    $this->assertEquals(
+      '/queue/unittest',
+      $this->fixture->acquireDestination('/queue/unittest')->getName()
+    );
+  }
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function destination_holds_connection() {
+    $this->assertEquals(
+      $this->fixture,
+      $this->fixture->acquireDestination('/queue/unittest')->getConnection()
+    );
+  }
 }

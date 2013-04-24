@@ -1,8 +1,6 @@
 <?php namespace org\codehaus\stomp;
 
 abstract class Message extends \lang\Object {
-  protected $destination  = NULL;
-  protected $subscription = NULL;
   protected $messageId    = NULL;
   protected $contentType  = NULL;
   protected $body         = NULL;
@@ -13,22 +11,6 @@ abstract class Message extends \lang\Object {
     if ($body) {
       $this->setBody($body, $contentType);
     }
-  }
-
-  public function getSubscription() {
-    return $this->subscription;
-  }
-
-  public function setSubscription(Subscription $s) {
-    $this->subscription= $s;
-  }
-
-  public function setDestination($destination) {
-    $this->destination= $destination;
-  }
-
-  public function getDestination() {
-    return $this->destination;
   }
 
   public function getMessageId() {
@@ -75,17 +57,8 @@ abstract class Message extends \lang\Object {
     return $this->customHeader;
   }
 
-  protected function assertConnection() {
-    if (!$this->conn instanceof StompConnection) {
-      throw new \lang\IllegalStateException('Cannot ack message without connection');
-    }
-  }
-
   public function toString() {
     $s= $this->getClassName().'('.$this->hashCode().") {\n";
-    $s.= "  [  destination ] ".$this->getDestination()."\n";
-    $s.= "  [ subscription ] ".\xp::stringOf($this->getSubscription())."\n";
-    $s.= "  [         conn ] ".\xp::stringOf($this->conn)."\n";
     $s.= "  [  persistence ] ".\xp::stringOf($this->getPersistence())."\n";
     $s.= "  [ content-type ] ".$this->getContentType()."\n";
     $s.= "  [         body ] ".$this->getBody()."\n";

@@ -1,10 +1,13 @@
 <?php namespace org\codehaus\stomp;
 
 class ReceivedMessage extends Message {
+  protected $destination  = NULL;
+  protected $subscription = NULL;
 
   public function withFrame(frame\MessageFrame $frame, StompConnection $conn) {
     $this->frame= $frame;
-    $this->destination= $frame->getHeader(Header::DESTINATION);
+    $this->setDestination($conn->acquireDestination($frame->getHeader(Header::DESTINATION)));
+
     $this->messageId= $frame->getHeader(Header::MESSAGEID);
 
     if ($frame->hasHeader(Header::CONTENTTYPE)) {
@@ -35,16 +38,37 @@ class ReceivedMessage extends Message {
     }
 
     $this->body= $frame->getBody();
-    $this->conn= $conn;
   }
   
+  public function setDestination(Destination $destination) {
+    $this->destination= $destination;
+  }
+
+  public function getDestination() {
+    return $this->destination;
+  }
+
+  public function getSubscription() {
+    return $this->subscription;
+  }
+
+  public function setSubscription(Subscription $s) {
+    $this->subscription= $s;
+  }
+
+  protected function assertConnection() {
+    if (!$this->destination instanceof Destination) {
+      throw new \lang\IllegalStateException('Cannot ack message without connection');
+    }
+  }
+
   public function ack(Transaction $t= NULL) {
     $this->assertConnection();
     $frame= new frame\AckFrame($this->getMessageId());
     if ($t) {
       $frame->setTransaction($t->getName());
     }
-    $this->conn->sendFrame($frame);
+    $this->getDestination()->getConnection()->sendFrame($frame);
   }
 
   public function nack(Transaction $t= NULL) {
@@ -53,7 +77,7 @@ class ReceivedMessage extends Message {
     if ($t) {
       $frame->setTransaction($t->getName());
     }
-    $this->conn->sendFrame($frame);
+    $this->getDestination()->getConnection()->sendFrame($frame);
   }
 
   public function toSendable() {
@@ -66,5 +90,17 @@ class ReceivedMessage extends Message {
 
     return $message;
   }
+
+  public function toString() {
+    $s= $this->getClassName().'('.$this->hashCode().") {\n";
+    $s.= "  [  destination ] ".\xp::stringOf($this->getDestination())."\n";
+    $s.= "  [ subscription ] ".\xp::stringOf($this->getSubscription())."\n";
+    $s.= "  [         conn ] ".\xp::stringOf($this->conn)."\n";
+    $s.= "  [  persistence ] ".\xp::stringOf($this->getPersistence())."\n";
+    $s.= "  [ content-type ] ".$this->getContentType()."\n";
+    $s.= "  [         body ] ".$this->getBody()."\n";
+    $s.= "  [      headers ] ".\xp::stringOf($this->getHeaders())."\n";
+
+    return $s.'}';
+  }
 }
-?>

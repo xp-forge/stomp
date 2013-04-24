@@ -56,6 +56,27 @@ class MessageTest extends BaseTest {
     $this->assertEquals($s, $m->getSubscription());
   }
 
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function receive_message_has_destination() {
+    $s= $this->fixture->subscribe(new Subscription($this->fixture->acquireDestination('/queue/foobar')));
+    $this->fixture->setResponseBytes("MESSAGE\n".
+      "destination:/queue/foo\n".
+      "message-id:12345\n".
+      "subscription:".$s->getId()."\n".
+      "\n".
+      "Hello World!\n".
+      "\n\0"
+    );
+
+    $m= $this->fixture->receive();
+    $this->assertInstanceOf('org.codehaus.stomp.Destination', $m->getDestination());
+  }
+
   /**
    * Test
    *

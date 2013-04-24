@@ -23,7 +23,7 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function receive_message() {
-    $s= $this->fixture->subscribe(new Subscription('/queue/foo'));
+    $s= $this->fixture->subscribe(new Subscription($this->fixture->acquireDestination('/queue/foobar')));
     $this->fixture->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "message-id:12345\n".
@@ -42,7 +42,7 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function receive_message_with_subscription() {
-    $s= $this->fixture->subscribe(new Subscription('/queue/foobar'));
+    $s= $this->fixture->subscribe(new Subscription($this->fixture->acquireDestination('/queue/foobar')));
     $this->fixture->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "message-id:12345\n".
@@ -62,7 +62,7 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function ack() {
-    $s= $this->fixture->subscribe(new Subscription('/queue/foobar'));
+    $s= $this->fixture->subscribe(new Subscription($this->fixture->acquireDestination('/queue/foobar')));
     $this->fixture->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "message-id:12345\n".
@@ -89,7 +89,7 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function nack() {
-    $s= $this->fixture->subscribe(new Subscription('/queue/foobar'));
+    $s= $this->fixture->subscribe(new Subscription($this->fixture->acquireDestination('/queue/foobar')));
     $this->fixture->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "message-id:12345\n".
@@ -116,7 +116,7 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function ack_in_transaction() {
-    $s= $this->fixture->subscribe(new Subscription('/queue/foobar'));
+    $s= $this->fixture->subscribe(new Subscription($this->fixture->acquireDestination('/queue/foobar')));
     $t= $this->fixture->begin(new Transaction());
     $this->fixture->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
@@ -145,7 +145,7 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function nack_in_transaction() {
-    $s= $this->fixture->subscribe(new Subscription('/queue/foobar'));
+    $s= $this->fixture->subscribe(new Subscription($this->fixture->acquireDestination('/queue/foobar')));
     $t= $this->fixture->begin(new Transaction());
     $this->fixture->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
@@ -195,9 +195,8 @@ class MessageTest extends BaseTest {
   #[@test]
   public function send() {
     $m= new SendableMessage('Hello World.', 'text/plain');
-    $m->setDestination('/queue/foobar');
 
-    $m->send($this->fixture);
+    $m->send($this->fixture->acquireDestination('/queue/foobar'));
     $this->assertEquals("SEND\n".
       "content-length:12\n".
       "content-type:text/plain\n".
@@ -217,9 +216,8 @@ class MessageTest extends BaseTest {
   #[@test]
   public function send_with_content_length() {
     $m= new SendableMessage('Hello World.', 'text/plain');
-    $m->setDestination('/queue/foobar');
 
-    $m->send($this->fixture);
+    $m->send($this->fixture->acquireDestination('/queue/foobar'));
     $this->assertEquals("SEND\n".
       "content-length:12\n".
       "content-type:text/plain\n".
@@ -238,7 +236,7 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function receive_and_resend() {
-    $s= $this->fixture->subscribe(new Subscription('/queue/foobar'));
+    $s= $this->fixture->subscribe(new Subscription($this->fixture->acquireDestination('/queue/foobar')));
     $this->fixture->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "message-id:12345\n".
@@ -253,9 +251,7 @@ class MessageTest extends BaseTest {
     $m= $this->fixture->receive()->toSendable();
     $this->fixture->clearSentBytes();
 
-    $m->setDestination('/queue/another');
-
-    $m->send($this->fixture);
+    $m->send($this->fixture->acquireDestination('/queue/another'));
     $this->assertEquals("SEND\n".
       "message-id:12345\n".
       "content-length:12\n".
@@ -275,7 +271,7 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function receive_and_resend_nonpersistence() {
-    $s= $this->fixture->subscribe(new Subscription('/queue/foobar'));
+    $s= $this->fixture->subscribe(new Subscription($this->fixture->acquireDestination('/queue/foobar')));
     $this->fixture->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "content-type:application/text; charset=utf-8\n".
@@ -290,9 +286,7 @@ class MessageTest extends BaseTest {
     $m= $this->fixture->receive()->toSendable();
     $this->fixture->clearSentBytes();
 
-    $m->setDestination('/queue/another');
-
-    $m->send($this->fixture);
+    $m->send($this->fixture->acquireDestination('/queue/another'));
     $this->assertEquals("SEND\n".
       "message-id:12345\n".
       "content-length:12\n".

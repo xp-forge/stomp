@@ -19,7 +19,7 @@ class StompSubscriptionTest extends BaseTest {
    */
   #[@test]
   public function subscribe() {
-    $subscription= $this->fixture->subscribe(new Subscription($this->fixture->acquireDestination('/queue/foo')));
+    $subscription= $this->fixture->subscribeTo(new Subscription('/queue/foo'));
 
     $this->assertEquals("SUBSCRIBE\n".
       "destination:/queue/foo\n".
@@ -36,7 +36,7 @@ class StompSubscriptionTest extends BaseTest {
    */
   #[@test]
   public function subscription_registered_in_connection() {
-    $subscription= $this->fixture->subscribe(new Subscription($this->fixture->acquireDestination('/queue/foo')));
+    $subscription= $this->fixture->subscribeTo(new Subscription('/queue/foo'));
 
     $this->assertEquals($subscription, $this->fixture->subscriptionById($subscription->getId()));
   }
@@ -47,7 +47,7 @@ class StompSubscriptionTest extends BaseTest {
    */
   #[@test, @expect('lang.IllegalStateException')]
   public function unsubscribe_not_possible_when_not_subscribed() {
-    create(new Subscription($this->fixture->acquireDestination('foo')))->unsubscribe();
+    create(new Subscription('foo'))->unsubscribe();
   }
 
   /**
@@ -56,7 +56,7 @@ class StompSubscriptionTest extends BaseTest {
    */
   #[@test]
   public function unsubscribe() {
-    $subscription= $this->fixture->subscribe(new Subscription($this->fixture->acquireDestination('/queue/foo')));
+    $subscription= $this->fixture->subscribeTo(new Subscription('/queue/foo'));
     $id= $subscription->getId();
 
     $subscription->unsubscribe();
@@ -74,8 +74,7 @@ class StompSubscriptionTest extends BaseTest {
   }
 
   protected function createSubscription() {
-    $s= $this->fixture->subscribe(new Subscription($this->fixture->acquireDestination('/queue/foo')));
-    return $s->getId();
+    return $this->fixture->subscribeTo(new Subscription('/queue/foo'))->getId();
   }
 
   /**

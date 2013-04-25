@@ -198,23 +198,12 @@ class StompConnection extends \lang\Object implements Traceable {
   }
 
   /**
-   * Send new message to destination
-   *
-   * @param   string destination
-   * @param   string body
-   * @param   [:string] headers
-   */
-  public function send($destination, $body, $headers= array()) {
-    return $this->sendFrame(new frame\SendFrame($destination, $body, $headers));
-  }
-
-  /**
    * Create new subscription
    *
    * @param  org.codehaus.stomp.StompSubscription $subscription
    * @return org.codehaus.stomp.StompSubscription
    */
-  public function subscribe(Subscription $subscription) {
+  public function subscribeTo(Subscription $subscription) {
     $subscription->subscribe($this);
     $this->subscriptions[$subscription->getId()]= $subscription;
     return $subscription;

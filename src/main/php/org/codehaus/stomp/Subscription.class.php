@@ -2,6 +2,7 @@
 
 class Subscription extends \lang\Object {
   protected $id         = NULL;
+  protected $dest       = NULL;
   protected $destination= NULL;
   protected $ackMode    = NULL;
   protected $selector   = NULL;
@@ -14,13 +15,12 @@ class Subscription extends \lang\Object {
    * @param   string selector default NULL
    * @throws  lang.IllegalArgumentException
    */
-  public function __construct(Destination $destination, $ackMode= AckMode::INDIVIDUAL, $selector= NULL) {
-    $this->destination= $destination;
-
+  public function __construct($destination, $ackMode= AckMode::INDIVIDUAL, $selector= NULL) {
     if (!in_array($ackMode, array(AckMode::AUTO, AckMode::CLIENT, AckMode::INDIVIDUAL))) {
       throw new \lang\IllegalArgumentException('Invalid ackMode given: "'.$ackMode.'"');
     }
 
+    $this->dest= $destination;
     $this->ackMode= $ackMode;
     $this->selector= $selector;
   }
@@ -40,7 +40,9 @@ class Subscription extends \lang\Object {
    * @param  org.codehaus.stomp.StompConnection $conn
    * @throws lang.Throwable If any error occurrs
    */
-  public function subscribe() {
+  public function subscribe(StompConnection $conn) {
+    $this->destination= $conn->acquireDestination($this->dest);
+
     try {
       $this->id= uniqid('xp.stomp.subscription.');
 
@@ -66,16 +68,8 @@ class Subscription extends \lang\Object {
 
     $this->destination->getConnection()->sendFrame(new frame\UnsubscribeFrame(NULL, $this->id));
     $this->destination->getConnection()->unsubscribe($this);
+
+    $this->destination= NULL;
     $this->id= NULL;
   }
-
-  /**
-   * Destructor
-   *
-   */
-  /*public function __destruct() {
-    if ($this->id && $this->conn instanceof StompConnection) {
-      $this->unsubscribe();
-    }
-  }*/
 }

@@ -6,7 +6,7 @@ class ReceivedMessage extends Message {
 
   public function withFrame(frame\MessageFrame $frame, StompConnection $conn) {
     $this->frame= $frame;
-    $this->setDestination($conn->acquireDestination($frame->getHeader(Header::DESTINATION)));
+    $this->setDestination($conn->getDestination($frame->getHeader(Header::DESTINATION)));
 
     $this->messageId= $frame->getHeader(Header::MESSAGEID);
 

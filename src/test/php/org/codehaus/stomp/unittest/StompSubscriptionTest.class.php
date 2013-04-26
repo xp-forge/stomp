@@ -10,7 +10,7 @@ class StompSubscriptionTest extends BaseTest {
    */
   #[@test]
   public function create() {
-    new Subscription($this->fixture->acquireDestination('/queue/foo'));
+    new Subscription($this->fixture->getDestination('/queue/foo'));
   }
 
   /**
@@ -47,6 +47,18 @@ class StompSubscriptionTest extends BaseTest {
    */
   #[@test, @expect('lang.IllegalStateException')]
   public function unsubscribe_not_possible_when_not_subscribed() {
+    create(new Subscription('foo'))->unsubscribe();
+  }
+
+  /**
+   * Test
+   *
+   */
+  #[@test, @expect('lang.IllegalStateException')]
+  public function unsubscribe_not_possible_when_no_connection() {
+    $s= new Subscription('foo');
+    $s->setId('foobar');
+
     create(new Subscription('foo'))->unsubscribe();
   }
 

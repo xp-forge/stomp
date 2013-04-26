@@ -217,7 +217,7 @@ class MessageTest extends BaseTest {
   public function send() {
     $m= new SendableMessage('Hello World.', 'text/plain');
 
-    $m->send($this->fixture->acquireDestination('/queue/foobar'));
+    $m->send($this->fixture->getDestination('/queue/foobar'));
     $this->assertEquals("SEND\n".
       "content-length:12\n".
       "content-type:text/plain\n".
@@ -238,7 +238,7 @@ class MessageTest extends BaseTest {
   public function send_with_content_length() {
     $m= new SendableMessage('Hello World.', 'text/plain');
 
-    $m->send($this->fixture->acquireDestination('/queue/foobar'));
+    $m->send($this->fixture->getDestination('/queue/foobar'));
     $this->assertEquals("SEND\n".
       "content-length:12\n".
       "content-type:text/plain\n".
@@ -272,7 +272,7 @@ class MessageTest extends BaseTest {
     $m= $this->fixture->receive()->toSendable();
     $this->fixture->clearSentBytes();
 
-    $m->send($this->fixture->acquireDestination('/queue/another'));
+    $m->send($this->fixture->getDestination('/queue/another'));
     $this->assertEquals("SEND\n".
       "message-id:12345\n".
       "content-length:12\n".
@@ -307,7 +307,7 @@ class MessageTest extends BaseTest {
     $m= $this->fixture->receive()->toSendable();
     $this->fixture->clearSentBytes();
 
-    $m->send($this->fixture->acquireDestination('/queue/another'));
+    $m->send($this->fixture->getDestination('/queue/another'));
     $this->assertEquals("SEND\n".
       "message-id:12345\n".
       "content-length:12\n".

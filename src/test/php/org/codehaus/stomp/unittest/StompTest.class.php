@@ -433,7 +433,7 @@ class StompTest extends BaseTest {
    */
   #[@test]
   public function acquire_destination() {
-    $this->assertInstanceOf('org.codehaus.stomp.Destination', $this->fixture->acquireDestination('/queue/unittest'));
+    $this->assertInstanceOf('org.codehaus.stomp.Destination', $this->fixture->getDestination('/queue/unittest'));
   }
 
   /**
@@ -444,7 +444,7 @@ class StompTest extends BaseTest {
   public function destination_holds_name() {
     $this->assertEquals(
       '/queue/unittest',
-      $this->fixture->acquireDestination('/queue/unittest')->getName()
+      $this->fixture->getDestination('/queue/unittest')->getName()
     );
   }
 
@@ -456,7 +456,7 @@ class StompTest extends BaseTest {
   public function destination_holds_connection() {
     $this->assertEquals(
       $this->fixture,
-      $this->fixture->acquireDestination('/queue/unittest')->getConnection()
+      $this->fixture->getDestination('/queue/unittest')->getConnection()
     );
   }
 }

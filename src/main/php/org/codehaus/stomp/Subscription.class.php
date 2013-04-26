@@ -34,6 +34,10 @@ class Subscription extends \lang\Object {
     return $this->id;
   }
 
+  public function setId($id) {
+    $this->id= $id;
+  }
+
   /**
    * Create a subscription on a destination
    *
@@ -41,7 +45,7 @@ class Subscription extends \lang\Object {
    * @throws lang.Throwable If any error occurrs
    */
   public function subscribe(StompConnection $conn) {
-    $this->destination= $conn->acquireDestination($this->dest);
+    $this->destination= $conn->getDestination($this->dest);
 
     try {
       $this->id= uniqid('xp.stomp.subscription.');
@@ -63,6 +67,10 @@ class Subscription extends \lang\Object {
    */
   public function unsubscribe() {
     if (!$this->id) {
+      throw new \lang\IllegalStateException('Cannot unsubscribe when not subscribed.');
+    }
+
+    if (!$this->destination instanceof Destination) {
       throw new \lang\IllegalStateException('Cannot unsubscribe when not subscribed.');
     }
 

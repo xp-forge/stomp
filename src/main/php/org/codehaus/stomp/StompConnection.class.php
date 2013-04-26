@@ -239,7 +239,7 @@ class StompConnection extends \lang\Object implements Traceable {
     return $frame;
   }
 
-  public function acquireDestination($name) {
+  public function getDestination($name) {
     return new Destination($name, $this);
   }
 

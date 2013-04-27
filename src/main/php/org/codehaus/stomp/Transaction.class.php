@@ -28,10 +28,10 @@ class Transaction extends \lang\Object {
   /**
    * Begin new transaction
    *
-   * @param  org.codehaus.stomp.StompConnection $conn
+   * @param  org.codehaus.stomp.Connection $conn
    * @return org.codehaus.stomp.Transaction
    */
-  public function begin(StompConnection $conn) {
+  public function begin(Connection $conn) {
     try {
       $this->conn= $conn;
       $conn->sendFrame(new frame\BeginFrame($this->name));
@@ -67,7 +67,7 @@ class Transaction extends \lang\Object {
    * @throws   If no transaction is running
    */
   protected function assertBegun() {
-    if (!$this->conn instanceof StompConnection) {
+    if (!$this->conn instanceof Connection) {
       throw new \lang\IllegalStateException('Cannot rollback transaction if not started.');
     }
   }

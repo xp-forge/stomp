@@ -1,6 +1,7 @@
 <?php namespace org\codehaus\stomp;
 
 use util\log\Traceable;
+use peer\URL;
 use peer\Socket;
 use peer\SocketInputStream;
 use peer\SocketOutputStream;
@@ -15,10 +16,8 @@ use io\streams\StringWriter;
  * @see   http://stomp.codehaus.org/Protocol
  * @test  xp://org.codehaus.stomp.unittest.StompTest
  */
-class StompConnection extends \lang\Object implements Traceable {
-  protected
-    $server = NULL,
-    $port   = NULL;
+class Connection extends \lang\Object implements Traceable {
+  protected $url  = NULL;
 
   protected
     $socket = NULL,
@@ -26,8 +25,7 @@ class StompConnection extends \lang\Object implements Traceable {
     $out    = NULL,
     $subscriptions = array();
 
-  protected
-    $cat    = NULL;
+  protected $cat  = NULL;
 
   /**
    * Constructor
@@ -35,9 +33,8 @@ class StompConnection extends \lang\Object implements Traceable {
    * @param   string server
    * @param   int port
    */
-  public function __construct($server, $port) {
-    $this->server= $server;
-    $this->port= $port;
+  public function __construct(URL $url) {
+    $this->url= $url;
   }
 
   /**
@@ -54,7 +51,7 @@ class StompConnection extends \lang\Object implements Traceable {
    *
    */
   protected function _connect() {
-    $this->socket= new Socket($this->server, $this->port);
+    $this->socket= new Socket($this->url->getHost(), $this->url->getPort());
     $this->socket->connect();
 
     $this->in= new StringReader(new SocketInputStream($this->socket));
@@ -145,23 +142,29 @@ class StompConnection extends \lang\Object implements Traceable {
    * @return  bool
    * @throws  peer.AuthenticationException if login failed
    */
-  public function connect($user, $pass, $host= NULL, $protoVersions= NULL) {
+  public function connect() {
     $this->_connect();
 
-    $frame= $this->sendFrame(new frame\LoginFrame($user, $pass, $host, $protoVersions));
+    $frame= $this->sendFrame(new frame\LoginFrame(
+      $this->url->getUser(),
+      $this->url->getPassword(),
+      $this->url->getParam('vhost', NULL),
+      $this->url->hasParam('versions') ? explode(',', $this->url->getParam('versions')) : NULL
+    ));
+
     if (!$frame instanceof frame\Frame) {
       throw new \peer\ProtocolException('Did not receive frame, got: '.\xp::stringOf($frame));
     }
     if ($frame instanceof frame\ErrorFrame) {
       throw new \peer\AuthenticationException(
-        'Could not establish connection to broker "'.$this->server.':'.$this->port.'": '.$frame->getBody(),
-        $user, ''
+        'Could not establish connection to broker "'.$this->url->toString().'": '.$frame->getBody(),
+        $this->url->getUser(), (strlen($this->url->getPassword() > 0) ? 'with password' : 'no password')
       );
     }
     if (!$frame instanceof frame\ConnectedFrame) {
       throw new \peer\AuthenticationException(
-        'Could not log in to stomp broker "'.$this->server.':'.$this->port.'": Got "'.$frame->command().'" frame',
-        $user, ''
+        'Could not log in to stomp broker "'.$this->url->toString().'": Got "'.$frame->command().'" frame',
+        $this->url->getUser(), (strlen($this->url->getPassword() > 0) ? 'with password' : 'no password')
       );
     }
 

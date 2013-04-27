@@ -41,10 +41,10 @@ class Subscription extends \lang\Object {
   /**
    * Create a subscription on a destination
    *
-   * @param  org.codehaus.stomp.StompConnection $conn
+   * @param  org.codehaus.stomp.Connection $conn
    * @throws lang.Throwable If any error occurrs
    */
-  public function subscribe(StompConnection $conn) {
+  public function subscribe(Connection $conn) {
     $this->destination= $conn->getDestination($this->dest);
 
     try {

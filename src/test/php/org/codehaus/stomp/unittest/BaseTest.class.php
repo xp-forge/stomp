@@ -8,12 +8,16 @@ abstract class BaseTest extends \unittest\TestCase {
    *
    */
   public function setUp() {
-    $this->fixture= newinstance('org.codehaus.stomp.StompConnection', array('localhost', 61616), '{
+    $this->fixture= $this->newConnection(new \peer\URL('stomp://user:pass@localhost:61613'));
+  }
+
+  protected function newConnection(\peer\URL $url) {
+    return newinstance('org.codehaus.stomp.Connection', array($url), '{
       protected $response= "";
       protected $sent= NULL;
 
-      public function __construct($server, $port) {
-        parent::__construct($server, $port);
+      public function __construct(\\peer\\URL $url) {
+        parent::__construct($url);
 
         // FIXME: Required for unittest
         $this->_connect();

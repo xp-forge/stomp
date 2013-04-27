@@ -4,7 +4,7 @@ class ReceivedMessage extends Message {
   protected $destination  = NULL;
   protected $subscription = NULL;
 
-  public function withFrame(frame\MessageFrame $frame, StompConnection $conn) {
+  public function withFrame(frame\MessageFrame $frame, Connection $conn) {
     $this->frame= $frame;
     $this->setDestination($conn->getDestination($frame->getHeader(Header::DESTINATION)));
 

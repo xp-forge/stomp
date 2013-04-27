@@ -4,7 +4,7 @@ class Destination extends \lang\Object {
   protected $name   = NULL;
   protected $conn   = NULL;
 
-  public function __construct($name, StompConnection $conn) {
+  public function __construct($name, Connection $conn) {
     $this->name= $name;
     $this->conn= $conn;
   }

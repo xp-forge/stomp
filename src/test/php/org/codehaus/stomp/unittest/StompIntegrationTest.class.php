@@ -1,6 +1,6 @@
 <?php namespace org\codehaus\stomp\unittest;
 
-use \org\codehaus\stomp\StompConnection;
+use \org\codehaus\stomp\Connection;
 use \org\codehaus\stomp\frame\MessageFrame;
 use \org\codehaus\stomp\frame\ReceiptFrame;
 
@@ -16,7 +16,7 @@ class StompIntegrationTest extends \unittest\TestCase {
   }
 
   public function setUp() {
-    $this->fixture= new StompConnection('localhost', 61613);
+    $this->fixture= new Connection('localhost', 61613);
     $this->fixture->setTrace(\util\log\Logger::getInstance()->getCategory());
     $this->fixture->connect('system', 'manager');
   }
@@ -27,7 +27,7 @@ class StompIntegrationTest extends \unittest\TestCase {
 
   #[@test, @ignore, @expect('peer.AuthenticationException')]
   public function invalidCredentials() {
-    $conn= new StompConnection('localhost', 61613);
+    $conn= new Connection('localhost', 61613);
     $conn->connect('unknownuser', 'invalidpass');
   }
 

@@ -1,12 +1,12 @@
 <?php namespace org\codehaus\stomp\unittest;
 
-use org\codehaus\stomp\StompConnection;
+use org\codehaus\stomp\Connection;
 
 /**
  * Tests STOMP protocol
  *
  * @see   http://stomp.github.com/stomp-specification-1.1.html#STOMP_Frames
- * @see   xp://org.codehaus.stomp.StompConnection
+ * @see   xp://org.codehaus.stomp.Connection
  */
 class StompTest extends BaseTest {
 
@@ -20,7 +20,7 @@ class StompTest extends BaseTest {
       "session-id:0xdeadbeef\n".
       "\n\0"
     );
-    $this->fixture->connect('user', 'pass');
+    $this->fixture->connect();
 
     $this->assertEquals("CONNECT\n".
       "login:user\n".
@@ -40,7 +40,7 @@ class StompTest extends BaseTest {
       "message: Invalid credentials\n".
       "\n\0"
     );
-    $this->fixture->connect('user', 'pass');
+    $this->fixture->connect();
   }
 
   /**
@@ -49,12 +49,13 @@ class StompTest extends BaseTest {
    */
   #[@test]
   public function connect_and_negotiate_version() {
+    $this->fixture= $this->newConnection(new \peer\URL('stomp://user:pass@host?vhost=localhost&versions=1.0,1.1'));
     $this->fixture->setResponseBytes("CONNECTED\n".
       "session-id:0xdeadbeef\n".
       "version:1.1\n".
       "\n\0"
     );
-    $this->fixture->connect('user', 'pass', 'localhost', array('1.0', '1.1'));
+    $this->fixture->connect();
 
     $this->assertEquals("CONNECT\n".
       "login:user\n".
@@ -72,6 +73,7 @@ class StompTest extends BaseTest {
    */
   #[@test, @expect('peer.AuthenticationException')]
   public function connect_and_negotiate_version_but_fails() {
+    $this->fixture= $this->newConnection(new \peer\URL('stomp://user:pass@host?vhost=localhost&versions=1.0,1.1'));
     $this->fixture->setResponseBytes("ERROR\n".
       "version:1.1\n".
       "content-type:text/plain\n".
@@ -79,7 +81,7 @@ class StompTest extends BaseTest {
       "Supported protocol versions are: 1.2".
       "\n\0"
     );
-    $this->fixture->connect('user', 'pass', 'localhost', array('1.0', '1.1'));
+    $this->fixture->connect();
 
     $this->assertEquals("CONNECT\n".
       "login:user\n".
@@ -97,7 +99,7 @@ class StompTest extends BaseTest {
    */
   #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= '/Versions required when specifying hostname/')]
   public function connect_with_host_requires_versions() {
-    $this->fixture->connect('user', 'pass', 'host');
+    $this->newConnection(new \peer\URL('stomp://user:pass@host?vhost=host'))->connect();
   }
 
   /**

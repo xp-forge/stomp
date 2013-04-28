@@ -62,7 +62,7 @@ abstract class Message extends \lang\Object {
     $s.= "  [  persistence ] ".\xp::stringOf($this->getPersistence())."\n";
     $s.= "  [ content-type ] ".$this->getContentType()."\n";
     $s.= "  [         body ] ".$this->getBody()."\n";
-    $s.= "  [      headers ] ".\xp::stringOf($this->getHeaders())."\n";
+    $s.= "  [      headers ] ".\xp::stringOf($this->getHeaders(), '  ')."\n";
 
     return $s.'}';
   }

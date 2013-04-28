@@ -80,4 +80,14 @@ class Subscription extends \lang\Object {
     $this->destination= NULL;
     $this->id= NULL;
   }
+
+  public function toString() {
+    return $this->getClassName().'('.$this->hashCode().") {\n".
+      '  [ destination ] '.\xp::stringOf($this->destination, '  ')."\n".
+      '  [        dest ] '.\xp::stringOf($this->dest, '  ')."\n".
+      '  [          id ] '.\xp::stringOf($this->id, '  ')."\n".
+      '  [     ackMode ] '.$this->ackMode."\n".
+      '  [    selector ] '.\xp::stringOf($this->selector, '  ').
+    "\n}";
+  }
 }

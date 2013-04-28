@@ -6,6 +6,7 @@ interface Header {
   const DESTINATION   = 'destination';
   const SUBSCRIPTION  = 'subscription';
   const MESSAGEID     = 'message-id';
+  const MESSAGE       = 'message';
   const RECEIPT       = 'receipt';
   const RECEIPTID     = 'receipt-id';
   const PERSISTENCE   = 'persistence';

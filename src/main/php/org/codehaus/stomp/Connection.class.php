@@ -54,7 +54,7 @@ class Connection extends \lang\Object implements Traceable {
    *
    */
   protected function _connect() {
-    $this->socket= new Socket($this->url->getHost(), $this->url->getPort());
+    $this->socket= new Socket($this->url->getHost(), $this->url->getPort(61612));
     $this->socket->connect();
 
     $this->in= new StringReader(new SocketInputStream($this->socket));
@@ -85,7 +85,10 @@ class Connection extends \lang\Object implements Traceable {
       return NULL;
     }
 
-    $line= $this->in->readLine();
+    $line= NULL;
+    while (!$line) {
+      $line= $this->in->readLine();
+    }
     $this->cat && $this->cat->debug($this->getClassName(), '<<<', 'Have "'.trim($line).'" command.');
 
     if (0 == strlen($line)) throw new \peer\ProtocolException('Expected frame token, got '.\xp::stringOf($line));
@@ -238,6 +241,12 @@ class Connection extends \lang\Object implements Traceable {
   public function receive($timeout= 0.2) {
     $frame= $this->recvFrame($timeout);
 
+    if ($frame instanceof frame\ErrorFrame) {
+      throw create(new \org\codehaus\stomp\Exception($frame->getMessage()))
+        ->withFrame($frame)
+      ;
+    }
+
     if ($frame instanceof frame\MessageFrame) {
       $msg= new ReceivedMessage();
       $msg->withFrame($frame, $this);
@@ -257,6 +266,6 @@ class Connection extends \lang\Object implements Traceable {
    * @return  string
    */
   public function toString() {
-    return $this->getClassName().'(->'.$this->server.':'.$this->port.')';
+    return $this->getClassName().'(@'.$this->url->getUrl().')';
   }
 }

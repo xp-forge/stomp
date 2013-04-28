@@ -123,7 +123,7 @@ class StompTest extends BaseTest {
    */
   #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= '/Invalid protocol version/')]
   public function connect_requires_valid_version() {
-    $this->newConnection(new \peer\URL('stomp://user:pass@host?vhost=host&versions='))->connect();
+    $this->newConnection(new \peer\URL('stomp://user:pass@host?versions='))->connect();
   }
 
   /**
@@ -196,6 +196,37 @@ class StompTest extends BaseTest {
       "Content longer that 10 bytes.\0"
     );
     $response= $this->fixture->recvFrame();
+  }
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function recv_eats_any_empty_line() {
+    $this->fixture->setResponseBytes("\n\n\n\n".
+      "RECEIPT\n".
+      "message_id:12345\n".
+      "\n\0"
+    );
+
+    $recvd= $this->fixture->recvFrame();
+    $this->assertInstanceOf('org.codehaus.stomp.frame.ReceiptFrame', $recvd);
+  }
+
+  /**
+   * Test
+   *
+   */
+  #[@test, @expect(class= 'org.codehaus.stomp.Exception', withMessage= '/ACK received without/')]
+  public function receive_throws_exception_on_error_frame() {
+    $this->fixture->setResponseBytes("ERROR\n".
+      "\n".
+      "ACK received without a subscription id for acknowledge!".
+      "\n\0"
+    );
+
+    $msg= $this->fixture->receive();
   }
 
   /**

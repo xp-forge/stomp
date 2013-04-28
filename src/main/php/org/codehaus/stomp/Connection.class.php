@@ -266,6 +266,11 @@ class Connection extends \lang\Object implements Traceable {
    * @return  string
    */
   public function toString() {
-    return $this->getClassName().'(@'.$this->url->getUrl().')';
+    return sprintf('%s(->%s://%s:%s)',
+      $this->getClassName(),
+      $this->url->getScheme(),
+      $this->url->getHost(),
+      $this->url->getPort()
+    );
   }
 }

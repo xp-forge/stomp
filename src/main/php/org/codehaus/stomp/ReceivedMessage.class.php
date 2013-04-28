@@ -95,11 +95,10 @@ class ReceivedMessage extends Message {
     $s= $this->getClassName().'('.$this->hashCode().") {\n";
     $s.= "  [  destination ] ".\xp::stringOf($this->getDestination(), '  ')."\n";
     $s.= "  [ subscription ] ".\xp::stringOf($this->getSubscription(), '  ')."\n";
-    $s.= "  [         conn ] ".\xp::stringOf($this->conn, '  ')."\n";
     $s.= "  [  persistence ] ".\xp::stringOf($this->getPersistence(), '  ')."\n";
     $s.= "  [ content-type ] ".$this->getContentType()."\n";
-    $s.= "  [         body ] ".$this->getBody()."\n";
     $s.= "  [      headers ] ".\xp::stringOf($this->getHeaders(), '  ')."\n";
+    $s.= "  [         body ] ".$this->getBody()."\n";
 
     return $s.'}';
   }

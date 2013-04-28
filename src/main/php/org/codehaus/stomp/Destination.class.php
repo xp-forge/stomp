@@ -22,6 +22,6 @@ class Destination extends \lang\Object {
   }
 
   public function toString() {
-    return $this->getClassName().'("'.$this->name.') { -> '.\xp::stringOf($this->conn, '  ').' }';
+    return $this->name.' -> '.\xp::stringOf($this->conn, '  ');
   }
 }

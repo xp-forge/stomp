@@ -221,6 +221,7 @@ class StompTest extends BaseTest {
   #[@test, @expect(class= 'org.codehaus.stomp.Exception', withMessage= '/ACK received without/')]
   public function receive_throws_exception_on_error_frame() {
     $this->fixture->setResponseBytes("ERROR\n".
+      "message:ACK received without a subscription id for acknowledge!\n".
       "\n".
       "ACK received without a subscription id for acknowledge!".
       "\n\0"
@@ -319,9 +320,10 @@ class StompTest extends BaseTest {
    */
   #[@test]
   public function ack() {
-    $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\AckFrame('0xefefef'));
+    $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\AckFrame('0xefefef', '1x1x1x1x1x1'));
     $this->assertEquals("ACK\n".
       "message-id:0xefefef\n".
+      "subscription:1x1x1x1x1x1\n".
       "\n\0"
       , $this->fixture->readSentBytes()
     );
@@ -333,9 +335,10 @@ class StompTest extends BaseTest {
    */
   #[@test]
   public function nack() {
-    $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\NackFrame('0xefefef'));
+    $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\NackFrame('0xefefef', '0x0x0x0x0'));
     $this->assertEquals("NACK\n".
       "message-id:0xefefef\n".
+      "subscription:0x0x0x0x0\n".
       "\n\0"
       , $this->fixture->readSentBytes()
     );
@@ -347,9 +350,10 @@ class StompTest extends BaseTest {
    */
   #[@test]
   public function ackWithinTransaction() {
-    $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\AckFrame('0xefefef', "some-transaction"));
+    $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\AckFrame('0xefefef', 'some-subscription', "some-transaction"));
     $this->assertEquals("ACK\n".
       "message-id:0xefefef\n".
+      "subscription:some-subscription\n".
       "transaction:some-transaction\n".
       "\n\0"
       , $this->fixture->readSentBytes()
@@ -362,9 +366,10 @@ class StompTest extends BaseTest {
    */
   #[@test]
   public function nackWithinTransaction() {
-    $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\NackFrame('0xefefef', "some-transaction"));
+    $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\NackFrame('0xefefef', 'some-subscription', "some-transaction"));
     $this->assertEquals("NACK\n".
       "message-id:0xefefef\n".
+      "subscription:some-subscription\n".
       "transaction:some-transaction\n".
       "\n\0"
       , $this->fixture->readSentBytes()

@@ -14,8 +14,9 @@ class AckFrame extends Frame {
    * @param   string messageId
    * @param   string txname default NULL
    */
-  public function __construct($messageId, $txname= NULL) {
+  public function __construct($messageId, $subscription, $txname= NULL) {
     $this->setMessageId($messageId);
+    $this->setSubscriptionId($subscription);
     if (NULL !== $txname) $this->setTransaction($txname);
   }
 
@@ -60,5 +61,13 @@ class AckFrame extends Frame {
    */
   public function getMessageId() {
     return $this->getHeader(Header::MESSAGEID);
+  }
+
+  public function setSubscriptionId($id) {
+    $this->addHeader(Header::SUBSCRIPTION, $id);
+  }
+
+  public function getSubscriptionId() {
+    return $this->getHeader(Header::SUBSCRIPTION);
   }
 }

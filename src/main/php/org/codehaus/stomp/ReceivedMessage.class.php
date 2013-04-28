@@ -64,7 +64,7 @@ class ReceivedMessage extends Message {
 
   public function ack(Transaction $t= NULL) {
     $this->assertConnection();
-    $frame= new frame\AckFrame($this->getMessageId());
+    $frame= new frame\AckFrame($this->getMessageId(), $this->getSubscription()->getId());
     if ($t) {
       $frame->setTransaction($t->getName());
     }
@@ -73,7 +73,7 @@ class ReceivedMessage extends Message {
 
   public function nack(Transaction $t= NULL) {
     $this->assertConnection();
-    $frame= new frame\NackFrame($this->getMessageId());
+    $frame= new frame\NackFrame($this->getMessageId(), $this->getSubscription()->getId());
     if ($t) {
       $frame->setTransaction($t->getName());
     }

@@ -99,6 +99,7 @@ class MessageTest extends BaseTest {
 
     $this->assertEquals("ACK\n".
       "message-id:".$m->getMessageId()."\n".
+      "subscription:".$m->getSubscription()->getId()."\n".
       "\n\0",
       $this->fixture->readSentBytes()
     );
@@ -126,6 +127,7 @@ class MessageTest extends BaseTest {
 
     $this->assertEquals("NACK\n".
       "message-id:".$m->getMessageId()."\n".
+      "subscription:".$m->getSubscription()->getId()."\n".
       "\n\0",
       $this->fixture->readSentBytes()
     );
@@ -154,6 +156,7 @@ class MessageTest extends BaseTest {
 
     $this->assertEquals("ACK\n".
       "message-id:".$m->getMessageId()."\n".
+      "subscription:".$m->getSubscription()->getId()."\n".
       "transaction:".$t->getName()."\n".
       "\n\0",
       $this->fixture->readSentBytes()
@@ -183,6 +186,7 @@ class MessageTest extends BaseTest {
 
     $this->assertEquals("NACK\n".
       "message-id:".$m->getMessageId()."\n".
+      "subscription:".$m->getSubscription()->getId()."\n".
       "transaction:".$t->getName()."\n".
       "\n\0",
       $this->fixture->readSentBytes()

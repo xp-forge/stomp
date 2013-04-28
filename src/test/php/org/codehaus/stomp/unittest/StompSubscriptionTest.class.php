@@ -130,4 +130,26 @@ class StompSubscriptionTest extends BaseTest {
 
     $this->fixture->subscriptionById($id);
   }
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function ackmode() {
+    $s= new Subscription('foobar');
+    $s->setAckMode(\org\codehaus\stomp\AckMode::AUTO);
+    $s->setAckMode(\org\codehaus\stomp\AckMode::CLIENT);
+    $s->setAckMode(\org\codehaus\stomp\AckMode::INDIVIDUAL);
+  }
+
+  /**
+   * Test
+   *
+   */
+  #[@test, @expect('lang.IllegalArgumentException')]
+  public function invalid_ackmode() {
+    $s= new Subscription('foobar');
+    $s->setAckMode('automatic');
+  }
 }

@@ -16,12 +16,8 @@ class Subscription extends \lang\Object {
    * @throws  lang.IllegalArgumentException
    */
   public function __construct($destination, $ackMode= AckMode::INDIVIDUAL, $selector= NULL) {
-    if (!in_array($ackMode, array(AckMode::AUTO, AckMode::CLIENT, AckMode::INDIVIDUAL))) {
-      throw new \lang\IllegalArgumentException('Invalid ackMode given: "'.$ackMode.'"');
-    }
-
     $this->dest= $destination;
-    $this->ackMode= $ackMode;
+    $this->setAckMode($ackMode);
     $this->selector= $selector;
   }
 
@@ -36,6 +32,17 @@ class Subscription extends \lang\Object {
 
   public function setId($id) {
     $this->id= $id;
+  }
+
+  public function getAckMode() {
+    return $this->ackMode;
+  }
+
+  public function setAckMode($ackMode) {
+    if (!in_array($ackMode, array(AckMode::AUTO, AckMode::CLIENT, AckMode::INDIVIDUAL))) {
+      throw new \lang\IllegalArgumentException('Invalid ackMode given: "'.$ackMode.'"');
+    }
+    $this->ackMode= $ackMode;
   }
 
   /**
@@ -82,12 +89,11 @@ class Subscription extends \lang\Object {
   }
 
   public function toString() {
-    return $this->getClassName().'('.$this->hashCode().") {\n".
-      '  [          id ] '.\xp::stringOf($this->id, '  ')."\n".
-      '  [ destination ] '.\xp::stringOf($this->destination, '  ')."\n".
-      '  [        dest ] '.\xp::stringOf($this->dest, '  ')."\n".
-      '  [     ackMode ] '.$this->ackMode."\n".
-      '  [    selector ] '.\xp::stringOf($this->selector, '  ').
-    "\n}";
+    return sprintf('%s (dest= %s, ackmode= %s, selector= %s)',
+      $this->getClassName(),
+      $this->dest,
+      $this->ackMode,
+      \xp::stringOf($this->selector)
+    );
   }
 }

@@ -80,6 +80,13 @@ class ReceivedMessage extends Message {
     $this->getDestination()->getConnection()->sendFrame($frame);
   }
 
+  public function ackable() {
+    return in_array($this->getSubscription()->getAckMode(), array(
+      \org\codehaus\stomp\AckMode::CLIENT,
+      \org\codehaus\stomp\AckMode::INDIVIDUAL
+    ));
+  }
+
   public function toSendable() {
     $message= new SendableMessage($this->getBody(), $this->getContentType());
     $message->setMessageId($this->getMessageId());

@@ -323,4 +323,45 @@ class MessageTest extends BaseTest {
       $this->fixture->readSentBytes()
     );
   }
+
+  private function subscriptionWithAckMode($ackMode) {
+    $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar', $ackMode));
+    $this->fixture->setResponseBytes("MESSAGE\n".
+      "destination:/queue/foo\n".
+      "message-id:12345\n".
+      "subscription:".$s->getId()."\n".
+      "\n".
+      "Hello World!\n".
+      "\n\0"
+    );
+
+    return $this->fixture->receive();
+  }
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function not_ackable_with_auto_subscription() {
+    $this->assertEquals(FALSE, $this->subscriptionWithAckMode(\org\codehaus\stomp\AckMode::AUTO)->ackable());
+  }
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function ackable_with_client_subscription() {
+    $this->assertEquals(TRUE, $this->subscriptionWithAckMode(\org\codehaus\stomp\AckMode::CLIENT)->ackable());
+  }
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function ackable_with_clientindividual_subscription() {
+    $this->assertEquals(TRUE, $this->subscriptionWithAckMode(\org\codehaus\stomp\AckMode::INDIVIDUAL)->ackable());
+  }
 }

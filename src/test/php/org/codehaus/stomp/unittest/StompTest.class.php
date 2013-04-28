@@ -23,8 +23,32 @@ class StompTest extends BaseTest {
     $this->fixture->connect();
 
     $this->assertEquals("CONNECT\n".
+      "accept-version:1.0,1.1\n".
+      "host:localhost\n".
       "login:user\n".
       "passcode:pass\n".
+      "\n\0",
+      $this->fixture->readSentBytes()
+    );
+  }
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function login_without_credentials() {
+    $this->fixture= $this->newConnection(new \peer\URL('stomp://localhost/'));
+    $this->fixture->setResponseBytes("CONNECTED\n".
+      "version:1.0\n".
+      "session-id:0xdeadbeef\n".
+      "\n\0"
+    );
+    $this->fixture->connect();
+
+    $this->assertEquals("CONNECT\n".
+      "accept-version:1.0,1.1\n".
+      "host:localhost\n".
       "\n\0",
       $this->fixture->readSentBytes()
     );
@@ -58,10 +82,10 @@ class StompTest extends BaseTest {
     $this->fixture->connect();
 
     $this->assertEquals("CONNECT\n".
-      "login:user\n".
-      "passcode:pass\n".
       "accept-version:1.0,1.1\n".
       "host:localhost\n".
+      "login:user\n".
+      "passcode:pass\n".
       "\n\0",
       $this->fixture->readSentBytes()
     );
@@ -84,10 +108,10 @@ class StompTest extends BaseTest {
     $this->fixture->connect();
 
     $this->assertEquals("CONNECT\n".
-      "login:user\n".
-      "passcode:pass\n".
       "accept-version:1.0,1.1\n".
       "host:localhost\n".
+      "login:user\n".
+      "passcode:pass\n".
       "\n\0",
       $this->fixture->readSentBytes()
     );
@@ -97,9 +121,9 @@ class StompTest extends BaseTest {
    * Test
    *
    */
-  #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= '/Versions required when specifying hostname/')]
-  public function connect_with_host_requires_versions() {
-    $this->newConnection(new \peer\URL('stomp://user:pass@host?vhost=host'))->connect();
+  #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= '/Invalid protocol version/')]
+  public function connect_requires_valid_version() {
+    $this->newConnection(new \peer\URL('stomp://user:pass@host?vhost=host&versions='))->connect();
   }
 
   /**

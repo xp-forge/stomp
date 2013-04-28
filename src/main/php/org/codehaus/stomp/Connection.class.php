@@ -35,6 +35,9 @@ class Connection extends \lang\Object implements Traceable {
    */
   public function __construct(URL $url) {
     $this->url= $url;
+    if ($this->url->hasParam('log')) {
+      $this->setTrace(\util\log\Logger::getInstance()->getCategory($this->url->getParam('log')));
+    }
   }
 
   /**
@@ -85,7 +88,7 @@ class Connection extends \lang\Object implements Traceable {
     $line= $this->in->readLine();
     $this->cat && $this->cat->debug($this->getClassName(), '<<<', 'Have "'.trim($line).'" command.');
 
-    if (0 == strlen($line)) throw new \peer\ProtocolException('Expected frame token, got "'.\xp::stringOf($line).'"');
+    if (0 == strlen($line)) throw new \peer\ProtocolException('Expected frame token, got '.\xp::stringOf($line));
 
     $frame= \lang\XPClass::forName(sprintf('org.codehaus.stomp.frame.%sFrame', ucfirst(strtolower(trim($line)))))
       ->newInstance()
@@ -103,7 +106,9 @@ class Connection extends \lang\Object implements Traceable {
       "\n" === ($c= $this->in->read(1))
     ) {
       // Skip
+      $this->cat && $this->cat->debug($this->getClassName(), '~ ate a byte: '.\xp::stringOf($c));
     }
+
     $f= $this->in->getClass()->getField('buf')->setAccessible(TRUE);
     $f->set($this->in, $c.$f->get($this->in));
 
@@ -148,8 +153,8 @@ class Connection extends \lang\Object implements Traceable {
     $frame= $this->sendFrame(new frame\LoginFrame(
       $this->url->getUser(),
       $this->url->getPassword(),
-      $this->url->getParam('vhost', NULL),
-      $this->url->hasParam('versions') ? explode(',', $this->url->getParam('versions')) : NULL
+      $this->url->getParam('vhost', $this->url->getHost()),
+      $this->url->hasParam('versions') ? explode(',', $this->url->getParam('versions')) : array('1.0', '1.1')
     ));
 
     if (!$frame instanceof frame\Frame) {

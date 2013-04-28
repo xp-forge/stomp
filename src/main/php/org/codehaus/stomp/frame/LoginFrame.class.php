@@ -19,7 +19,7 @@ class LoginFrame extends Frame {
    * @param   string user
    * @param   string pass
    */
-  public function __construct($user, $pass, $host= NULL, $versions= NULL) {
+  public function __construct($user, $pass, $host= NULL, $versions= array('1.0', '1.1')) {
     if ($host && !$versions) {
       throw new \lang\IllegalArgumentException('Versions required when specifying hostname (stomp 1.1 feature)');
     }
@@ -27,7 +27,7 @@ class LoginFrame extends Frame {
     $this->user= $user;
     $this->pass= $pass;
     $this->host= $host;
-    if ($versions) $this->setSupportedVersions($versions);
+    $this->setSupportedVersions($versions);
   }
 
   /**
@@ -35,8 +35,14 @@ class LoginFrame extends Frame {
    *
    * @param   [:string] v list of supported versions
    */
-  public function setSupportedVersions(array $v) {
-    $this->versions= $v;
+  public function setSupportedVersions(array $versions) {
+    foreach ($versions as $v) {
+      if (strlen($v) == 0) {
+        throw new \lang\IllegalArgumentException('Invalid protocol version: '.\xp::stringOf($v));
+      }
+    }
+
+    $this->versions= $versions;
   }
 
   /**
@@ -61,18 +67,18 @@ class LoginFrame extends Frame {
    * @return  <string,string>[]
    */
   public function getHeaders() {
-    $hdrs= array(
-      Header::LOGIN     => $this->user,
-      Header::PASSCODE  => $this->pass
-    );
+    $hdrs= array();
+    $hdrs[Header::ACCEPTVERSION]= implode(',', $this->versions);
+    $hdrs[Header::HOST]= $this->host;
 
-    if ($this->versions) {
-      $hdrs[Header::ACCEPTVERSION]= implode(',', $this->versions);
+    if (NULL !== $this->user) {
+      $hdrs[Header::LOGIN]= $this->user;
+
+      if (NULL !== $this->pass) {
+        $hdrs[Header::PASSCODE]= $this->pass;
+      }
     }
 
-    if ($this->host) {
-      $hdrs[Header::HOST]= $this->host;
-    }
 
     return array_merge($hdrs, parent::getHeaders());
   }

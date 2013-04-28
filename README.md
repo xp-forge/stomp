@@ -17,7 +17,7 @@ A message producer
 $conn= new Connection(new \peer\URL('stomp://localhost:61613/'));
 $conn->connect();
 
-$msg= new SendableMessage('Message contents, 'text/plain');
+$msg= new SendableMessage('Message contents', 'text/plain');
 $msg->send($conn->getDestination('/queue/producer'));
 ```
 
@@ -31,3 +31,10 @@ $conn->connect();
 $sub= $conn->subscribeTo(new Subscription('/queue/producer'));
 $msg= $conn->receive();
 ```
+
+### The connection URL
+The URL specifies the options how and where to connect:
+
+* `protocol` should be `stomp` or `stomp+ssl` (not implemented yet)
+* `host` is the hostname to connect
+* `port`

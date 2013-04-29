@@ -1,7 +1,7 @@
 <?php namespace org\codehaus\stomp;
 
 class SendableMessage extends Message {
-  public function send(Destination $dest) {
+  public function toFrame(Destination $dest) {
     $headers= array();
     if ($this->getMessageId()) {
       $headers[Header::MESSAGEID]= $this->getMessageId();
@@ -19,12 +19,10 @@ class SendableMessage extends Message {
 
     $headers= array_merge($headers, $this->getHeaders());
 
-    $frame= new frame\SendFrame(
+    return new frame\SendFrame(
       $dest->getName(),
       $this->getBody(),
       $headers
     );
-
-    $dest->getConnection()->sendFrame($frame);
   }
 }

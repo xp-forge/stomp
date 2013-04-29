@@ -214,13 +214,13 @@ class Connection extends \lang\Object implements Traceable {
    * @param  org.codehaus.stomp.StompSubscription $subscription
    * @return org.codehaus.stomp.StompSubscription
    */
-  public function subscribeTo(Subscription $subscription) {
-    $subscription->subscribe($this);
+  public function subscribeTo(Subscription $subscription, $callback= NULL) {
+    $subscription->subscribe($this, $callback);
     $this->subscriptions[$subscription->getId()]= $subscription;
     return $subscription;
   }
 
-  public function unsubscribe(Subscription $subscription) {
+  public function _unsubscribe(Subscription $subscription) {
     unset($this->subscriptions[$subscription->getId()]);
   }
 
@@ -254,6 +254,13 @@ class Connection extends \lang\Object implements Traceable {
     }
 
     return $frame;
+  }
+
+  public function consume($timeout= 0.2) {
+    $message= $this->receive($timeout);
+    if ($message instanceof ReceivedMessage) {
+      $message->getSubscription()->process($message);
+    }
   }
 
   public function getDestination($name) {

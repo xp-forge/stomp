@@ -21,6 +21,10 @@ class Destination extends \lang\Object {
     return new Subscription($this->getName(), $ackMode, $selector);
   }
 
+  public function send(SendableMessage $message) {
+    $this->getConnection()->sendFrame($message->toFrame($this));
+  }
+
   public function toString() {
     return $this->name.' -> '.\xp::stringOf($this->conn, '  ');
   }

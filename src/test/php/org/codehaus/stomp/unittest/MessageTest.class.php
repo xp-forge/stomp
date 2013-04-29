@@ -221,7 +221,7 @@ class MessageTest extends BaseTest {
   public function send() {
     $m= new SendableMessage('Hello World.', 'text/plain');
 
-    $m->send($this->fixture->getDestination('/queue/foobar'));
+    $this->fixture->getDestination('/queue/foobar')->send($m);
     $this->assertEquals("SEND\n".
       "content-length:12\n".
       "content-type:text/plain\n".
@@ -242,7 +242,7 @@ class MessageTest extends BaseTest {
   public function send_with_content_length() {
     $m= new SendableMessage('Hello World.', 'text/plain');
 
-    $m->send($this->fixture->getDestination('/queue/foobar'));
+    $this->fixture->getDestination('/queue/foobar')->send($m);
     $this->assertEquals("SEND\n".
       "content-length:12\n".
       "content-type:text/plain\n".
@@ -276,7 +276,7 @@ class MessageTest extends BaseTest {
     $m= $this->fixture->receive()->toSendable();
     $this->fixture->clearSentBytes();
 
-    $m->send($this->fixture->getDestination('/queue/another'));
+    $this->fixture->getDestination('/queue/another')->send($m);
     $this->assertEquals("SEND\n".
       "message-id:12345\n".
       "content-length:12\n".
@@ -311,7 +311,7 @@ class MessageTest extends BaseTest {
     $m= $this->fixture->receive()->toSendable();
     $this->fixture->clearSentBytes();
 
-    $m->send($this->fixture->getDestination('/queue/another'));
+    $this->fixture->getDestination('/queue/another')->send($m);
     $this->assertEquals("SEND\n".
       "message-id:12345\n".
       "content-length:12\n".
@@ -325,7 +325,7 @@ class MessageTest extends BaseTest {
   }
 
   private function subscriptionWithAckMode($ackMode) {
-    $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar', $ackMode));
+    $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar', NULL, $ackMode));
     $this->fixture->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "message-id:12345\n".

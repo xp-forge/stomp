@@ -6,6 +6,7 @@ class Subscription extends \lang\Object {
   protected $destination= NULL;
   protected $ackMode    = NULL;
   protected $selector   = NULL;
+  protected $callback   = NULL;
 
   /**
    * Constructor
@@ -15,8 +16,9 @@ class Subscription extends \lang\Object {
    * @param   string selector default NULL
    * @throws  lang.IllegalArgumentException
    */
-  public function __construct($destination, $ackMode= AckMode::INDIVIDUAL, $selector= NULL) {
+  public function __construct($destination, $callback= NULL, $ackMode= AckMode::INDIVIDUAL, $selector= NULL) {
     $this->dest= $destination;
+    $this->withCallback($callback);
     $this->setAckMode($ackMode);
     $this->selector= $selector;
   }
@@ -45,13 +47,17 @@ class Subscription extends \lang\Object {
     $this->ackMode= $ackMode;
   }
 
+  public function withCallback($callback) {
+    $this->callback= $callback;
+  }
+
   /**
    * Create a subscription on a destination
    *
    * @param  org.codehaus.stomp.Connection $conn
    * @throws lang.Throwable If any error occurrs
    */
-  public function subscribe(Connection $conn) {
+  public function subscribe(Connection $conn, $callback= NULL) {
     $this->destination= $conn->getDestination($this->dest);
 
     try {
@@ -82,10 +88,14 @@ class Subscription extends \lang\Object {
     }
 
     $this->destination->getConnection()->sendFrame(new frame\UnsubscribeFrame(NULL, $this->id));
-    $this->destination->getConnection()->unsubscribe($this);
+    $this->destination->getConnection()->_unsubscribe($this);
 
     $this->destination= NULL;
     $this->id= NULL;
+  }
+
+  public function process(ReceivedMessage $message) {
+    call_user_func_array($this->callback, array($message));
   }
 
   public function toString() {

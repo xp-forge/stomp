@@ -8,8 +8,15 @@ use \util\log\LogCategory;
 use \util\log\ColoredConsoleAppender;
 
 class Consumer extends \util\cmd\Command {
+
+  #[@arg]
+  public function setDebug($d= FALSE) {
+    if (NULL === $d) {
+      Logger::getInstance()->getCategory()->withAppender(new ColoredConsoleAppender());
+    }
+  }
+
   public function run() {
-    Logger::getInstance()->getCategory()->withAppender(new ColoredConsoleAppender());
     $conn= new Connection(new \peer\URL('stomp://localhost:61613/?log=default'));
     $conn->connect();
 

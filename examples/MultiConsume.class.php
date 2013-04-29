@@ -1,4 +1,4 @@
-<?php
+<?php namespace examples;
 
 use org\codehaus\stomp\Connection;
 use org\codehaus\stomp\Subscription;
@@ -9,6 +9,13 @@ use util\log\ColoredConsoleAppender;
 
 class MultiConsume extends \util\cmd\Command {
 
+  #[@arg]
+  public function setDebug($d= FALSE) {
+    if (NULL === $d) {
+      Logger::getInstance()->getCategory()->withAppender(new ColoredConsoleAppender());
+    }
+  }
+
   public function run() {
     // Logger::getInstance()->getCategory()->withAppender(new ColoredConsoleAppender());
     $conn= new Connection(new \peer\URL('stomp://localhost:61613/?log=default'));
@@ -17,21 +24,6 @@ class MultiConsume extends \util\cmd\Command {
 
     $sub1= $conn->subscribeTo(new Subscription('/queue/producer'));
     $sub2= $conn->subscribeTo(new Subscription('/queue/foobar', AckMode::AUTO));
-
-    // $sub= $conn->subscribe(new Subscription($conn->getDestination('/queue/producer')));
-
-    // // A
-    // $conn->subscribeTo(new Subscription('a'));
-    // $conn->subscribeTo(new Subscription('b'));
-
-    // $conn->unsubscribeFrom(new Subscription('b'));
-
-    // // B
-    // $sub= $conn->getDestination('a')->subscribe();
-    // $conn->getDestination('b')->subscribe(function($m) {
-    //   Console::writeLine('Got ', $m);
-    // });
-
 
     do {
       $msg= $conn->receive(100);
@@ -46,15 +38,5 @@ class MultiConsume extends \util\cmd\Command {
         }
       }
     } while ($msg instanceof \org\codehaus\stomp\ReceivedMessage);
-
-    // $conn->getDestination('c');
-    // $dest->send();
-    // $dest->send();
-    // $dest->send();
-
-
-    // $sub->unsubscribe();
-
-    // $conn->receive();
   }
 }

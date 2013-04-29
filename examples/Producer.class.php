@@ -11,8 +11,15 @@ class Producer extends \util\cmd\Command {
     $this->amount= $i;
   }
 
+  #[@arg]
+  public function setDebug($d= FALSE) {
+    if (NULL === $d) {
+      Logger::getInstance()->getCategory()->withAppender(new ColoredConsoleAppender());
+    }
+  }
+
   public function run() {
-    $conn= new Connection(new \peer\URL('stomp://localhost:61613/'));
+    $conn= new Connection(new \peer\URL('stomp://localhost:61613/?log=default'));
     $conn->connect();
 
     $dest= $conn->getDestination('/queue/producer');

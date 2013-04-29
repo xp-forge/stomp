@@ -258,9 +258,13 @@ class Connection extends \lang\Object implements Traceable {
 
   public function consume($timeout= 0.2) {
     $message= $this->receive($timeout);
+
     if ($message instanceof ReceivedMessage) {
       $message->getSubscription()->process($message);
+      return TRUE;
     }
+
+    return FALSE;
   }
 
   public function getDestination($name) {

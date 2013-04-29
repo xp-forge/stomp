@@ -17,7 +17,6 @@ class MultiConsume extends \util\cmd\Command {
   }
 
   public function run() {
-    // Logger::getInstance()->getCategory()->withAppender(new ColoredConsoleAppender());
     $conn= new Connection(new \peer\URL('stomp://localhost:61613/?log=default'));
 
     $conn->connect();
@@ -27,7 +26,6 @@ class MultiConsume extends \util\cmd\Command {
 
     do {
       $msg= $conn->receive(100);
-      // $this->out->writeLine('Consuming: ', \xp::stringOf($msg));
 
       if ($msg) {
         if ($msg->ackable()) {

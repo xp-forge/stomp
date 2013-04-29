@@ -93,26 +93,6 @@ class StompSubscriptionTest extends BaseTest {
    * Test
    *
    */
-  #[@test, @ignore('cycling reference preventing this')]
-  public function destructor_removes_subscription() {
-    $id= $this->createSubscription();
-
-    $this->assertEquals("SUBSCRIBE\n".
-      "destination:/queue/foo\n".
-      "ack:client-individual\n".
-      "id:".$id."\n".
-      "\n\0".
-      "UNSUBSCRIBE\n".
-      "id:".$id."\n".
-      "\n\0",
-      $this->fixture->readSentBytes()
-    );
-  }
-
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function subscribe_registeres_in_connection() {
     $id= $this->createSubscription();
@@ -151,5 +131,27 @@ class StompSubscriptionTest extends BaseTest {
   public function invalid_ackmode() {
     $s= new Subscription('foobar');
     $s->setAckMode('automatic');
+  }
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function subscribe_with_callback() {
+    $called= FALSE;
+    $sub= $this->fixture->subscribeTo(new Subscription('/queue/foobar', function($message) use(&$called) {
+      $called= TRUE;
+    }));
+    $this->fixture->setResponseBytes("MESSAGE\n".
+      "message-id:12345\n".
+      "subscription:".$sub->getId()."\n".
+      "destination:/queue/foobar\n".
+      "\n".
+      "Hello World.\0"
+    );
+
+    $this->fixture->consume(1);
+    $this->assertEquals(TRUE, $called);
   }
 }

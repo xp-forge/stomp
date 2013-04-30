@@ -49,6 +49,14 @@ class Connection extends \lang\Object implements Traceable {
     $this->cat= $cat;
   }
 
+  private function debug() {
+    if ($this->cat) {
+      $args= func_get_args();
+      array_unshift($args, $this->getClass()->getSimpleName());
+      call_user_func_array(array($this->cat, 'debug'), $args);
+    }
+  }
+
   /**
    * Connect to server
    *
@@ -81,7 +89,7 @@ class Connection extends \lang\Object implements Traceable {
 
     // Check whether we can read, before we actually read...
     if ($this->socket instanceof Socket && !$this->socket->canRead($timeout)) {
-      $this->cat && $this->cat->debug($this->getClassName(), '<<<', '0 bytes - reading no frame.');
+      $this->debug('<<<', '0 bytes - reading no frame.');
       return NULL;
     }
 
@@ -89,13 +97,14 @@ class Connection extends \lang\Object implements Traceable {
     while (!$line) {
       $line= $this->in->readLine();
     }
-    $this->cat && $this->cat->debug($this->getClassName(), '<<<', 'Have "'.trim($line).'" command.');
+    $this->debug('<<<', 'Have "'.trim($line).'" command.');
 
     if (0 == strlen($line)) throw new \peer\ProtocolException('Expected frame token, got '.\xp::stringOf($line));
 
     $frame= \lang\XPClass::forName(sprintf('org.codehaus.stomp.frame.%sFrame', ucfirst(strtolower(trim($line)))))
       ->newInstance()
     ;
+    $frame->setTrace($this->cat);
     $frame->fromWire($this->in);
 
     // According to the STOMP protocol, the NUL ("\0") delimiter may be followed
@@ -109,7 +118,7 @@ class Connection extends \lang\Object implements Traceable {
       "\n" === ($c= $this->in->read(1))
     ) {
       // Skip
-      $this->cat && $this->cat->debug($this->getClassName(), '~ ate a byte: '.\xp::stringOf($c));
+      $this->debug('~ ate a byte: '.\xp::stringOf($c));
     }
 
     $f= $this->in->getClass()->getField('buf')->setAccessible(TRUE);
@@ -176,7 +185,7 @@ class Connection extends \lang\Object implements Traceable {
       );
     }
 
-    $this->cat && $this->cat->debug($this->getClassName(), '~ Connected to server; server '.($frame->getProtocolVersion()
+    $this->debug('~ Connected to server; server '.($frame->getProtocolVersion()
       ? 'chose protocol version '.$frame->getProtocolVersion()
       : 'did not indicate protocol version'
     ));

@@ -7,10 +7,11 @@ use \org\codehaus\stomp\Header;
  *
  * @test  xp://org.codehaus.stomp.unittest.StompFrameTest
  */
-abstract class Frame extends \lang\Object {
-  protected
-    $headers  = array(),
-    $body     = NULL;
+abstract class Frame extends \lang\Object implements \util\log\Traceable {
+  protected $headers  = array();
+  protected $body     = NULL;
+
+  protected $cat      = NULL;
 
   /**
    * Retrieve frame command. Override this in derived implementations
@@ -18,6 +19,23 @@ abstract class Frame extends \lang\Object {
    * @return  string
    */
   public abstract function command();
+
+  /**
+   * Set trace
+   *
+   * @param   util.log.LogCategory cat
+   */
+  public function setTrace($cat) {
+    $this->cat= $cat;
+  }
+
+  private function debug() {
+    if ($this->cat) {
+      $args= func_get_args();
+      array_unshift($args, $this->getClass()->getSimpleName());
+      call_user_func_array(array($this->cat, 'debug'), $args);
+    }
+  }
 
   /**
    * Retrieve whether message requires immediate response
@@ -99,6 +117,8 @@ abstract class Frame extends \lang\Object {
     // Read headers
     $line= $in->readLine();
     while (0 != strlen($line)) {
+      $this->debug('<<<', $line);
+
       list($key, $value)= explode(':', $line, 2);
       $this->addHeader($key, $value);
 
@@ -108,6 +128,7 @@ abstract class Frame extends \lang\Object {
 
     // Now, read payload
     if ($this->hasHeader(Header::CONTENTLENGTH)) {
+      $this->debug('Reading ', $this->getHeader(Header::CONTENTLENGTH), 'bytes as indicated by content-length.');
 
       // If content-length is given, read that many bytes as body from
       // stream and assert that it is followed by a chr(0) byte.
@@ -117,6 +138,7 @@ abstract class Frame extends \lang\Object {
         'Expected chr(0) after frame w/ given content-length'
       );
     } else {
+      $this->debug('Reading bytewise until \\0');
 
       // Read byte-wise until we find \0
       $data= '';

@@ -3,16 +3,16 @@
   <modelVersion>4.0.0</modelVersion>
 
   <!-- The Basics -->
-  <groupId>net.xp-framework</groupId>
+  <groupId>net.xp-forge</groupId>
   <artifactId>stomp</artifactId>
-  <version>5.8.10</version>
+  <version>5.8.12-SNAPSHOT</version>
   <packaging>xar</packaging>
 
   <!-- More Project Information -->
   <name>STOMP XP-Module</name>
   <description>The stomp module is an add-on to the XP framework that adds interoperability packages to talk to STOMP-enabled message queue servers, such as Apache ActiveMQ.</description>
-  <url>https://github.com/xp-framework/xp-contrib</url>
-  <inceptionYear>2001</inceptionYear>
+  <url>https://github.com/xp-forge/stomp</url>
+  <inceptionYear>2009</inceptionYear>
   <organization>
     <name>XP-Framework Team</name>
     <url>http://xp-framework.net/</url>
@@ -35,7 +35,7 @@
 
   <!-- Properties -->
   <properties>
-    <project.build.sourceEncoding>ISO-8859-15</project.build.sourceEncoding>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <!-- Dependencies -->
@@ -43,13 +43,7 @@
     <dependency>
       <groupId>net.xp-framework</groupId>
       <artifactId>core</artifactId>
-      <version>${project.version}</version>
-      <type>xar</type>
-    </dependency>
-    <dependency>
-      <groupId>net.xp-framework</groupId>
-      <artifactId>tools</artifactId>
-      <version>${project.version}</version>
+      <version>5.9.0-SNAPSHOT</version>
       <type>xar</type>
     </dependency>
   </dependencies>
@@ -60,16 +54,21 @@
       <plugin>
         <groupId>net.xp-forge.maven.plugins</groupId>
         <artifactId>xp-maven-plugin</artifactId>
-        <version>3.1.6</version>
+        <version>3.2.12</version>
         <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <version>2.0</version>
       </plugin>
     </plugins>
   </build>
 
   <!-- Source code management -->
   <scm>
-    <connection>scm:git:git://github.com/xp-framework/xp-contrib.git</connection>
-    <developerConnection>scm:git:git@github.com:xp-framework/xp-contrib.git</developerConnection>
-    <url>https://github.com/xp-framework/xp-contrib</url>
+    <connection>scm:git:git://github.com/xp-forge/stomp</connection>
+    <developerConnection>scm:git:git@github.com:xp-forge/stomp.git</developerConnection>
+    <url>https://github.com/xp-forge/stomp</url>
   </scm>
 </project>

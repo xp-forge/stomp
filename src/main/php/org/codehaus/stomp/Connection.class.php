@@ -101,7 +101,10 @@ class Connection extends \lang\Object implements Traceable {
 
     if (0 == strlen($line)) throw new \peer\ProtocolException('Expected frame token, got '.\xp::stringOf($line));
 
-    $frame= \lang\XPClass::forName(sprintf('org.codehaus.stomp.frame.%sFrame', ucfirst(strtolower(trim($line)))))
+    $frame= $this->getClass()
+      ->getPackage()
+      ->getPackage('frame')
+      ->loadClass(ucfirst(strtolower(trim($line))).'Frame')
       ->newInstance()
     ;
     $frame->setTrace($this->cat);

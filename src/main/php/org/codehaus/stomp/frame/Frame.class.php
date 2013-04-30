@@ -47,6 +47,23 @@ abstract class Frame extends \lang\Object implements \util\log\Traceable {
   }
 
   /**
+   * Indicate whether to expect a RECEIPT frame after
+   * sending or not.
+   *
+   * @param boolean $r
+   */
+  public function setWantReceipt($r= FALSE) {
+    if ($r) {
+      $this->addHeader(Header::RECEIPT, $this->hashCode());
+      return;
+    }
+
+    if (!$r) {
+      $this->clearHeader(Header::RECEIPT);
+    }
+  }
+
+  /**
    * Retrieve headers
    *
    * @return  <string,string>[]
@@ -77,6 +94,15 @@ abstract class Frame extends \lang\Object implements \util\log\Traceable {
    */
   public function addHeader($key, $value) {
     $this->headers[$key]= $value;
+  }
+
+  /**
+   * Clear given header
+   *
+   * @param  string $key header name
+   */
+  public function clearHeader($key) {
+    unset($this->headers[$key]);
   }
 
   /**

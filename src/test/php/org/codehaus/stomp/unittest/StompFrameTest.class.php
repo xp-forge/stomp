@@ -1,6 +1,7 @@
 <?php namespace org\codehaus\stomp\unittest;
   
 use \org\codehaus\stomp\frame\Frame;
+use \org\codehaus\stomp\Header;
 
 /**
  * Tests STOMP frame class
@@ -88,6 +89,38 @@ class StompFrameTest extends \unittest\TestCase {
   public function receiptHeader() {
     $this->fixture->addHeader('receipt', 'message-12345');
     $this->assertTrue($this->fixture->requiresImmediateResponse());
+  }
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function set_want_receipt() {
+    $this->fixture->setWantReceipt(TRUE);
+    $this->assertTrue($this->fixture->hasHeader(Header::RECEIPT));
+  }
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function set_no_want_receipt() {
+    $this->fixture->addHeader(Header::RECEIPT, "foo");
+    $this->fixture->setWantReceipt(FALSE);
+    $this->assertFalse($this->fixture->hasHeader(Header::RECEIPT));
+  }
+
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function clearHeader() {
+    $this->fixture->addHeader("some-header", "some-value");
+    $this->fixture->clearHeader("some-header");
+    $this->assertFalse($this->fixture->hasHeader("some-header"));
   }
 }
 ?>

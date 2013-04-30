@@ -1,14 +1,23 @@
 <?php namespace org\codehaus\stomp;
 
-use util\log\Traceable;
-use peer\URL;
-use peer\Socket;
-use peer\SocketInputStream;
-use peer\SocketOutputStream;
-use io\streams\MemoryOutputStream;
-use io\streams\OutputStreamWriter;
-use io\streams\StringReader;
-use io\streams\StringWriter;
+use \util\log\Traceable;
+use \peer\URL;
+use \peer\Socket;
+use \peer\SocketInputStream;
+use \peer\SocketOutputStream;
+use \peer\ProtocolException;
+use \peer\AuthenticationException;
+use \io\streams\MemoryOutputStream;
+use \io\streams\OutputStreamWriter;
+use \io\streams\StringReader;
+use \io\streams\StringWriter;
+use \org\codehaus\stomp\frame\Frame;
+use \org\codehaus\stomp\frame\LoginFrame;
+use \org\codehaus\stomp\frame\ConnectedFrame;
+use \org\codehaus\stomp\frame\DisconnectFrame;
+use \org\codehaus\stomp\frame\ReceiptFrame;
+use \org\codehaus\stomp\frame\ErrorFrame;
+use \org\codehaus\stomp\frame\MessageFrame;
 
 /**
  * Low level API to the STOMP protocol
@@ -82,6 +91,8 @@ class Connection extends \lang\Object implements Traceable {
   /**
    * Receive next frame, nonblocking
    *
+   * This is a low-level protocol function.
+   *
    * @param   double timeout default 0.2
    * @return  org.codehaus.stomp.frame.Frame or NULL
    */
@@ -99,7 +110,7 @@ class Connection extends \lang\Object implements Traceable {
     }
     $this->debug('<<<', 'Have "'.trim($line).'" command.');
 
-    if (0 == strlen($line)) throw new \peer\ProtocolException('Expected frame token, got '.\xp::stringOf($line));
+    if (0 == strlen($line)) throw new ProtocolException('Expected frame token, got '.\xp::stringOf($line));
 
     $frame= $this->getClass()
       ->getPackage()
@@ -165,24 +176,24 @@ class Connection extends \lang\Object implements Traceable {
   public function connect() {
     $this->_connect();
 
-    $frame= $this->sendFrame(new frame\LoginFrame(
+    $frame= $this->sendFrame(new LoginFrame(
       $this->url->getUser(),
       $this->url->getPassword(),
       $this->url->getParam('vhost', $this->url->getHost()),
       $this->url->hasParam('versions') ? explode(',', $this->url->getParam('versions')) : array('1.0', '1.1')
     ));
 
-    if (!$frame instanceof frame\Frame) {
-      throw new \peer\ProtocolException('Did not receive frame, got: '.\xp::stringOf($frame));
+    if (!$frame instanceof Frame) {
+      throw new ProtocolException('Did not receive frame, got: '.\xp::stringOf($frame));
     }
-    if ($frame instanceof frame\ErrorFrame) {
-      throw new \peer\AuthenticationException(
+    if ($frame instanceof ErrorFrame) {
+      throw new AuthenticationException(
         'Could not establish connection to broker "'.$this->url->toString().'": '.$frame->getBody(),
         $this->url->getUser(), (strlen($this->url->getPassword() > 0) ? 'with password' : 'no password')
       );
     }
-    if (!$frame instanceof frame\ConnectedFrame) {
-      throw new \peer\AuthenticationException(
+    if (!$frame instanceof ConnectedFrame) {
+      throw new AuthenticationException(
         'Could not log in to stomp broker "'.$this->url->toString().'": Got "'.$frame->command().'" frame',
         $this->url->getUser(), (strlen($this->url->getPassword() > 0) ? 'with password' : 'no password')
       );
@@ -206,7 +217,7 @@ class Connection extends \lang\Object implements Traceable {
     if (!$this->out instanceof OutputStreamWriter) return;
 
     // Send disconnect frame and exit
-    create(new frame\DisconnectFrame())->write($this->out);
+    create(new DisconnectFrame())->write($this->out);
     $this->_disconnect();
   }
 
@@ -253,13 +264,13 @@ class Connection extends \lang\Object implements Traceable {
   public function receive($timeout= 0.2) {
     $frame= $this->recvFrame($timeout);
 
-    if ($frame instanceof frame\ErrorFrame) {
+    if ($frame instanceof ErrorFrame) {
       throw create(new \org\codehaus\stomp\Exception($frame->getMessage()))
         ->withFrame($frame)
       ;
     }
 
-    if ($frame instanceof frame\MessageFrame) {
+    if ($frame instanceof MessageFrame) {
       $msg= new ReceivedMessage();
       $msg->withFrame($frame, $this);
       return $msg;

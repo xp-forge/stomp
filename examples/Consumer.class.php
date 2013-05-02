@@ -4,7 +4,6 @@ use \org\codehaus\stomp\Connection;
 use \org\codehaus\stomp\Subscription;
 use \org\codehaus\stomp\ReceivedMessage;
 use \util\log\Logger;
-use \util\log\LogCategory;
 use \util\log\ColoredConsoleAppender;
 
 class Consumer extends \util\cmd\Command {
@@ -29,6 +28,8 @@ class Consumer extends \util\cmd\Command {
       }
     }));
 
-    $conn->consume(NULL);
+    while ($conn->consume(1)) {}
+
+    $conn->disconnect();
   }
 }

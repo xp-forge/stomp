@@ -1,11 +1,10 @@
 <?php namespace examples;
 
-use org\codehaus\stomp\Connection;
-use org\codehaus\stomp\Subscription;
-use org\codehaus\stomp\AckMode;
-use util\log\Logger;
-use util\log\LogCategory;
-use util\log\ColoredConsoleAppender;
+use \org\codehaus\stomp\Connection;
+use \org\codehaus\stomp\Subscription;
+use \org\codehaus\stomp\AckMode;
+use \util\log\Logger;
+use \util\log\ColoredConsoleAppender;
 
 class MultiConsume extends \util\cmd\Command {
 
@@ -21,20 +20,15 @@ class MultiConsume extends \util\cmd\Command {
 
     $conn->connect();
 
-    $sub1= $conn->subscribeTo(new Subscription('/queue/producer'));
-    $sub2= $conn->subscribeTo(new Subscription('/queue/foobar', AckMode::AUTO));
+    $self= $this;
+    $sub1= $conn->subscribeTo(new Subscription('/queue/producer', function($message) use($self) {
+      $self->out->writeLine('Acking message ', $message->getMessageId());
+      $message->ack();
+    }));
+    $sub2= $conn->subscribeTo(new Subscription('/queue/foobar', function($message) use($self) {
+      $self->out->writeLine('Consumed message ', $message->getMessageId());
+    }, AckMode::AUTO));
 
-    do {
-      $msg= $conn->receive(100);
-
-      if ($msg) {
-        if ($msg->ackable()) {
-          $this->out->writeLine('Acking message ', $msg->getMessageId());
-          $msg->ack();
-        } else {
-          $this->out->writeLine('Leaving message ', $msg->getMessageId(), ' - it is not ackable.');
-        }
-      }
-    } while ($msg instanceof \org\codehaus\stomp\ReceivedMessage);
+    while ($conn->consume()) {}
   }
 }

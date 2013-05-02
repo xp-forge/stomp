@@ -1,10 +1,9 @@
 <?php namespace examples;
 
-use org\codehaus\stomp\Connection;
-use org\codehaus\stomp\Subscription;
-use util\log\Logger;
-use util\log\LogCategory;
-use util\log\ColoredConsoleAppender;
+use \org\codehaus\stomp\Connection;
+use \org\codehaus\stomp\Subscription;
+use \util\log\Logger;
+use \util\log\ColoredConsoleAppender;
 
 class Dispatcher extends \util\cmd\Command {
 
@@ -16,23 +15,18 @@ class Dispatcher extends \util\cmd\Command {
   }
 
   public function run() {
-    // Logger::getInstance()->getCategory()->withAppender(new ColoredConsoleAppender());
     $conn= new Connection(new \peer\URL('stomp://localhost:61613/?log=default'));
     $conn->connect();
 
-    $sub= $conn->subscribeTo(new Subscription('/queue/producer'));
-    $dest= $conn->getDestination('/queue/foobar');
+    $self= $this;
+    $sub= $conn->subscribeTo(new Subscription('/queue/producer', function($message) use($self, $conn) {
+      $self->out->writeLine('Consuming: ', \xp::stringOf($message));
+      $cpy= $message->toSendable();
+      $conn->getDestination('/queue/foobar')->send($cpy);
 
-    do {
-      $msg= $conn->receive(100);
-      $this->out->writeLine('Consuming: ', \xp::stringOf($msg));
+      $message->ack();
+    }));
 
-      $cpy= $msg->toSendable();
-      $dest->send($cpy);
-
-      if ($msg) {
-        $msg->ack();
-      }
-    } while ($msg instanceof \org\codehaus\stomp\ReceivedMessage);
+    while ($conn->consume(1)) {}
   }
 }

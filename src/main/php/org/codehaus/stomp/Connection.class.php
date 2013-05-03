@@ -144,15 +144,19 @@ class Connection extends \lang\Object implements Traceable {
   /**
    * Send a frame to server
    *
+   * This is a low-level protocol function.
+   *
+   * @param   org.codehaus.stomp.frame.Frame frame
+   * @return  org.codehaus.stomp.Frame or NULL
    */
-  public function sendFrame(frame\Frame $frame) {
+  public function sendFrame(Frame $frame) {
 
     // Trace
     if ($this->cat) {
       $mo= new MemoryOutputStream();
       $frame->write(new StringWriter($mo));
 
-      $this->cat->debug($this->getClassName(), '>>>', $mo->getBytes());
+      $this->debug('>>>', $mo->getBytes());
     }
 
     $frame->write($this->out);

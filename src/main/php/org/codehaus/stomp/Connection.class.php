@@ -1,23 +1,23 @@
 <?php namespace org\codehaus\stomp;
 
-use \util\log\Traceable;
-use \peer\URL;
-use \peer\Socket;
-use \peer\SocketInputStream;
-use \peer\SocketOutputStream;
-use \peer\ProtocolException;
-use \peer\AuthenticationException;
-use \io\streams\MemoryOutputStream;
-use \io\streams\OutputStreamWriter;
-use \io\streams\StringReader;
-use \io\streams\StringWriter;
-use \org\codehaus\stomp\frame\Frame;
-use \org\codehaus\stomp\frame\LoginFrame;
-use \org\codehaus\stomp\frame\ConnectedFrame;
-use \org\codehaus\stomp\frame\DisconnectFrame;
-use \org\codehaus\stomp\frame\ReceiptFrame;
-use \org\codehaus\stomp\frame\ErrorFrame;
-use \org\codehaus\stomp\frame\MessageFrame;
+use util\log\Traceable;
+use peer\URL;
+use peer\Socket;
+use peer\SocketInputStream;
+use peer\SocketOutputStream;
+use peer\ProtocolException;
+use peer\AuthenticationException;
+use io\streams\MemoryOutputStream;
+use io\streams\OutputStreamWriter;
+use io\streams\StringReader;
+use io\streams\StringWriter;
+use org\codehaus\stomp\frame\Frame;
+use org\codehaus\stomp\frame\LoginFrame;
+use org\codehaus\stomp\frame\ConnectedFrame;
+use org\codehaus\stomp\frame\DisconnectFrame;
+use org\codehaus\stomp\frame\ReceiptFrame;
+use org\codehaus\stomp\frame\ErrorFrame;
+use org\codehaus\stomp\frame\MessageFrame;
 
 /**
  * Low level API to the STOMP protocol

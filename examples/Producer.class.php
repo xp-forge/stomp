@@ -1,9 +1,9 @@
 <?php namespace examples;
 
-use \org\codehaus\stomp\Connection;
-use \org\codehaus\stomp\SendableMessage;
-use \util\log\Logger;
-use \util\log\ColoredConsoleAppender;
+use org\codehaus\stomp\Connection;
+use org\codehaus\stomp\SendableMessage;
+use util\log\Logger;
+use util\log\ColoredConsoleAppender;
 
 class Producer extends \util\cmd\Command {
   protected $amount= 0;

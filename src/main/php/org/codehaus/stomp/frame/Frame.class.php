@@ -1,6 +1,6 @@
 <?php namespace org\codehaus\stomp\frame;
 
-use \org\codehaus\stomp\Header;
+use org\codehaus\stomp\Header;
 
 /**
  * Abstract frame base class

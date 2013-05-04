@@ -1,10 +1,10 @@
 <?php namespace examples;
 
-use \org\codehaus\stomp\Connection;
-use \org\codehaus\stomp\Subscription;
-use \org\codehaus\stomp\AckMode;
-use \util\log\Logger;
-use \util\log\ColoredConsoleAppender;
+use org\codehaus\stomp\Connection;
+use org\codehaus\stomp\Subscription;
+use org\codehaus\stomp\AckMode;
+use util\log\Logger;
+use util\log\ColoredConsoleAppender;
 
 class MultiConsume extends \util\cmd\Command {
 

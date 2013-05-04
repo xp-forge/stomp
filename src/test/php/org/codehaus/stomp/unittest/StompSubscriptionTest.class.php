@@ -1,6 +1,6 @@
 <?php namespace org\codehaus\stomp\unittest;
 
-use \org\codehaus\stomp\Subscription;
+use org\codehaus\stomp\Subscription;
 
 class StompSubscriptionTest extends BaseTest {
 

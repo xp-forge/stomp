@@ -1,7 +1,7 @@
 <?php namespace org\codehaus\stomp\unittest;
   
-use \org\codehaus\stomp\frame\Frame;
-use \org\codehaus\stomp\Header;
+use org\codehaus\stomp\frame\Frame;
+use org\codehaus\stomp\Header;
 
 /**
  * Tests STOMP frame class

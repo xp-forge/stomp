@@ -1,10 +1,10 @@
 <?php namespace org\codehaus\stomp\unittest;
 
-use \org\codehaus\stomp\Message;
-use \org\codehaus\stomp\SendableMessage;
-use \org\codehaus\stomp\ReceivedMessage;
-use \org\codehaus\stomp\Subscription;
-use \org\codehaus\stomp\Transaction;
+use org\codehaus\stomp\Message;
+use org\codehaus\stomp\SendableMessage;
+use org\codehaus\stomp\ReceivedMessage;
+use org\codehaus\stomp\Subscription;
+use org\codehaus\stomp\Transaction;
 
 class MessageTest extends BaseTest {
   

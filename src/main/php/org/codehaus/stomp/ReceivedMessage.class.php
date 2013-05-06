@@ -1,9 +1,21 @@
 <?php namespace org\codehaus\stomp;
 
+use org\codehaus\stomp\frame\MessageFrame;
+
+/**
+ * Message retrieved from server
+ * 
+ */
 class ReceivedMessage extends Message {
   protected $destination  = NULL;
   protected $subscription = NULL;
 
+  /**
+   * Fill message members from given frame.
+   * 
+   * @param  org.codehaus.stomp.frame.MessageFrame $frame
+   * @param  org.codehaus.stomp.Connection $conn
+   */
   public function withFrame(frame\MessageFrame $frame, Connection $conn) {
     $this->frame= $frame;
     $this->setDestination($conn->getDestination($frame->getHeader(Header::DESTINATION)));
@@ -39,29 +51,59 @@ class ReceivedMessage extends Message {
 
     $this->body= $frame->getBody();
   }
-  
+
+  /**
+   * Set destination
+   *
+   * @param org.codehaus.stomp.Destination destination
+   */
   public function setDestination(Destination $destination) {
     $this->destination= $destination;
   }
 
+  /**
+   * Get destination
+   * 
+   * @return org.codehaus.stomp.Destination
+   */
   public function getDestination() {
     return $this->destination;
   }
 
+  /**
+   * Get subscription
+   * 
+   * @return org.codehaus.stomp.Subscription
+   */
   public function getSubscription() {
     return $this->subscription;
   }
 
+  /**
+   * Set subscription
+   * 
+   * @param org.codehaus.stomp.Subscription $s
+   */
   public function setSubscription(Subscription $s) {
     $this->subscription= $s;
   }
 
+  /**
+   * Helper method to assure message has a connection
+   * 
+   * @throws lang.IllegalStateException If no connection set
+   */
   protected function assertConnection() {
     if (!$this->destination instanceof Destination) {
       throw new \lang\IllegalStateException('Cannot ack message without connection');
     }
   }
 
+  /**
+   * Acknowledge given message
+   * 
+   * @param  org.codehaus.stomp.Transaction $t
+   */
   public function ack(Transaction $t= NULL) {
     $this->assertConnection();
     $frame= new frame\AckFrame($this->getMessageId(), $this->getSubscription()->getId());
@@ -71,6 +113,11 @@ class ReceivedMessage extends Message {
     $this->getDestination()->getConnection()->sendFrame($frame);
   }
 
+  /**
+   * Reject given message
+   * 
+   * @param  org.codehaus.stomp.Transaction $t
+   */
   public function nack(Transaction $t= NULL) {
     $this->assertConnection();
     $frame= new frame\NackFrame($this->getMessageId(), $this->getSubscription()->getId());
@@ -80,6 +127,11 @@ class ReceivedMessage extends Message {
     $this->getDestination()->getConnection()->sendFrame($frame);
   }
 
+  /**
+   * Determine whether message is ackable
+   * 
+   * @return boolean
+   */
   public function ackable() {
     return in_array($this->getSubscription()->getAckMode(), array(
       \org\codehaus\stomp\AckMode::CLIENT,
@@ -87,6 +139,10 @@ class ReceivedMessage extends Message {
     ));
   }
 
+  /**
+   * 
+   * @return [type]
+   */
   public function toSendable() {
     $message= new SendableMessage($this->getBody(), $this->getContentType());
     $message->setMessageId($this->getMessageId());

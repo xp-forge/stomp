@@ -10,6 +10,7 @@ class Transaction extends \lang\Object {
 
   /**
    * Constructor
+   * 
    * @param string $name optional name of transaction
    */
   public function __construct($name= NULL) {

@@ -58,6 +58,10 @@ class Connection extends \lang\Object implements Traceable {
     $this->cat= $cat;
   }
 
+  /**
+   * Helper method for logging
+   * 
+   */
   private function debug() {
     if ($this->cat) {
       $args= func_get_args();
@@ -247,10 +251,23 @@ class Connection extends \lang\Object implements Traceable {
     return $subscription;
   }
 
+  /**
+   * Unsubscribe; to be called from Subscription directly,
+   * should not be called directly.
+   * 
+   * @param  org.codehaus.stomp.Subscription $subscription
+   */
   public function _unsubscribe(Subscription $subscription) {
     unset($this->subscriptions[$subscription->getId()]);
   }
 
+  /**
+   * Retrieve an active subscription by its id.
+   * 
+   * @param  string id
+   * @return org.codehaus.stomp.Subscription
+   * @throws org.codehaus.stomp.Exception if no subscription could be found.
+   */
   public function subscriptionById($id) {
     if (!isset($this->subscriptions[$id])) {
       throw new Exception('No such subscription: "'.$id.'"');
@@ -283,6 +300,13 @@ class Connection extends \lang\Object implements Traceable {
     return $frame;
   }
 
+  /**
+   * Consume a message; delegates the handling to the corresponding
+   * subscription.
+   * 
+   * @param  float $timeout time to wait for new message
+   * @return boolean whether a message was processed or not
+   */
   public function consume($timeout= 0.2) {
     $message= $this->receive($timeout);
 
@@ -294,6 +318,12 @@ class Connection extends \lang\Object implements Traceable {
     return FALSE;
   }
 
+  /**
+   * Retrieve destination
+   *
+   * @param string name
+   * @return org.codehaus.stomp.Destination
+   */
   public function getDestination($name) {
     return new Destination($name, $this);
   }

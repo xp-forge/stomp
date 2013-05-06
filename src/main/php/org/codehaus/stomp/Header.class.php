@@ -1,5 +1,9 @@
 <?php namespace org\codehaus\stomp;
 
+/**
+ * Interface with shared constants
+ * 
+ */
 interface Header {
   const CONTENTTYPE   = 'content-type';
   const CONTENTLENGTH = 'content-length';

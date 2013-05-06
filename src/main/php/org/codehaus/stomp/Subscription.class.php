@@ -1,5 +1,9 @@
 <?php namespace org\codehaus\stomp;
 
+/**
+ * Subscription
+ * 
+ */
 class Subscription extends \lang\Object {
   protected $id         = NULL;
   protected $dest       = NULL;
@@ -32,14 +36,29 @@ class Subscription extends \lang\Object {
     return $this->id;
   }
 
+  /**
+   * Set subscription id 
+   * 
+   * @param string $id 
+   */
   public function setId($id) {
     $this->id= $id;
   }
 
+  /**
+   * Retrieve ack mode
+   * 
+   * @return int
+   */
   public function getAckMode() {
     return $this->ackMode;
   }
 
+  /**
+   * Set ack mode - see org.codehaus.stomp.AckMode
+   * 
+   * @param int $ackMode
+   */
   public function setAckMode($ackMode) {
     if (!in_array($ackMode, array(AckMode::AUTO, AckMode::CLIENT, AckMode::INDIVIDUAL))) {
       throw new \lang\IllegalArgumentException('Invalid ackMode given: "'.$ackMode.'"');
@@ -47,6 +66,11 @@ class Subscription extends \lang\Object {
     $this->ackMode= $ackMode;
   }
 
+  /**
+   * Set callback function
+   * 
+   * @param  callable $callback
+   */
   public function withCallback($callback) {
     $this->callback= $callback;
   }
@@ -94,10 +118,20 @@ class Subscription extends \lang\Object {
     $this->id= NULL;
   }
 
+  /**
+   * Process a message for this subscription
+   * 
+   * @param  org.codehaus.stomp.ReceivedMessage $message
+   */
   public function process(ReceivedMessage $message) {
     call_user_func_array($this->callback, array($message));
   }
 
+  /**
+   * Retrieve string representation
+   * 
+   * @return string
+   */
   public function toString() {
     return sprintf('%s (dest= %s, ackmode= %s, selector= %s)',
       $this->getClassName(),

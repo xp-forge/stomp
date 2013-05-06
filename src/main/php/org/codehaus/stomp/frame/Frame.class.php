@@ -29,6 +29,11 @@ abstract class Frame extends \lang\Object implements \util\log\Traceable {
     $this->cat= $cat;
   }
 
+  /**
+   * Debug helper method
+   *
+   * @param var
+   */
   private function debug() {
     if ($this->cat) {
       $args= func_get_args();

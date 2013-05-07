@@ -1,5 +1,9 @@
 <?php namespace org\codehaus\stomp;
 
+use org\codehaus\stomp\frame\BeginFrame;
+use org\codehaus\stomp\frame\AbortFrame;
+use org\codehaus\stomp\frame\CommitFrame;
+
 /**
  * Represent a STOMP transaction
  *
@@ -35,7 +39,7 @@ class Transaction extends \lang\Object {
   public function begin(Connection $conn) {
     try {
       $this->conn= $conn;
-      $conn->sendFrame(new frame\BeginFrame($this->name));
+      $conn->sendFrame(new BeginFrame($this->name));
     } catch (\lang\Throwable $t) {
       $this->conn= NULL;
       throw $t;
@@ -48,7 +52,7 @@ class Transaction extends \lang\Object {
    */
   public function rollback() {
     $this->assertBegun();
-    $this->conn->sendFrame(new frame\AbortFrame($this->name));
+    $this->conn->sendFrame(new AbortFrame($this->name));
     $this->conn= NULL;
   }
 
@@ -58,7 +62,7 @@ class Transaction extends \lang\Object {
    */
   public function commit() {
     $this->assertBegun();
-    $this->conn->sendFrame(new frame\CommitFrame($this->name));
+    $this->conn->sendFrame(new CommitFrame($this->name));
     $this->conn= NULL;
   }
 

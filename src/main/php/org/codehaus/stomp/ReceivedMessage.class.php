@@ -1,6 +1,8 @@
 <?php namespace org\codehaus\stomp;
 
 use org\codehaus\stomp\frame\MessageFrame;
+use org\codehaus\stomp\frame\AckFrame;
+use org\codehaus\stomp\frame\NackFrame;
 
 /**
  * Message retrieved from server
@@ -16,7 +18,7 @@ class ReceivedMessage extends Message {
    * @param  org.codehaus.stomp.frame.MessageFrame $frame
    * @param  org.codehaus.stomp.Connection $conn
    */
-  public function withFrame(frame\MessageFrame $frame, Connection $conn) {
+  public function withFrame(MessageFrame $frame, Connection $conn) {
     $this->frame= $frame;
     $this->setDestination($conn->getDestination($frame->getHeader(Header::DESTINATION)));
 
@@ -106,7 +108,7 @@ class ReceivedMessage extends Message {
    */
   public function ack(Transaction $t= NULL) {
     $this->assertConnection();
-    $frame= new frame\AckFrame($this->getMessageId(), $this->getSubscription()->getId());
+    $frame= new AckFrame($this->getMessageId(), $this->getSubscription()->getId());
     if ($t) {
       $frame->setTransaction($t->getName());
     }
@@ -120,7 +122,7 @@ class ReceivedMessage extends Message {
    */
   public function nack(Transaction $t= NULL) {
     $this->assertConnection();
-    $frame= new frame\NackFrame($this->getMessageId(), $this->getSubscription()->getId());
+    $frame= new NackFrame($this->getMessageId(), $this->getSubscription()->getId());
     if ($t) {
       $frame->setTransaction($t->getName());
     }

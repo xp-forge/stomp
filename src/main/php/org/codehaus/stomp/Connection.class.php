@@ -20,7 +20,7 @@ use org\codehaus\stomp\frame\ErrorFrame;
 use org\codehaus\stomp\frame\MessageFrame;
 
 /**
- * Low level API to the STOMP protocol
+ * API to the STOMP protocol
  *
  * @see   http://stomp.codehaus.org/Protocol
  * @test  xp://org.codehaus.stomp.unittest.StompTest

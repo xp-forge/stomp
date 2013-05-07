@@ -1,5 +1,8 @@
 <?php namespace org\codehaus\stomp;
 
+use org\codehaus\stomp\frame\SubscribeFrame;
+use org\codehaus\stomp\frame\UnsubscribeFrame;
+
 /**
  * Subscription
  * 
@@ -16,9 +19,9 @@ class Subscription extends \lang\Object {
    * Constructor
    *
    * @param   string destination
+   * @param   callable $callback callback method upon message arrival
    * @param   string ackMode default AckMode::INDIVIDUAL
    * @param   string selector default NULL
-   * @throws  lang.IllegalArgumentException
    */
   public function __construct($destination, $callback= NULL, $ackMode= AckMode::INDIVIDUAL, $selector= NULL) {
     $this->dest= $destination;
@@ -87,7 +90,7 @@ class Subscription extends \lang\Object {
     try {
       $this->id= uniqid('xp.stomp.subscription.');
 
-      $frame= new frame\SubscribeFrame($this->destination->getName(), $this->ackMode, $this->selector);
+      $frame= new SubscribeFrame($this->destination->getName(), $this->ackMode, $this->selector);
       $frame->setId($this->id);
 
       $this->destination->getConnection()->sendFrame($frame);
@@ -111,7 +114,7 @@ class Subscription extends \lang\Object {
       throw new \lang\IllegalStateException('Cannot unsubscribe when not subscribed.');
     }
 
-    $this->destination->getConnection()->sendFrame(new frame\UnsubscribeFrame(NULL, $this->id));
+    $this->destination->getConnection()->sendFrame(new UnsubscribeFrame(NULL, $this->id));
     $this->destination->getConnection()->_unsubscribe($this);
 
     $this->destination= NULL;

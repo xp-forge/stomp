@@ -1,5 +1,10 @@
 # TODO
 
+* ActiveMQ specifics
+* SSL
+* Should we add `?autoconnect=true`?
+
+
 ## API thoughts
 
 ```php
@@ -27,3 +32,4 @@ $sub->unsubscribe();
 
 $conn->receive();
 ```
+

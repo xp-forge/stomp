@@ -84,11 +84,11 @@ class Subscription extends \lang\Object {
    * @param  org.codehaus.stomp.Connection $conn
    * @throws lang.Throwable If any error occurrs
    */
-  public function subscribe(Connection $conn, $callback= NULL) {
+  public function subscribe(Connection $conn) {
     $this->destination= $conn->getDestination($this->dest);
 
     try {
-      $this->id= uniqid('xp.stomp.subscription.');
+      $this->id= uniqid('xp-sub-');
 
       $frame= new SubscribeFrame($this->destination->getName(), $this->ackMode, $this->selector);
       $frame->setId($this->id);

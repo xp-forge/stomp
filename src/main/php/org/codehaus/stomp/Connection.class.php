@@ -245,8 +245,8 @@ class Connection extends \lang\Object implements Traceable {
    * @param  org.codehaus.stomp.StompSubscription $subscription
    * @return org.codehaus.stomp.StompSubscription
    */
-  public function subscribeTo(Subscription $subscription, $callback= NULL) {
-    $subscription->subscribe($this, $callback);
+  public function subscribeTo(Subscription $subscription) {
+    $subscription->subscribe($this);
     $this->subscriptions[$subscription->getId()]= $subscription;
     return $subscription;
   }
@@ -286,7 +286,7 @@ class Connection extends \lang\Object implements Traceable {
     $frame= $this->recvFrame($timeout);
 
     if ($frame instanceof ErrorFrame) {
-      throw create(new \org\codehaus\stomp\Exception($frame->getMessage()))
+      throw create(new Exception($frame->getMessage()))
         ->withFrame($frame)
       ;
     }

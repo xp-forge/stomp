@@ -1,13 +1,13 @@
 <?php namespace org\codehaus\stomp\unittest;
   
-use org\codehaus\stomp\frame\Frame;
-use org\codehaus\stomp\Header;
+use peer\stomp\frame\Frame;
+use peer\stomp\Header;
 
 /**
  * Tests STOMP frame class
  *
- * @see   xp://org.codehaus.stomp.unittest.StompSendFrameTest
- * @see   xp://org.codehaus.stomp.frame.Frame
+ * @see   xp://peer.stomp.unittest.StompSendFrameTest
+ * @see   xp://peer.stomp.frame.Frame
  */
 class StompFrameTest extends \unittest\TestCase {
   protected $fixture= NULL;
@@ -17,7 +17,7 @@ class StompFrameTest extends \unittest\TestCase {
    *
    */
   public function setUp() {
-    $this->fixture= newinstance('org.codehaus.stomp.frame.Frame', array(), '{
+    $this->fixture= newinstance('peer.stomp.frame.Frame', array(), '{
       public function command() { 
         return "test"; 
       }

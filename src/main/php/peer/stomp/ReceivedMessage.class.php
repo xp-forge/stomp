@@ -1,8 +1,8 @@
-<?php namespace org\codehaus\stomp;
+<?php namespace peer\stomp;
 
-use org\codehaus\stomp\frame\MessageFrame;
-use org\codehaus\stomp\frame\AckFrame;
-use org\codehaus\stomp\frame\NackFrame;
+use peer\stomp\frame\MessageFrame;
+use peer\stomp\frame\AckFrame;
+use peer\stomp\frame\NackFrame;
 
 /**
  * Message retrieved from server
@@ -15,8 +15,8 @@ class ReceivedMessage extends Message {
   /**
    * Fill message members from given frame.
    * 
-   * @param  org.codehaus.stomp.frame.MessageFrame $frame
-   * @param  org.codehaus.stomp.Connection $conn
+   * @param  peer.stomp.frame.MessageFrame $frame
+   * @param  peer.stomp.Connection $conn
    */
   public function withFrame(MessageFrame $frame, Connection $conn) {
     $this->frame= $frame;
@@ -57,7 +57,7 @@ class ReceivedMessage extends Message {
   /**
    * Set destination
    *
-   * @param org.codehaus.stomp.Destination destination
+   * @param peer.stomp.Destination destination
    */
   public function setDestination(Destination $destination) {
     $this->destination= $destination;
@@ -66,7 +66,7 @@ class ReceivedMessage extends Message {
   /**
    * Get destination
    * 
-   * @return org.codehaus.stomp.Destination
+   * @return peer.stomp.Destination
    */
   public function getDestination() {
     return $this->destination;
@@ -75,7 +75,7 @@ class ReceivedMessage extends Message {
   /**
    * Get subscription
    * 
-   * @return org.codehaus.stomp.Subscription
+   * @return peer.stomp.Subscription
    */
   public function getSubscription() {
     return $this->subscription;
@@ -84,7 +84,7 @@ class ReceivedMessage extends Message {
   /**
    * Set subscription
    * 
-   * @param org.codehaus.stomp.Subscription $s
+   * @param peer.stomp.Subscription $s
    */
   public function setSubscription(Subscription $s) {
     $this->subscription= $s;
@@ -104,7 +104,7 @@ class ReceivedMessage extends Message {
   /**
    * Acknowledge given message
    * 
-   * @param  org.codehaus.stomp.Transaction $t
+   * @param  peer.stomp.Transaction $t
    */
   public function ack(Transaction $t= NULL) {
     $this->assertConnection();
@@ -118,7 +118,7 @@ class ReceivedMessage extends Message {
   /**
    * Reject given message
    * 
-   * @param  org.codehaus.stomp.Transaction $t
+   * @param  peer.stomp.Transaction $t
    */
   public function nack(Transaction $t= NULL) {
     $this->assertConnection();
@@ -136,8 +136,8 @@ class ReceivedMessage extends Message {
    */
   public function ackable() {
     return in_array($this->getSubscription()->getAckMode(), array(
-      \org\codehaus\stomp\AckMode::CLIENT,
-      \org\codehaus\stomp\AckMode::INDIVIDUAL
+      \peer\stomp\AckMode::CLIENT,
+      \peer\stomp\AckMode::INDIVIDUAL
     ));
   }
 

@@ -1,6 +1,6 @@
 <?php namespace org\codehaus\stomp\unittest;
 
-use org\codehaus\stomp\Transaction;
+use peer\stomp\Transaction;
 
 class TransactionTest extends BaseTest {
 

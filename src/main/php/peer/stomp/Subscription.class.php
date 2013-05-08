@@ -1,7 +1,7 @@
-<?php namespace org\codehaus\stomp;
+<?php namespace peer\stomp;
 
-use org\codehaus\stomp\frame\SubscribeFrame;
-use org\codehaus\stomp\frame\UnsubscribeFrame;
+use peer\stomp\frame\SubscribeFrame;
+use peer\stomp\frame\UnsubscribeFrame;
 
 /**
  * Subscription
@@ -58,7 +58,7 @@ class Subscription extends \lang\Object {
   }
 
   /**
-   * Set ack mode - see org.codehaus.stomp.AckMode
+   * Set ack mode - see peer.stomp.AckMode
    * 
    * @param int $ackMode
    */
@@ -81,7 +81,7 @@ class Subscription extends \lang\Object {
   /**
    * Create a subscription on a destination
    *
-   * @param  org.codehaus.stomp.Connection $conn
+   * @param  peer.stomp.Connection $conn
    * @throws lang.Throwable If any error occurrs
    */
   public function subscribe(Connection $conn) {
@@ -124,7 +124,7 @@ class Subscription extends \lang\Object {
   /**
    * Process a message for this subscription
    * 
-   * @param  org.codehaus.stomp.ReceivedMessage $message
+   * @param  peer.stomp.ReceivedMessage $message
    */
   public function process(ReceivedMessage $message) {
     call_user_func_array($this->callback, array($message));

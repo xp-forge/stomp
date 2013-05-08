@@ -12,7 +12,7 @@ abstract class BaseTest extends \unittest\TestCase {
   }
 
   protected function newConnection(\peer\URL $url) {
-    return newinstance('org.codehaus.stomp.Connection', array($url), '{
+    return newinstance('peer.stomp.Connection', array($url), '{
       protected $response= "";
       protected $sent= NULL;
 

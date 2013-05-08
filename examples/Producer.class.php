@@ -1,7 +1,7 @@
 <?php namespace examples;
 
-use org\codehaus\stomp\Connection;
-use org\codehaus\stomp\SendableMessage;
+use peer\stomp\Connection;
+use peer\stomp\SendableMessage;
 use util\log\Logger;
 use util\log\ColoredConsoleAppender;
 

@@ -1,6 +1,6 @@
-<?php namespace org\codehaus\stomp\frame;
+<?php namespace peer\stomp\frame;
 
-use org\codehaus\stomp\Header;
+use peer\stomp\Header;
 
 /**
  * Login frame

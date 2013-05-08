@@ -1,6 +1,6 @@
-<?php namespace org\codehaus\stomp;
+<?php namespace peer\stomp;
 
-use org\codehaus\stomp\frame\Frame;
+use peer\stomp\frame\Frame;
 
 /**
  * Exception base class
@@ -12,7 +12,7 @@ class Exception extends \io\IOException {
   /**
    * Set frame
    *
-   * @param  org.codehaus.stomp.frame.Frame $frame
+   * @param  peer.stomp.frame.Frame $frame
    */
   public function setFrame(Frame $frame) {
     $this->frame= $frame;
@@ -21,8 +21,8 @@ class Exception extends \io\IOException {
   /**
    * Set frame
    * 
-   * @param  org.codehaus.stomp.frame.Frame $frame
-   * @return org.codehaus.stomp.Exception
+   * @param  peer.stomp.frame.Frame $frame
+   * @return peer.stomp.Exception
    */
   public function withFrame(Frame $frame) {
     $this->setFrame($frame);

@@ -1,4 +1,4 @@
-<?php namespace org\codehaus\stomp;
+<?php namespace peer\stomp;
 
 /**
  * STOMP Destination
@@ -12,7 +12,7 @@ class Destination extends \lang\Object {
    * Constructor
    * 
    * @param string $name
-   * @param org.codehaus.stomp.Connection $conn
+   * @param peer.stomp.Connection $conn
    */
   public function __construct($name, Connection $conn) {
     $this->name= $name;
@@ -31,7 +31,7 @@ class Destination extends \lang\Object {
   /**
    * Retrieve destination's connection
    * 
-   * @return org.codehaus.stomp.Connection
+   * @return peer.stomp.Connection
    */
   public function getConnection() {
     return $this->conn;
@@ -40,7 +40,7 @@ class Destination extends \lang\Object {
   /**
    * Send a message to destination
    * 
-   * @param  org.codehaus.stomp.SendableMessage $message
+   * @param  peer.stomp.SendableMessage $message
    */
   public function send(SendableMessage $message) {
     $this->getConnection()->sendFrame($message->toFrame($this));

@@ -3,8 +3,8 @@
 /**
  * Tests STOMP SendFrame class
  *
- * @see   xp://org.codehaus.stomp.unittest.StompFrameTest
- * @see   xp://org.codehaus.stomp.frame.SendFrame
+ * @see   xp://peer.stomp.unittest.StompFrameTest
+ * @see   xp://peer.stomp.frame.SendFrame
  */
 class StompSendFrameTest extends \unittest\TestCase {
   protected $fixture= NULL;
@@ -14,7 +14,7 @@ class StompSendFrameTest extends \unittest\TestCase {
    *
    */
   public function setUp() {
-    $this->fixture= new \org\codehaus\stomp\frame\SendFrame('/queue/test');
+    $this->fixture= new \peer\stomp\frame\SendFrame('/queue/test');
   }
 
   /**

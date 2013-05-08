@@ -1,4 +1,4 @@
-<?php namespace org\codehaus\stomp;
+<?php namespace peer\stomp;
 
 /**
  * Interface with shared constants

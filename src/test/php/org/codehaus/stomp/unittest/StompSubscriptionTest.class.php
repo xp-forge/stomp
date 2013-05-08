@@ -1,6 +1,6 @@
 <?php namespace org\codehaus\stomp\unittest;
 
-use org\codehaus\stomp\Subscription;
+use peer\stomp\Subscription;
 
 class StompSubscriptionTest extends BaseTest {
 
@@ -96,14 +96,14 @@ class StompSubscriptionTest extends BaseTest {
   #[@test]
   public function subscribe_registeres_in_connection() {
     $id= $this->createSubscription();
-    $this->assertInstanceOf('org.codehaus.stomp.Subscription', $this->fixture->subscriptionById($id));
+    $this->assertInstanceOf('peer.stomp.Subscription', $this->fixture->subscriptionById($id));
   }
 
   /**
    * Test
    *
    */
-  #[@test, @expect('org.codehaus.stomp.Exception')]
+  #[@test, @expect('peer.stomp.Exception')]
   public function subscribe_also_unregisteres_in_connection() {
     $id= $this->createSubscription();
     $this->fixture->subscriptionById($id)->unsubscribe();
@@ -118,9 +118,9 @@ class StompSubscriptionTest extends BaseTest {
   #[@test]
   public function ackmode() {
     $s= new Subscription('foobar');
-    $s->setAckMode(\org\codehaus\stomp\AckMode::AUTO);
-    $s->setAckMode(\org\codehaus\stomp\AckMode::CLIENT);
-    $s->setAckMode(\org\codehaus\stomp\AckMode::INDIVIDUAL);
+    $s->setAckMode(\peer\stomp\AckMode::AUTO);
+    $s->setAckMode(\peer\stomp\AckMode::CLIENT);
+    $s->setAckMode(\peer\stomp\AckMode::INDIVIDUAL);
   }
 
   /**

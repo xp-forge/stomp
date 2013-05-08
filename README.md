@@ -16,11 +16,11 @@ Examples
 A message producer
 
 ```php
-$conn= new \org\codehaus\stomp\Connection(new \peer\URL('stomp://localhost:61613/'));
+$conn= new \peer\stomp\Connection(new \peer\URL('stomp://localhost:61613/'));
 $conn->connect();
 
 $conn->getDestination('/queue/producer')->send(
-  new \org\codehaus\stomp\SendableMessage('Message contents', 'text/plain')
+  new \peer\stomp\SendableMessage('Message contents', 'text/plain')
 );
 ```
 
@@ -28,10 +28,10 @@ $conn->getDestination('/queue/producer')->send(
 A simple message consumer (subscriber):
 
 ```php
-$conn= new \org\codehaus\stomp\Connection(new \peer\URL('stomp://localhost:61613/'));
+$conn= new \peer\stomp\Connection(new \peer\URL('stomp://localhost:61613/'));
 $conn->connect();
 
-$sub= $conn->subscribeTo(new \org\codehaus\stomp\Subscription('/queue/producer', function($message) {
+$sub= $conn->subscribeTo(new \peer\stomp\Subscription('/queue/producer', function($message) {
   Console::writeLine('---> Received message: ', $message);
   $message->ack();
 }));

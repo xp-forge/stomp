@@ -1,8 +1,8 @@
-<?php namespace org\codehaus\stomp\unittest;
+<?php namespace peer\stomp\unittest;
 
-use org\codehaus\stomp\Connection;
-use org\codehaus\stomp\frame\MessageFrame;
-use org\codehaus\stomp\frame\ReceiptFrame;
+use peer\stomp\Connection;
+use peer\stomp\frame\MessageFrame;
+use peer\stomp\frame\ReceiptFrame;
 
 class StompIntegrationTest extends \unittest\TestCase {
   const QUEUE = '/queue/unittest';

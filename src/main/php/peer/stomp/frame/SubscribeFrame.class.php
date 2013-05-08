@@ -1,6 +1,6 @@
-<?php namespace org\codehaus\stomp\frame;
+<?php namespace peer\stomp\frame;
 
-use org\codehaus\stomp\Header;
+use peer\stomp\Header;
 
 /**
  * Subscribe frame
@@ -11,12 +11,12 @@ class SubscribeFrame extends Frame {
   /**
    * Constructor
    *
-   * @see     xp://org.codehaus.stomp.AckMode
+   * @see     xp://peer.stomp.AckMode
    * @param   string queue
    * @param   string ack default 'auto'
    * @param   string selector default NULL
    */
-  public function __construct($queue, $ack= \org\codehaus\stomp\AckMode::AUTO, $selector= NULL) {
+  public function __construct($queue, $ack= \peer\stomp\AckMode::AUTO, $selector= NULL) {
     $this->setDestination($queue);
     $this->setAck($ack);
     if (NULL !== $selector) $this->setSelector($selector);
@@ -67,7 +67,7 @@ class SubscribeFrame extends Frame {
   /**
    * Set ack
    *
-   * @see     xp://org.codehaus.stomp.AckMode
+   * @see     xp://peer.stomp.AckMode
    * @param   string ack
    */
   public function setAck($ack) {

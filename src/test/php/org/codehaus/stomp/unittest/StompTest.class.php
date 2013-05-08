@@ -1,12 +1,12 @@
 <?php namespace org\codehaus\stomp\unittest;
 
-use org\codehaus\stomp\Connection;
+use peer\stomp\Connection;
 
 /**
  * Tests STOMP protocol
  *
  * @see   http://stomp.github.com/stomp-specification-1.1.html#STOMP_Frames
- * @see   xp://org.codehaus.stomp.Connection
+ * @see   xp://peer.stomp.Connection
  */
 class StompTest extends BaseTest {
 
@@ -137,7 +137,7 @@ class StompTest extends BaseTest {
       "\n\0"
     );
 
-    $this->fixture->sendFrame(new \org\codehaus\stomp\frame\SendFrame('/queue/a', 'my-data'));
+    $this->fixture->sendFrame(new \peer\stomp\frame\SendFrame('/queue/a', 'my-data'));
     $this->assertEquals("SEND\n".
       "destination:/queue/a\n".
       "\nmy-data\0",
@@ -145,7 +145,7 @@ class StompTest extends BaseTest {
     );
     $response= $this->fixture->recvFrame();
 
-    $this->assertInstanceOf('org.codehaus.stomp.frame.ReceiptFrame', $response);
+    $this->assertInstanceOf('peer.stomp.frame.ReceiptFrame', $response);
   }
 
   /**
@@ -211,14 +211,14 @@ class StompTest extends BaseTest {
     );
 
     $recvd= $this->fixture->recvFrame();
-    $this->assertInstanceOf('org.codehaus.stomp.frame.ReceiptFrame', $recvd);
+    $this->assertInstanceOf('peer.stomp.frame.ReceiptFrame', $recvd);
   }
 
   /**
    * Test
    *
    */
-  #[@test, @expect(class= 'org.codehaus.stomp.Exception', withMessage= '/ACK received without/')]
+  #[@test, @expect(class= 'peer.stomp.Exception', withMessage= '/ACK received without/')]
   public function receive_throws_exception_on_error_frame() {
     $this->fixture->setResponseBytes("ERROR\n".
       "message:ACK received without a subscription id for acknowledge!\n".
@@ -233,9 +233,9 @@ class StompTest extends BaseTest {
   /**
    * Helper
    *
-   * @param   org.codehaus.stomp.frame.Frame fram
+   * @param   peer.stomp.frame.Frame fram
    */
-  protected function sendWithReceiptFrame(\org\codehaus\stomp\frame\Frame $frame) {
+  protected function sendWithReceiptFrame(\peer\stomp\frame\Frame $frame) {
     $this->fixture->setResponseBytes("RECEIPT\n".
       "receipt-id:message-id\n".
       "\n\0"
@@ -250,7 +250,7 @@ class StompTest extends BaseTest {
    */
   #[@test]
   public function subscribe() {
-    $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\SubscribeFrame('/queue/a'));
+    $this->sendWithReceiptFrame(new \peer\stomp\frame\SubscribeFrame('/queue/a'));
     $this->assertEquals("SUBSCRIBE\n".
       "destination:/queue/a\n".
       "ack:auto\n".
@@ -266,7 +266,7 @@ class StompTest extends BaseTest {
    */
   #[@test]
   public function unsubscribe() {
-    $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\UnsubscribeFrame('/queue/a'));
+    $this->sendWithReceiptFrame(new \peer\stomp\frame\UnsubscribeFrame('/queue/a'));
     $this->assertEquals("UNSUBSCRIBE\n".
       "destination:/queue/a\n".
       "\n".
@@ -281,7 +281,7 @@ class StompTest extends BaseTest {
    */
   #[@test]
   public function beginTransaction() {
-    $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\BeginFrame('my-transaction'));
+    $this->sendWithReceiptFrame(new \peer\stomp\frame\BeginFrame('my-transaction'));
     $this->assertEquals("BEGIN\n".
       "transaction:my-transaction\n\n\0"
       , $this->fixture->readSentBytes()
@@ -294,7 +294,7 @@ class StompTest extends BaseTest {
    */
   #[@test]
   public function abortTransaction() {
-    $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\AbortFrame('my-transaction'));
+    $this->sendWithReceiptFrame(new \peer\stomp\frame\AbortFrame('my-transaction'));
     $this->assertEquals("ABORT\n".
       "transaction:my-transaction\n\n\0"
       , $this->fixture->readSentBytes()
@@ -307,7 +307,7 @@ class StompTest extends BaseTest {
    */
   #[@test]
   public function commitTransaction() {
-    $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\CommitFrame('my-transaction'));
+    $this->sendWithReceiptFrame(new \peer\stomp\frame\CommitFrame('my-transaction'));
     $this->assertEquals("COMMIT\n".
       "transaction:my-transaction\n\n\0"
       , $this->fixture->readSentBytes()
@@ -320,7 +320,7 @@ class StompTest extends BaseTest {
    */
   #[@test]
   public function ack() {
-    $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\AckFrame('0xefefef', '1x1x1x1x1x1'));
+    $this->sendWithReceiptFrame(new \peer\stomp\frame\AckFrame('0xefefef', '1x1x1x1x1x1'));
     $this->assertEquals("ACK\n".
       "message-id:0xefefef\n".
       "subscription:1x1x1x1x1x1\n".
@@ -335,7 +335,7 @@ class StompTest extends BaseTest {
    */
   #[@test]
   public function nack() {
-    $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\NackFrame('0xefefef', '0x0x0x0x0'));
+    $this->sendWithReceiptFrame(new \peer\stomp\frame\NackFrame('0xefefef', '0x0x0x0x0'));
     $this->assertEquals("NACK\n".
       "message-id:0xefefef\n".
       "subscription:0x0x0x0x0\n".
@@ -350,7 +350,7 @@ class StompTest extends BaseTest {
    */
   #[@test]
   public function ackWithinTransaction() {
-    $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\AckFrame('0xefefef', 'some-subscription', "some-transaction"));
+    $this->sendWithReceiptFrame(new \peer\stomp\frame\AckFrame('0xefefef', 'some-subscription', "some-transaction"));
     $this->assertEquals("ACK\n".
       "message-id:0xefefef\n".
       "subscription:some-subscription\n".
@@ -366,7 +366,7 @@ class StompTest extends BaseTest {
    */
   #[@test]
   public function nackWithinTransaction() {
-    $this->sendWithReceiptFrame(new \org\codehaus\stomp\frame\NackFrame('0xefefef', 'some-subscription', "some-transaction"));
+    $this->sendWithReceiptFrame(new \peer\stomp\frame\NackFrame('0xefefef', 'some-subscription', "some-transaction"));
     $this->assertEquals("NACK\n".
       "message-id:0xefefef\n".
       "subscription:some-subscription\n".
@@ -495,7 +495,7 @@ class StompTest extends BaseTest {
    */
   #[@test]
   public function acquire_destination() {
-    $this->assertInstanceOf('org.codehaus.stomp.Destination', $this->fixture->getDestination('/queue/unittest'));
+    $this->assertInstanceOf('peer.stomp.Destination', $this->fixture->getDestination('/queue/unittest'));
   }
 
   /**

@@ -1,11 +1,11 @@
-<?php namespace org\codehaus\stomp\frame;
+<?php namespace peer\stomp\frame;
 
-use org\codehaus\stomp\Header;
+use peer\stomp\Header;
 
 /**
  * Abstract frame base class
  *
- * @test  xp://org.codehaus.stomp.unittest.StompFrameTest
+ * @test  xp://peer.stomp.unittest.StompFrameTest
  */
 abstract class Frame extends \lang\Object implements \util\log\Traceable {
   protected $headers  = array();

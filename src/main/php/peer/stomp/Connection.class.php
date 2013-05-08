@@ -1,4 +1,4 @@
-<?php namespace org\codehaus\stomp;
+<?php namespace peer\stomp;
 
 use util\log\Traceable;
 use peer\URL;
@@ -11,19 +11,19 @@ use io\streams\MemoryOutputStream;
 use io\streams\OutputStreamWriter;
 use io\streams\StringReader;
 use io\streams\StringWriter;
-use org\codehaus\stomp\frame\Frame;
-use org\codehaus\stomp\frame\LoginFrame;
-use org\codehaus\stomp\frame\ConnectedFrame;
-use org\codehaus\stomp\frame\DisconnectFrame;
-use org\codehaus\stomp\frame\ReceiptFrame;
-use org\codehaus\stomp\frame\ErrorFrame;
-use org\codehaus\stomp\frame\MessageFrame;
+use peer\stomp\frame\Frame;
+use peer\stomp\frame\LoginFrame;
+use peer\stomp\frame\ConnectedFrame;
+use peer\stomp\frame\DisconnectFrame;
+use peer\stomp\frame\ReceiptFrame;
+use peer\stomp\frame\ErrorFrame;
+use peer\stomp\frame\MessageFrame;
 
 /**
  * API to the STOMP protocol
  *
  * @see   http://stomp.codehaus.org/Protocol
- * @test  xp://org.codehaus.stomp.unittest.StompTest
+ * @test  xp://peer.stomp.unittest.StompTest
  */
 class Connection extends \lang\Object implements Traceable {
   protected $url  = NULL;
@@ -98,7 +98,7 @@ class Connection extends \lang\Object implements Traceable {
    * This is a low-level protocol function.
    *
    * @param   double timeout default 0.2
-   * @return  org.codehaus.stomp.frame.Frame or NULL
+   * @return  peer.stomp.frame.Frame or NULL
    */
   public function recvFrame($timeout= 0.2) {
 
@@ -150,8 +150,8 @@ class Connection extends \lang\Object implements Traceable {
    *
    * This is a low-level protocol function.
    *
-   * @param   org.codehaus.stomp.frame.Frame frame
-   * @return  org.codehaus.stomp.Frame or NULL
+   * @param   peer.stomp.frame.Frame frame
+   * @return  peer.stomp.Frame or NULL
    */
   public function sendFrame(Frame $frame) {
 
@@ -242,8 +242,8 @@ class Connection extends \lang\Object implements Traceable {
   /**
    * Create new subscription
    *
-   * @param  org.codehaus.stomp.StompSubscription $subscription
-   * @return org.codehaus.stomp.StompSubscription
+   * @param  peer.stomp.StompSubscription $subscription
+   * @return peer.stomp.StompSubscription
    */
   public function subscribeTo(Subscription $subscription) {
     $subscription->subscribe($this);
@@ -255,7 +255,7 @@ class Connection extends \lang\Object implements Traceable {
    * Unsubscribe; to be called from Subscription directly,
    * should not be called directly.
    * 
-   * @param  org.codehaus.stomp.Subscription $subscription
+   * @param  peer.stomp.Subscription $subscription
    */
   public function _unsubscribe(Subscription $subscription) {
     unset($this->subscriptions[$subscription->getId()]);
@@ -265,8 +265,8 @@ class Connection extends \lang\Object implements Traceable {
    * Retrieve an active subscription by its id.
    * 
    * @param  string id
-   * @return org.codehaus.stomp.Subscription
-   * @throws org.codehaus.stomp.Exception if no subscription could be found.
+   * @return peer.stomp.Subscription
+   * @throws peer.stomp.Exception if no subscription could be found.
    */
   public function subscriptionById($id) {
     if (!isset($this->subscriptions[$id])) {
@@ -280,7 +280,7 @@ class Connection extends \lang\Object implements Traceable {
    * Receive a message
    *
    * @param   double timeout default 0.2 pass NULL for no timeout
-   * @return  org.codehaus.stomp.frame.Frame
+   * @return  peer.stomp.frame.Frame
    */
   public function receive($timeout= 0.2) {
     $frame= $this->recvFrame($timeout);
@@ -322,7 +322,7 @@ class Connection extends \lang\Object implements Traceable {
    * Retrieve destination
    *
    * @param string name
-   * @return org.codehaus.stomp.Destination
+   * @return peer.stomp.Destination
    */
   public function getDestination($name) {
     return new Destination($name, $this);

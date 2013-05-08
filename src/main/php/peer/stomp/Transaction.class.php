@@ -1,8 +1,8 @@
-<?php namespace org\codehaus\stomp;
+<?php namespace peer\stomp;
 
-use org\codehaus\stomp\frame\BeginFrame;
-use org\codehaus\stomp\frame\AbortFrame;
-use org\codehaus\stomp\frame\CommitFrame;
+use peer\stomp\frame\BeginFrame;
+use peer\stomp\frame\AbortFrame;
+use peer\stomp\frame\CommitFrame;
 
 /**
  * Represent a STOMP transaction
@@ -33,8 +33,8 @@ class Transaction extends \lang\Object {
   /**
    * Begin new transaction
    *
-   * @param  org.codehaus.stomp.Connection $conn
-   * @return org.codehaus.stomp.Transaction
+   * @param  peer.stomp.Connection $conn
+   * @return peer.stomp.Transaction
    */
   public function begin(Connection $conn) {
     try {

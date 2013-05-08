@@ -1,11 +1,11 @@
-<?php namespace org\codehaus\stomp\frame;
+<?php namespace peer\stomp\frame;
 
-use org\codehaus\stomp\Header;
+use peer\stomp\Header;
 
 /**
  * Send frame
  *
- * @test  xp://org.codehaus.stomp.unittest.StompSendFrameTest
+ * @test  xp://peer.stomp.unittest.StompSendFrameTest
  */
 class SendFrame extends Frame {
 

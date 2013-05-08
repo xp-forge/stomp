@@ -1,10 +1,10 @@
 <?php namespace org\codehaus\stomp\unittest;
 
-use org\codehaus\stomp\Message;
-use org\codehaus\stomp\SendableMessage;
-use org\codehaus\stomp\ReceivedMessage;
-use org\codehaus\stomp\Subscription;
-use org\codehaus\stomp\Transaction;
+use peer\stomp\Message;
+use peer\stomp\SendableMessage;
+use peer\stomp\ReceivedMessage;
+use peer\stomp\Subscription;
+use peer\stomp\Transaction;
 
 class MessageTest extends BaseTest {
   
@@ -33,7 +33,7 @@ class MessageTest extends BaseTest {
     );
 
     $m= $this->fixture->receive();
-    $this->assertInstanceOf('org.codehaus.stomp.Message', $m);
+    $this->assertInstanceOf('peer.stomp.Message', $m);
   }
 
   /**
@@ -74,7 +74,7 @@ class MessageTest extends BaseTest {
     );
 
     $m= $this->fixture->receive();
-    $this->assertInstanceOf('org.codehaus.stomp.Destination', $m->getDestination());
+    $this->assertInstanceOf('peer.stomp.Destination', $m->getDestination());
   }
 
   /**
@@ -344,7 +344,7 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function not_ackable_with_auto_subscription() {
-    $this->assertEquals(FALSE, $this->subscriptionWithAckMode(\org\codehaus\stomp\AckMode::AUTO)->ackable());
+    $this->assertEquals(FALSE, $this->subscriptionWithAckMode(\peer\stomp\AckMode::AUTO)->ackable());
   }
 
   /**
@@ -353,7 +353,7 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function ackable_with_client_subscription() {
-    $this->assertEquals(TRUE, $this->subscriptionWithAckMode(\org\codehaus\stomp\AckMode::CLIENT)->ackable());
+    $this->assertEquals(TRUE, $this->subscriptionWithAckMode(\peer\stomp\AckMode::CLIENT)->ackable());
   }
 
   /**
@@ -362,6 +362,6 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function ackable_with_clientindividual_subscription() {
-    $this->assertEquals(TRUE, $this->subscriptionWithAckMode(\org\codehaus\stomp\AckMode::INDIVIDUAL)->ackable());
+    $this->assertEquals(TRUE, $this->subscriptionWithAckMode(\peer\stomp\AckMode::INDIVIDUAL)->ackable());
   }
 }

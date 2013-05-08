@@ -1,6 +1,6 @@
-<?php namespace org\codehaus\stomp;
+<?php namespace peer\stomp;
 
-use org\codehaus\stomp\frame\SendFrame;
+use peer\stomp\frame\SendFrame;
 
 /**
  * Sendable message
@@ -11,8 +11,8 @@ class SendableMessage extends Message {
   /**
    * Retrieve SEND frame for message
    * 
-   * @param  org.codehaus.stomp.Destination $dest
-   * @return org.codehaus.stomp.frame.SendFrame
+   * @param  peer.stomp.Destination $dest
+   * @return peer.stomp.frame.SendFrame
    */
   public function toFrame(Destination $dest) {
     $headers= array();

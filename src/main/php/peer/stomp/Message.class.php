@@ -1,4 +1,4 @@
-<?php namespace org\codehaus\stomp;
+<?php namespace peer\stomp;
 
 /**
  * Message base class

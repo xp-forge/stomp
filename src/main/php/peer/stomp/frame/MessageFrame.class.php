@@ -1,4 +1,4 @@
-<?php namespace org\codehaus\stomp\frame;
+<?php namespace peer\stomp\frame;
 
 /**
  * Message frame

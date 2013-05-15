@@ -1,6 +1,24 @@
 stomp ChangeLog
 ========================================================================
 
+2.x Series
+----------
+
+## 2.0.0, released 2013-05-15
+* Support STOMP 1.1 features: virtual hosts, protocol version negotiation,
+  message NACK - @kiesel
+* Implement PHP namespaces - @kiesel
+* Added high-level OO STOMP API: New Connection, Subscription, Message,
+  Transaction, Destination classes - @kiesel
+* Hide low-level functionality - @kiesel
+* Require XP >= 5.9.0 - @kiesel
+* Complete overhaul of class structure, no BC(!) - @kiesel
+* added examples, README - @kiesel
+
+1.x Series
+----------
+* Drop ANT support, 2013-05-15 = 1.2.3 @kiesel
+* Fix issue #1 and #2, 2013-03-18 = 1.2.2 @thekid
 * QA-Release, 2010-09-18 = 1.2.1 @thekid
 * Support selectors in subscribe(), 2010-05-14 = 1.2.0 @thekid
 * Fix payload reading, 2010-05-12 = 1.1.1 @thekid

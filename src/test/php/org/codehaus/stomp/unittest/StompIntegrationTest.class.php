@@ -24,7 +24,7 @@ class StompIntegrationTest extends \unittest\TestCase {
 
     // Arguments to server process
     $args= array(
-      'debugServerProtocolToFile' => 'C:\cygwin\home\friebe\devel\stomp\debug.log',   
+      'debugServerProtocolToFile' => null,
     );
 
     // Start server process

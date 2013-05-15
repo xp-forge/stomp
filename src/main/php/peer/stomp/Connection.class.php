@@ -39,8 +39,7 @@ class Connection extends \lang\Object implements Traceable {
   /**
    * Constructor
    *
-   * @param   string server
-   * @param   int port
+   * @param   peer.URL $url
    */
   public function __construct(URL $url) {
     $this->url= $url;

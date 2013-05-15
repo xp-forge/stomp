@@ -17,7 +17,6 @@ class StompIntegrationTest extends \unittest\TestCase {
 
   /**
    * Sets up test case
-   *
    */
   #[@beforeClass]
   public static function startStompServer() {
@@ -50,7 +49,6 @@ class StompIntegrationTest extends \unittest\TestCase {
 
   /**
    * Shut down FTP server
-   *
    */
   #[@afterClass]
   public static function shutdownStompServer() {
@@ -84,7 +82,7 @@ class StompIntegrationTest extends \unittest\TestCase {
 
   #[@beforeClass]
   public static function logger() {
-   // \util\log\Logger::getInstance()->getCategory()->addAppender(new \util\log\ColoredConsoleAppender());
+    // \util\log\Logger::getInstance()->getCategory()->addAppender(new \util\log\ColoredConsoleAppender());
   }
 
   public function setUp() {

@@ -173,7 +173,7 @@ class StompIntegrationTest extends \unittest\TestCase {
     }));
 
     // Receive (using one second timeout)
-    $conn->consume(1.0);
+    $this->assertTrue($conn->consume(1.0), 'consume');
     $this->assertEquals('This is a text message', $messages[0]->getBody());
   }
 

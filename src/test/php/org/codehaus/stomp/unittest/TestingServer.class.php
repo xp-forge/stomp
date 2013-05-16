@@ -44,10 +44,18 @@ class TestingServer extends \lang\Object {
             }
           },
 
+          "DISCONNECT" => function($frame, $protocol) {
+            return null;
+          },
+
           "SEND" => function($frame, $protocol) {
             if ("/queue/test" === $frame->getHeader("destination")) {
               $protocol->messages[]= $frame->getBody();
-              return null;
+              if (!$frame->hasHeader("receipt")) return null;
+
+              $receipt= $protocol->frame("RECEIPT");
+              $receipt->addHeader("receipt-id", $frame->getHeader("receipt"));
+              return $receipt;
             } else {
               return $protocol->frame("ERROR");
             }

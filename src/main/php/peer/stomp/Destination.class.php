@@ -41,9 +41,17 @@ class Destination extends \lang\Object {
    * Send a message to destination
    * 
    * @param  peer.stomp.SendableMessage $message
+   * @return string
    */
   public function send(SendableMessage $message) {
-    $this->getConnection()->sendFrame($message->toFrame($this));
+    $frame= $message->toFrame($this);
+    if ($frame->requiresImmediateResponse()) {
+      $receipt= $this->getConnection()->sendFrame($frame);
+      return cast($receipt, 'peer.stomp.frame.ReceiptFrame')->getHeader(Header::RECEIPTID);
+    } else {
+      $this->getConnection()->sendFrame($frame);    // Fire and forget
+      return null;
+    }
   }
 
   /**

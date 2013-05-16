@@ -163,7 +163,6 @@ class Connection extends \lang\Object implements Traceable {
     }
 
     $frame->write($this->out);
-
     if ($frame->requiresImmediateResponse()) {
       return $this->recvFrame();
     }

@@ -130,12 +130,20 @@ class StompIntegrationTest extends \unittest\TestCase {
   }
 
   #[@test]
-  public function send_subscribe_and_receive_sent_message() {
+  public function send_message_with_receipt() {
     $conn= $this->newConnection();
 
-    // Send a message
+    $message= new SendableMessage('This is a text message');
+    $message->addHeader('receipt', 'some-message-receipt');
+    $response= $conn->getDestination(self::QUEUE)->send($message);
+
+    $this->assertEquals('some-message-receipt', $response);
+  }
+
+  #[@test]
+  public function subscribe_to_empty_queue() {
+    $conn= $this->newConnection();
     $dest= $conn->getDestination(self::QUEUE);
-    $dest->send(new SendableMessage('This is a text message'));
 
     // Subscribe
     $messages= create('new util.collections.Vector<peer.stomp.Message>');
@@ -145,18 +153,28 @@ class StompIntegrationTest extends \unittest\TestCase {
     }));
 
     // Receive
-    $conn->consume(null);
-    $this->assertEquals('This is a text message', $messages[0]->getBody());
+    $conn->consume();
+    $this->assertEquals(true, $messages->isEmpty());
   }
 
-  #[@test, @ignore('API changed')]
-  public function receiveReceipt() {
-    $frame= new SendFrame(self::QUEUE, 'body');
-    $frame->addHeader('receipt', 'some-message-receipt');
+  #[@test]
+  public function send_subscribe_and_receive_sent_message() {
+    $conn= $this->newConnection();
+    $dest= $conn->getDestination(self::QUEUE);
 
-    $response= $this->fixture->sendFrame($frame);
-    $this->assertTrue($response instanceof ReceiptFrame);
-    $this->assertEquals($frame->getHeader('receipt'), $response->getHeader('receipt-id'));
+    // Send a message
+    $dest->send(new SendableMessage('This is a text message'));
+
+    // Subscribe
+    $messages= create('new util.collections.Vector<peer.stomp.Message>');
+    $sub= $conn->subscribeTo(new Subscription($dest->getName(), function($message) use($messages) {
+      $messages[]= $message;
+      $message->ack();
+    }));
+
+    // Receive (using one second timeout)
+    $conn->consume(1.0);
+    $this->assertEquals('This is a text message', $messages[0]->getBody());
   }
 
   #[@test, @ignore('API changed')]

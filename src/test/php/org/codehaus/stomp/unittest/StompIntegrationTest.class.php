@@ -8,6 +8,10 @@ use peer\stomp\frame\SendFrame;
 use util\log\Logger;
 use peer\URL;
 
+/**
+ * Integration test: Fires up a server in the background and actually
+ * tests protocol.
+ */
 class StompIntegrationTest extends \unittest\TestCase {
   const QUEUE = '/queue/unittest';
 
@@ -85,12 +89,18 @@ class StompIntegrationTest extends \unittest\TestCase {
     // \util\log\Logger::getInstance()->getCategory()->addAppender(new \util\log\ColoredConsoleAppender());
   }
 
+  /**
+   * Set up test: Connect
+   */
   public function setUp() {
     $this->fixture= new Connection(new URL('stomp://test:test@'.self::$bindAddress));
     $this->fixture->setTrace(\util\log\Logger::getInstance()->getCategory());
     $this->fixture->connect();
   }
 
+  /**
+   * Set up test: Disconnect
+   */
   public function tearDown() {
     $this->fixture->disconnect();
   }

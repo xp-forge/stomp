@@ -124,6 +124,26 @@ class StompIntegrationTest extends \unittest\TestCase {
   }
 
   #[@test]
+  public function send_subscribe_and_receive_sent_message() {
+    $conn= $this->newConnection();
+    $dest= $conn->getDestination(self::QUEUE);
+
+    // Send a message
+    $dest->send(new SendableMessage('This is a text message'));
+
+    // Subscribe
+    $messages= create('new util.collections.Vector<peer.stomp.Message>');
+    $sub= $conn->subscribeTo(new Subscription($dest->getName(), function($message) use($messages) {
+      $messages[]= $message;
+      $message->ack();
+    }));
+
+    // Receive (using one second timeout)
+    $this->assertTrue($conn->consume(1.0), 'consume');
+    $this->assertEquals('This is a text message', $messages[0]->getBody());
+  }
+
+  #[@test]
   public function send_message() {
     $conn= $this->newConnection();
     $conn->getDestination(self::QUEUE)->send(new SendableMessage('This is a text message'));
@@ -155,34 +175,5 @@ class StompIntegrationTest extends \unittest\TestCase {
     // Receive
     $conn->consume();
     $this->assertEquals(true, $messages->isEmpty());
-  }
-
-  #[@test]
-  public function send_subscribe_and_receive_sent_message() {
-    $conn= $this->newConnection();
-    $dest= $conn->getDestination(self::QUEUE);
-
-    // Send a message
-    $dest->send(new SendableMessage('This is a text message'));
-
-    // Subscribe
-    $messages= create('new util.collections.Vector<peer.stomp.Message>');
-    $sub= $conn->subscribeTo(new Subscription($dest->getName(), function($message) use($messages) {
-      $messages[]= $message;
-      $message->ack();
-    }));
-
-    // Receive (using one second timeout)
-    $this->assertTrue($conn->consume(1.0), 'consume');
-    $this->assertEquals('This is a text message', $messages[0]->getBody());
-  }
-
-  #[@test, @ignore('API changed')]
-  public function emptyQueue() {
-    $this->fixture->subscribe(self::QUEUE, 'client');
-
-    while ($message= $this->fixture->receive()) {
-      $this->fixture->ack($message->getHeader('message-id'));
-    }
   }
 }

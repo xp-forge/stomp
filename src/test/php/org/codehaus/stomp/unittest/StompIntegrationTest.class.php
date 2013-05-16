@@ -2,6 +2,7 @@
 
 use peer\stomp\Connection;
 use peer\stomp\SendableMessage;
+use peer\stomp\Subscription;
 use peer\stomp\frame\MessageFrame;
 use peer\stomp\frame\ReceiptFrame;
 use peer\stomp\frame\SendFrame;
@@ -13,7 +14,7 @@ use peer\URL;
  * tests protocol.
  */
 class StompIntegrationTest extends \unittest\TestCase {
-  const QUEUE = '/queue/unittest';
+  const QUEUE = '/queue/test';
 
   protected static $serverProcess = null;
   protected static $bindAddress   = null;
@@ -116,12 +117,23 @@ class StompIntegrationTest extends \unittest\TestCase {
     $this->fixture->getDestination(self::QUEUE)->send(new SendableMessage('This is a text message'));
   }
 
-  #[@test, @ignore('API changed')]
+  #[@test]
   public function subscribeAndReceive() {
-    $this->fixture->subscribe(self::QUEUE, 'client');
 
-    $message= $this->fixture->receive();
-    $this->assertTrue($message instanceof MessageFrame);
+    // Send a message
+    $dest= $this->fixture->getDestination(self::QUEUE);
+    $dest->send(new SendableMessage('This is a text message'));
+
+    // Subscribe
+    $messages= create('new Vector<peer.stomp.Message>');
+    $sub= $this->fixture->subscribeTo(new Subscription($dest->getName(), function($message) use($messages) {
+      $messages[]= $message;
+      $message->ack();
+    }));
+
+    // Receive
+    while ($this->fixture->consume()) { }
+    $this->assertEquals('This is a text message', $messages[0]->getBody());
   }
 
   #[@test, @ignore('API changed')]

@@ -36,6 +36,7 @@ class TestingServer extends \lang\Object {
         $this->frames= Package::forName("peer.stomp.frame");
         $this->handlers= array(
           "CONNECT" => function($frame, $protocol) {
+            $protocol->messages= array();
             if ("testtest" === $frame->getHeader("login").$frame->getHeader("passcode")) {
               return $protocol->frame("CONNECTED");
             } else {
@@ -52,6 +53,10 @@ class TestingServer extends \lang\Object {
             }
           },
 
+          "ACK" => function($frame, $protocol) {
+            return null;
+          },
+
           "SUBSCRIBE" => function($frame, $protocol) {
             if ("/queue/test" === $frame->getHeader("destination")) {
               $i= 1;
@@ -59,6 +64,8 @@ class TestingServer extends \lang\Object {
               while ($dequeued= array_shift($protocol->messages)) {
                 $message= $protocol->frame("message");
                 $message->addHeader("message-id", $i++);
+                $message->addHeader("destination", $frame->getHeader("destination"));
+                $message->addHeader("subscription", $frame->getHeader("id"));
                 $message->setBody($dequeued);
                 $messages[]= $message;
               }
@@ -113,7 +120,7 @@ class TestingServer extends \lang\Object {
           return null;
         } else if (is_array($response)) {
           $out= new StringWriter($socket->getOutputStream());
-          foreach ($reponse as $frame) {
+          foreach ($response as $frame) {
             $frame->write($out);
           }
         } else {

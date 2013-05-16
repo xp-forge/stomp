@@ -125,14 +125,14 @@ class StompIntegrationTest extends \unittest\TestCase {
     $dest->send(new SendableMessage('This is a text message'));
 
     // Subscribe
-    $messages= create('new Vector<peer.stomp.Message>');
+    $messages= create('new util.collections.Vector<peer.stomp.Message>');
     $sub= $this->fixture->subscribeTo(new Subscription($dest->getName(), function($message) use($messages) {
       $messages[]= $message;
       $message->ack();
     }));
 
     // Receive
-    while ($this->fixture->consume()) { }
+    $this->fixture->consume(null);
     $this->assertEquals('This is a text message', $messages[0]->getBody());
   }
 

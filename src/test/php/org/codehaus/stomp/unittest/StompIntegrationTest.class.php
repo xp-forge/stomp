@@ -91,48 +91,61 @@ class StompIntegrationTest extends \unittest\TestCase {
   }
 
   /**
-   * Set up test: Connect
+   * Connect and authenticate
+   *
+   * @return  peer.stomp.Connection
    */
-  public function setUp() {
+  public function newConnection() {
     $this->fixture= new Connection(new URL('stomp://test:test@'.self::$bindAddress));
     $this->fixture->setTrace(\util\log\Logger::getInstance()->getCategory());
     $this->fixture->connect();
+    return $this->fixture;
   }
 
   /**
    * Set up test: Disconnect
    */
   public function tearDown() {
-    $this->fixture->disconnect();
+    if ($this->fixture) {
+      $this->fixture->disconnect();
+    }
   }
 
   #[@test, @expect('peer.AuthenticationException')]
-  public function invalidCredentials() {
+  public function login_with_invalid_credentials() {
     $conn= new Connection(new URL('stomp://unknownuser:invalidpass@'.self::$bindAddress));
     $conn->connect();
   }
 
-  #[@test]
-  public function sendMessage() {
-    $this->fixture->getDestination(self::QUEUE)->send(new SendableMessage('This is a text message'));
+  #[@test, @expect('peer.AuthenticationException')]
+  public function login_without_credentials() {
+    $conn= new Connection(new URL('stomp://'.self::$bindAddress));
+    $conn->connect();
   }
 
   #[@test]
-  public function subscribeAndReceive() {
+  public function send_message() {
+    $conn= $this->newConnection();
+    $conn->getDestination(self::QUEUE)->send(new SendableMessage('This is a text message'));
+  }
+
+  #[@test]
+  public function send_subscribe_and_receive_sent_message() {
+    $conn= $this->newConnection();
 
     // Send a message
-    $dest= $this->fixture->getDestination(self::QUEUE);
+    $dest= $conn->getDestination(self::QUEUE);
     $dest->send(new SendableMessage('This is a text message'));
 
     // Subscribe
     $messages= create('new util.collections.Vector<peer.stomp.Message>');
-    $sub= $this->fixture->subscribeTo(new Subscription($dest->getName(), function($message) use($messages) {
+    $sub= $conn->subscribeTo(new Subscription($dest->getName(), function($message) use($messages) {
       $messages[]= $message;
       $message->ack();
     }));
 
     // Receive
-    $this->fixture->consume(null);
+    $conn->consume(null);
     $this->assertEquals('This is a text message', $messages[0]->getBody());
   }
 

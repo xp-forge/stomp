@@ -5,12 +5,22 @@
   <!-- The Basics -->
   <groupId>net.xp-forge</groupId>
   <artifactId>stomp</artifactId>
-  <version>5.9.0-SNAPSHOT</version>
+  <version>6.0.0-SNAPSHOT</version>
   <packaging>xar</packaging>
+
+  <!-- Sonatype OSS parent -->
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
 
   <!-- More Project Information -->
   <name>STOMP XP-Module</name>
-  <description>The stomp module is an add-on to the XP framework that adds interoperability packages to talk to STOMP-enabled message queue servers, such as Apache ActiveMQ.</description>
+  <description>
+    The stomp module is an add-on to the XP framework that adds interoperability packages to talk to
+    STOMP-enabled message queue servers, such as Apache ActiveMQ.
+  </description>
   <url>https://github.com/xp-forge/stomp</url>
   <inceptionYear>2009</inceptionYear>
   <organization>
@@ -19,12 +29,18 @@
   </organization>
   <developers>
     <developer>
-      <id>xp-framework</id>
-      <name>XP-Framework Team</name>
-      <email>devs@xp-framework.net</email>
-      <url>http://xp-framework.net</url>
+      <id>kiesel</id>
+      <name>Alex Kiesel</name>
+      <email>alex@kiesel.name</email>
+      <url>https://github.com/kiesel/</url>
     </developer>
   </developers>
+  <contributors>
+    <contributor>
+      <name>Timm Friebe</name>
+      <url>https://github.com/thekid</url>
+    </contributor>
+  </contributors>
   <licenses>
     <license>
       <name>BSD</name>
@@ -43,7 +59,7 @@
     <dependency>
       <groupId>net.xp-framework</groupId>
       <artifactId>core</artifactId>
-      <version>5.9.0-RC9</version>
+      <version>5.9.3</version>
       <type>xar</type>
     </dependency>
   </dependencies>
@@ -64,6 +80,44 @@
       </plugin>
     </plugins>
   </build>
+
+  <!--
+   ! When releasing to Sonatype, build and attach the "tests",
+   ! "sources" and "apidoc" artifacts
+   !-->
+  <profiles>
+    <profile>
+      <id>sonatype-oss-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>net.xp-forge.maven.plugins</groupId>
+            <artifactId>xp-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-tests</id>
+                <goals>
+                  <goal>test-package</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>source-no-fork</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>attach-apidoc</id>
+                <goals>
+                  <goal>apidoc-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <!-- Source code management -->
   <scm>

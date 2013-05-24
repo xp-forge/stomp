@@ -69,7 +69,7 @@ class Transaction extends \lang\Object {
   /**
    * Assert a transaction is currently ongoing
    *
-   * @throws   If no transaction is running
+   * @throws  lang.IllegalStateException If no transaction is running
    */
   protected function assertBegun() {
     if (!$this->conn instanceof Connection) {

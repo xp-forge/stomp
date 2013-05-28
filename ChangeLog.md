@@ -1,8 +1,11 @@
 stomp ChangeLog
 ========================================================================
 
+## ?.?.? / ????-??-??
+
 ## 6.0.0 / 2013-05-24
 
+* Bump major version to 6 - see pull request #5 (@thekid, @kiesel, @mrosoiu)
 * Support STOMP 1.1 features: virtual hosts, protocol version negotiation,
   message NACK - (@kiesel)
 * Implement PHP namespaces - (@kiesel)

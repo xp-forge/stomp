@@ -23,6 +23,10 @@ abstract class BaseTest extends \unittest\TestCase {
         $this->_connect();
       }
 
+      protected function canRead($timeout) {
+        return $this->in->getStream()->available() > 0;
+      }
+
       protected function _connect() {
         $this->in= new \\io\\streams\\StringReader(new \\io\\streams\\MemoryInputStream($this->response));
         $this->out= new \\io\\streams\\StringWriter(new \\io\\streams\\MemoryOutputStream());

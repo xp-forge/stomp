@@ -93,6 +93,17 @@ class Connection extends \lang\Object implements Traceable {
   }
 
   /**
+   * Check the underlying socket for data available in a given
+   * time frame.
+   *
+   * @param  int $timeout
+   * @return bool
+   */
+  protected function canRead($timeout) {
+    return $this->socket->canRead($timeout);
+  }
+
+  /**
    * Receive next frame, nonblocking
    *
    * This is a low-level protocol function.
@@ -103,10 +114,11 @@ class Connection extends \lang\Object implements Traceable {
   public function recvFrame($timeout= 0.2) {
 
     // Check whether we can read, before we actually read...
-    if ($this->socket instanceof Socket && !$this->socket->canRead($timeout)) {
+    if (!$this->canRead($timeout)) {
       $this->debug('<<<', '0 bytes - reading no frame.');
       return null;
     }
+
 
     $line= null;
     while (!$line) {
@@ -132,7 +144,7 @@ class Connection extends \lang\Object implements Traceable {
     // but not reacting correctly in other places!
     $c= '';
     while (
-      ($this->socket instanceof Socket ? $this->socket->canRead(0.01) : $this->in->getStream()->available()) &&
+      $this->canRead(0.01) &&
       "\n" === ($c= $this->in->read(1))
     ) {
       // Skip

@@ -218,6 +218,18 @@ class StompTest extends BaseTest {
    * Test
    *
    */
+  #[@test, @ignore('Behavior broken, but test need refactoring first.')]
+  public function recv_eats_any_empty_line_and_bails_if_no_command_follows() {
+    $this->fixture->setResponseBytes("\n\n\n\n");
+
+    $recvd= $this->fixture->recvFrame();
+    $this->assertInstanceOf('peer.stomp.frame.ReceiptFrame', $recvd);
+  }
+
+  /**
+   * Test
+   *
+   */
   #[@test, @expect(class= 'peer.stomp.Exception', withMessage= '/ACK received without/')]
   public function receive_throws_exception_on_error_frame() {
     $this->fixture->setResponseBytes("ERROR\n".

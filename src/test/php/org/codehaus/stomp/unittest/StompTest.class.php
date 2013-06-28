@@ -32,10 +32,6 @@ class StompTest extends BaseTest {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function login_without_credentials() {
     $this->fixture= $this->newConnection(new \peer\URL('stomp://localhost/'));
@@ -117,10 +113,6 @@ class StompTest extends BaseTest {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= '/Invalid protocol version/')]
   public function connect_requires_valid_version() {
     $this->newConnection(new \peer\URL('stomp://user:pass@host?versions='))->connect();
@@ -198,10 +190,6 @@ class StompTest extends BaseTest {
     $response= $this->fixture->recvFrame();
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function recv_eats_any_empty_line() {
     $this->fixture->setResponseBytes("\n\n\n\n".
@@ -214,10 +202,6 @@ class StompTest extends BaseTest {
     $this->assertInstanceOf('peer.stomp.frame.ReceiptFrame', $recvd);
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @ignore('Behavior broken, but test need refactoring first.')]
   public function recv_eats_any_empty_line_and_bails_if_no_command_follows() {
     $this->fixture->setResponseBytes("\n\n\n\n");
@@ -226,10 +210,6 @@ class StompTest extends BaseTest {
     $this->assertInstanceOf('peer.stomp.frame.ReceiptFrame', $recvd);
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect(class= 'peer.stomp.Exception', withMessage= '/ACK received without/')]
   public function receive_throws_exception_on_error_frame() {
     $this->fixture->setResponseBytes("ERROR\n".
@@ -501,19 +481,11 @@ class StompTest extends BaseTest {
     $this->assertEquals('', $receipt->getBody());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function acquire_destination() {
     $this->assertInstanceOf('peer.stomp.Destination', $this->fixture->getDestination('/queue/unittest'));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function destination_holds_name() {
     $this->assertEquals(
@@ -522,10 +494,6 @@ class StompTest extends BaseTest {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function destination_holds_connection() {
     $this->assertEquals(

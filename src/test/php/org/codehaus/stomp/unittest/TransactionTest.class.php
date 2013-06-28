@@ -4,30 +4,18 @@ use peer\stomp\Transaction;
 
 class TransactionTest extends BaseTest {
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function create() {
     $t= new Transaction();
     $this->assertTrue(0 < strlen($t->getName()));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function accepts_transaction_name() {
     $t= new Transaction('foobar');
     $this->assertEquals('foobar', $t->getName());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function begin_returns_transaction() {
     $tOrig= new Transaction();
@@ -36,10 +24,6 @@ class TransactionTest extends BaseTest {
     $this->assertEquals($tOrig, $tNew);
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function begin() {
     $transaction= $this->fixture->begin(new Transaction('mytransaction'));
@@ -51,10 +35,6 @@ class TransactionTest extends BaseTest {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function begin_then_rollback() {
     $transaction= $this->fixture->begin(new Transaction('mytransaction'));
@@ -70,19 +50,11 @@ class TransactionTest extends BaseTest {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect('lang.IllegalStateException')]
   public function rollback_fails_when_not_begun() {
     create(new Transaction())->rollback();
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function begin_then_commit() {
     $transaction= $this->fixture->begin(new Transaction('mytransaction'));
@@ -98,19 +70,11 @@ class TransactionTest extends BaseTest {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect('lang.IllegalStateException')]
   public function commit_fails_when_not_begun() {
     create(new Transaction())->commit();
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect('lang.IllegalStateException')]
   public function commit_fails_on_second_call() {
     try {

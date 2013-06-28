@@ -122,6 +122,14 @@ class Connection extends \lang\Object implements Traceable {
 
     $line= null;
     while (!$line) {
+
+      // FIXME: When being in this loop, the code will try reading - just newlines -
+      // forever. While the single call respects a timeout, the timeout is given
+      // for the whole recvFrame() method, but this is not considered here.
+      //
+      // It should probably be checked how many timeouts we already ran into and then
+      // quit this method.
+      if (!$this->canRead($timeout)) return null;
       $line= $this->in->readLine();
     }
     $this->debug('<<<', 'Have "'.trim($line).'" command.');

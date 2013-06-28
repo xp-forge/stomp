@@ -139,9 +139,9 @@ class StompSubscriptionTest extends BaseTest {
    */
   #[@test]
   public function subscribe_with_callback() {
-    $called= FALSE;
+    $called= false;
     $sub= $this->fixture->subscribeTo(new Subscription('/queue/foobar', function($message) use(&$called) {
-      $called= TRUE;
+      $called= true;
     }));
     $this->fixture->setResponseBytes("MESSAGE\n".
       "message-id:12345\n".
@@ -152,6 +152,6 @@ class StompSubscriptionTest extends BaseTest {
     );
 
     $this->fixture->consume(1);
-    $this->assertEquals(TRUE, $called);
+    $this->assertEquals(true, $called);
   }
 }

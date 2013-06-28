@@ -10,7 +10,7 @@ use peer\stomp\Header;
  * @see   xp://peer.stomp.frame.Frame
  */
 class StompFrameTest extends \unittest\TestCase {
-  protected $fixture= NULL;
+  protected $fixture= null;
 
   /**
    * Sets up unittest and creates fixture
@@ -97,7 +97,7 @@ class StompFrameTest extends \unittest\TestCase {
    */
   #[@test]
   public function set_want_receipt() {
-    $this->fixture->setWantReceipt(TRUE);
+    $this->fixture->setWantReceipt(true);
     $this->assertTrue($this->fixture->hasHeader(Header::RECEIPT));
   }
 
@@ -108,7 +108,7 @@ class StompFrameTest extends \unittest\TestCase {
   #[@test]
   public function set_no_want_receipt() {
     $this->fixture->addHeader(Header::RECEIPT, "foo");
-    $this->fixture->setWantReceipt(FALSE);
+    $this->fixture->setWantReceipt(false);
     $this->assertFalse($this->fixture->hasHeader(Header::RECEIPT));
   }
 

@@ -7,7 +7,7 @@
  * @see   xp://peer.stomp.frame.SendFrame
  */
 class StompSendFrameTest extends \unittest\TestCase {
-  protected $fixture= NULL;
+  protected $fixture= null;
 
   /**
    * Sets up unittest and creates fixture

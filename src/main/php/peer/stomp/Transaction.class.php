@@ -9,16 +9,16 @@ use peer\stomp\frame\CommitFrame;
  *
  */
 class Transaction extends \lang\Object {
-  protected $name = NULL;
-  protected $conn = NULL;
+  protected $name = null;
+  protected $conn = null;
 
   /**
    * Constructor
    * 
    * @param string $name optional name of transaction
    */
-  public function __construct($name= NULL) {
-    if (NULL === $name) $name= uniqid('xp.transaction.');
+  public function __construct($name= null) {
+    if (null === $name) $name= uniqid('xp.transaction.');
     $this->name= $name;
   }
 
@@ -41,7 +41,7 @@ class Transaction extends \lang\Object {
       $this->conn= $conn;
       $conn->sendFrame(new BeginFrame($this->name));
     } catch (\lang\Throwable $t) {
-      $this->conn= NULL;
+      $this->conn= null;
       throw $t;
     }
   }
@@ -53,7 +53,7 @@ class Transaction extends \lang\Object {
   public function rollback() {
     $this->assertBegun();
     $this->conn->sendFrame(new AbortFrame($this->name));
-    $this->conn= NULL;
+    $this->conn= null;
   }
 
   /**
@@ -63,7 +63,7 @@ class Transaction extends \lang\Object {
   public function commit() {
     $this->assertBegun();
     $this->conn->sendFrame(new CommitFrame($this->name));
-    $this->conn= NULL;
+    $this->conn= null;
   }
 
   /**

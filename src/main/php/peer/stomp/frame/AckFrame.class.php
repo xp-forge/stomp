@@ -12,12 +12,12 @@ class AckFrame extends Frame {
    * Constructor
    *
    * @param   string messageId
-   * @param   string txname default NULL
+   * @param   string txname default null
    */
-  public function __construct($messageId, $subscription, $txname= NULL) {
+  public function __construct($messageId, $subscription, $txname= null) {
     $this->setMessageId($messageId);
     $this->setSubscriptionId($subscription);
-    if (NULL !== $txname) $this->setTransaction($txname);
+    if (null !== $txname) $this->setTransaction($txname);
   }
 
   /**

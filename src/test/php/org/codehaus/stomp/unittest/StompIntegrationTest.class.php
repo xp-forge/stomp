@@ -8,7 +8,7 @@ class StompIntegrationTest extends \unittest\TestCase {
   const QUEUE = '/queue/unittest';
 
   protected
-    $fixture  = NULL;
+    $fixture  = null;
 
   #[@beforeClass]
   public static function logger() {

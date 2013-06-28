@@ -8,10 +8,10 @@ use peer\stomp\Header;
  */
 class LoginFrame extends Frame {
   protected
-    $user     = NULL,
-    $pass     = NULL,
-    $versions = NULL,
-    $host     = NULL;
+    $user     = null,
+    $pass     = null,
+    $versions = null,
+    $host     = null;
 
   /**
    * Constructor
@@ -19,7 +19,7 @@ class LoginFrame extends Frame {
    * @param   string user
    * @param   string pass
    */
-  public function __construct($user, $pass, $host= NULL, $versions= array('1.0', '1.1')) {
+  public function __construct($user, $pass, $host= null, $versions= array('1.0', '1.1')) {
     if ($host && !$versions) {
       throw new \lang\IllegalArgumentException('Versions required when specifying hostname (stomp 1.1 feature)');
     }
@@ -58,7 +58,7 @@ class LoginFrame extends Frame {
    *
    */
   public function requiresImmediateResponse() {
-    return TRUE;
+    return true;
   }
 
   /**
@@ -71,10 +71,10 @@ class LoginFrame extends Frame {
     $hdrs[Header::ACCEPTVERSION]= implode(',', $this->versions);
     $hdrs[Header::HOST]= $this->host;
 
-    if (NULL !== $this->user) {
+    if (null !== $this->user) {
       $hdrs[Header::LOGIN]= $this->user;
 
-      if (NULL !== $this->pass) {
+      if (null !== $this->pass) {
         $hdrs[Header::PASSCODE]= $this->pass;
       }
     }

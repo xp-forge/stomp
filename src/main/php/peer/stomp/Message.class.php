@@ -5,10 +5,10 @@
  * 
  */
 abstract class Message extends \lang\Object {
-  protected $messageId    = NULL;
-  protected $contentType  = NULL;
-  protected $body         = NULL;
-  protected $persistence  = TRUE;
+  protected $messageId    = null;
+  protected $contentType  = null;
+  protected $body         = null;
+  protected $persistence  = true;
   protected $customHeader = array();
 
   /**
@@ -17,7 +17,7 @@ abstract class Message extends \lang\Object {
    * @param string $body 
    * @param string $contentType 
    */
-  public function __construct($body= NULL, $contentType= NULL) {
+  public function __construct($body= null, $contentType= null) {
     if ($body) {
       $this->setBody($body, $contentType);
     }
@@ -47,7 +47,7 @@ abstract class Message extends \lang\Object {
    * @param string $body 
    * @param string $contentType 
    */
-  public function setBody($body, $contentType= NULL) {
+  public function setBody($body, $contentType= null) {
     $this->body= $body;
 
     if ($contentType) {

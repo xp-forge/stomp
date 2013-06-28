@@ -117,7 +117,7 @@ class TransactionTest extends BaseTest {
       $transaction= $this->fixture->begin(new Transaction('mytransaction'));
       $transaction->commit();
     } catch (\lang\IllegalStateException $e) {
-      $this->fail('Expected exception occurred too early.', NULL, NULL);
+      $this->fail('Expected exception occurred too early.', null, null);
     }
 
     // This should create the expected exception

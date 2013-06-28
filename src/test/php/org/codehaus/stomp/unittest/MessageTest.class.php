@@ -325,7 +325,7 @@ class MessageTest extends BaseTest {
   }
 
   private function subscriptionWithAckMode($ackMode) {
-    $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar', NULL, $ackMode));
+    $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar', null, $ackMode));
     $this->fixture->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "message-id:12345\n".
@@ -344,7 +344,7 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function not_ackable_with_auto_subscription() {
-    $this->assertEquals(FALSE, $this->subscriptionWithAckMode(\peer\stomp\AckMode::AUTO)->ackable());
+    $this->assertEquals(false, $this->subscriptionWithAckMode(\peer\stomp\AckMode::AUTO)->ackable());
   }
 
   /**
@@ -353,7 +353,7 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function ackable_with_client_subscription() {
-    $this->assertEquals(TRUE, $this->subscriptionWithAckMode(\peer\stomp\AckMode::CLIENT)->ackable());
+    $this->assertEquals(true, $this->subscriptionWithAckMode(\peer\stomp\AckMode::CLIENT)->ackable());
   }
 
   /**
@@ -362,6 +362,6 @@ class MessageTest extends BaseTest {
    */
   #[@test]
   public function ackable_with_clientindividual_subscription() {
-    $this->assertEquals(TRUE, $this->subscriptionWithAckMode(\peer\stomp\AckMode::INDIVIDUAL)->ackable());
+    $this->assertEquals(true, $this->subscriptionWithAckMode(\peer\stomp\AckMode::INDIVIDUAL)->ackable());
   }
 }

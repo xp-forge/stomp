@@ -13,7 +13,7 @@ interface Header {
   const MESSAGE       = 'message';
   const RECEIPT       = 'receipt';
   const RECEIPTID     = 'receipt-id';
-  const PERSISTENCE   = 'persistence';
+  const PERSISTENCE   = 'persistent';
   const TRANSACTION   = 'transaction';
   const VERSION       = 'version';
   const LOGIN         = 'login';

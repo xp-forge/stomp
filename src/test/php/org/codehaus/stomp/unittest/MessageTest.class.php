@@ -225,7 +225,7 @@ class MessageTest extends BaseTest {
     $this->assertEquals("SEND\n".
       "content-length:12\n".
       "content-type:text/plain\n".
-      "persistence:true\n".
+      "persistent:true\n".
       "destination:/queue/foobar\n".
       "\n".
       "Hello World.".
@@ -246,7 +246,7 @@ class MessageTest extends BaseTest {
     $this->assertEquals("SEND\n".
       "content-length:12\n".
       "content-type:text/plain\n".
-      "persistence:true\n".
+      "persistent:true\n".
       "destination:/queue/foobar\n".
       "\n".
       "Hello World.".
@@ -266,7 +266,7 @@ class MessageTest extends BaseTest {
       "destination:/queue/foo\n".
       "message-id:12345\n".
       "subscription:".$s->getId()."\n".
-      "persistence:true\n".
+      "persistent:true\n".
       "x-xp-customheader:6100\n".
       "\n".
       "Hello World!\n".
@@ -280,7 +280,7 @@ class MessageTest extends BaseTest {
     $this->assertEquals("SEND\n".
       "message-id:12345\n".
       "content-length:12\n".
-      "persistence:true\n".
+      "persistent:true\n".
       "x-xp-customheader:6100\n".
       "destination:/queue/another\n".
       "\n".

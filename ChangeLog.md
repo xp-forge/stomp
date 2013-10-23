@@ -3,6 +3,10 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 6.0.1 / 2013-10-23
+
+* Fixed header literal (`persistence` -> `persistent`) - (@iigorr)
+
 ## 6.0.0 / 2013-05-24
 
 * Bump major version to 6 - see pull request #5 (@thekid, @kiesel, @mrosoiu)

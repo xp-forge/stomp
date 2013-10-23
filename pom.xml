@@ -4,7 +4,7 @@
   <!-- The Basics -->
   <groupId>net.xp-forge</groupId>
   <artifactId>stomp</artifactId>
-  <version>6.0.1-SNAPSHOT</version>
+  <version>6.0.1</version>
   <packaging>xar</packaging>
 
   <!-- Sonatype OSS parent -->

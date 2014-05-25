@@ -9,8 +9,8 @@ use peer\stomp\frame\NackFrame;
  * 
  */
 class ReceivedMessage extends Message {
-  protected $destination  = NULL;
-  protected $subscription = NULL;
+  protected $destination  = null;
+  protected $subscription = null;
 
   /**
    * Fill message members from given frame.
@@ -32,17 +32,17 @@ class ReceivedMessage extends Message {
       $this->setSubscription($conn->subscriptionById($frame->getHeader(Header::SUBSCRIPTION)));
     }
 
-    $this->setPersistence(FALSE);
+    $this->setPersistence(false);
     if ($frame->hasHeader(Header::PERSISTENCE)) {
       $this->setPersistence('true' === $frame->getHeader(Header::PERSISTENCE));
     }
 
     $skipHeaders= array(
-      Header::DESTINATION   => TRUE,
-      Header::MESSAGEID     => TRUE,
-      Header::CONTENTTYPE   => TRUE,
-      Header::SUBSCRIPTION  => TRUE,
-      Header::CONTENTLENGTH => TRUE
+      Header::DESTINATION   => true,
+      Header::MESSAGEID     => true,
+      Header::CONTENTTYPE   => true,
+      Header::SUBSCRIPTION  => true,
+      Header::CONTENTLENGTH => true
     );
 
     foreach ($frame->getHeaders() as $name => $value) {
@@ -106,7 +106,7 @@ class ReceivedMessage extends Message {
    * 
    * @param  peer.stomp.Transaction $t
    */
-  public function ack(Transaction $t= NULL) {
+  public function ack(Transaction $t= null) {
     $this->assertConnection();
     $frame= new AckFrame($this->getMessageId(), $this->getSubscription()->getId());
     if ($t) {
@@ -120,7 +120,7 @@ class ReceivedMessage extends Message {
    * 
    * @param  peer.stomp.Transaction $t
    */
-  public function nack(Transaction $t= NULL) {
+  public function nack(Transaction $t= null) {
     $this->assertConnection();
     $frame= new NackFrame($this->getMessageId(), $this->getSubscription()->getId());
     if ($t) {

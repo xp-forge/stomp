@@ -22,7 +22,7 @@ class ConnectedFrame extends Frame {
    * @return  string
    */
   public function getProtocolVersion() {
-    if (!$this->hasHeader(Header::VERSION)) return NULL;
+    if (!$this->hasHeader(Header::VERSION)) return null;
     return $this->getHeader(Header::VERSION);
   }
 }

@@ -14,12 +14,12 @@ class SubscribeFrame extends Frame {
    * @see     xp://peer.stomp.AckMode
    * @param   string queue
    * @param   string ack default 'auto'
-   * @param   string selector default NULL
+   * @param   string selector default null
    */
-  public function __construct($queue, $ack= \peer\stomp\AckMode::AUTO, $selector= NULL) {
+  public function __construct($queue, $ack= \peer\stomp\AckMode::AUTO, $selector= null) {
     $this->setDestination($queue);
     $this->setAck($ack);
-    if (NULL !== $selector) $this->setSelector($selector);
+    if (null !== $selector) $this->setSelector($selector);
   }
 
   /**

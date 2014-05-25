@@ -8,12 +8,12 @@ use peer\stomp\frame\UnsubscribeFrame;
  * 
  */
 class Subscription extends \lang\Object {
-  protected $id         = NULL;
-  protected $dest       = NULL;
-  protected $destination= NULL;
-  protected $ackMode    = NULL;
-  protected $selector   = NULL;
-  protected $callback   = NULL;
+  protected $id         = null;
+  protected $dest       = null;
+  protected $destination= null;
+  protected $ackMode    = null;
+  protected $selector   = null;
+  protected $callback   = null;
 
   /**
    * Constructor
@@ -21,9 +21,9 @@ class Subscription extends \lang\Object {
    * @param   string destination
    * @param   callable $callback callback method upon message arrival
    * @param   string ackMode default AckMode::INDIVIDUAL
-   * @param   string selector default NULL
+   * @param   string selector default null
    */
-  public function __construct($destination, $callback= NULL, $ackMode= AckMode::INDIVIDUAL, $selector= NULL) {
+  public function __construct($destination, $callback= null, $ackMode= AckMode::INDIVIDUAL, $selector= null) {
     $this->dest= $destination;
     $this->withCallback($callback);
     $this->setAckMode($ackMode);
@@ -95,7 +95,7 @@ class Subscription extends \lang\Object {
 
       $this->destination->getConnection()->sendFrame($frame);
     } catch (\lang\Throwable $t) {
-      $this->id= NULL;
+      $this->id= null;
       throw $t;
     }
   }
@@ -114,11 +114,11 @@ class Subscription extends \lang\Object {
       throw new \lang\IllegalStateException('Cannot unsubscribe when not subscribed.');
     }
 
-    $this->destination->getConnection()->sendFrame(new UnsubscribeFrame(NULL, $this->id));
+    $this->destination->getConnection()->sendFrame(new UnsubscribeFrame(null, $this->id));
     $this->destination->getConnection()->_unsubscribe($this);
 
-    $this->destination= NULL;
-    $this->id= NULL;
+    $this->destination= null;
+    $this->id= null;
   }
 
   /**

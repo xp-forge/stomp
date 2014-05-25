@@ -12,14 +12,14 @@ class UnsubscribeFrame extends Frame {
    * Constructor
    *
    * @param   string queue
-   * @param   string id default NULL
+   * @param   string id default null
    */
-  public function __construct($queue, $id= NULL) {
-    if (NULL === $queue && NULL === $id) throw new \lang\IllegalArgumentException(
+  public function __construct($queue, $id= null) {
+    if (null === $queue && null === $id) throw new \lang\IllegalArgumentException(
       'Either destination or id must be given.'
     );
 
-    if (NULL !== $queue) {
+    if (null !== $queue) {
       $this->setDestination($queue);
     } else {
       $this->setId($id);

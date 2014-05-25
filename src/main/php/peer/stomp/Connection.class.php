@@ -26,15 +26,15 @@ use peer\stomp\frame\MessageFrame;
  * @test  xp://peer.stomp.unittest.StompTest
  */
 class Connection extends \lang\Object implements Traceable {
-  protected $url  = NULL;
+  protected $url  = null;
 
   protected
-    $socket = NULL,
-    $in     = NULL,
-    $out    = NULL,
+    $socket = null,
+    $in     = null,
+    $out    = null,
     $subscriptions = array();
 
-  protected $cat  = NULL;
+  protected $cat  = null;
 
   /**
    * Constructor
@@ -87,8 +87,8 @@ class Connection extends \lang\Object implements Traceable {
    *
    */
   protected function _disconnect() {
-    $this->out= NULL;
-    $this->in= NULL;
+    $this->out= null;
+    $this->in= null;
     $this->socket->close();
   }
 
@@ -98,17 +98,17 @@ class Connection extends \lang\Object implements Traceable {
    * This is a low-level protocol function.
    *
    * @param   double timeout default 0.2
-   * @return  peer.stomp.frame.Frame or NULL
+   * @return  peer.stomp.frame.Frame or null
    */
   public function recvFrame($timeout= 0.2) {
 
     // Check whether we can read, before we actually read...
     if ($this->socket instanceof Socket && !$this->socket->canRead($timeout)) {
       $this->debug('<<<', '0 bytes - reading no frame.');
-      return NULL;
+      return null;
     }
 
-    $line= NULL;
+    $line= null;
     while (!$line) {
       $line= $this->in->readLine();
     }
@@ -139,7 +139,7 @@ class Connection extends \lang\Object implements Traceable {
       $this->debug('~ ate a byte: '.\xp::stringOf($c));
     }
 
-    $f= $this->in->getClass()->getField('buf')->setAccessible(TRUE);
+    $f= $this->in->getClass()->getField('buf')->setAccessible(true);
     $f->set($this->in, $c.$f->get($this->in));
 
     return $frame;
@@ -151,7 +151,7 @@ class Connection extends \lang\Object implements Traceable {
    * This is a low-level protocol function.
    *
    * @param   peer.stomp.frame.Frame frame
-   * @return  peer.stomp.Frame or NULL
+   * @return  peer.stomp.Frame or null
    */
   public function sendFrame(Frame $frame) {
 
@@ -169,7 +169,7 @@ class Connection extends \lang\Object implements Traceable {
       return $this->recvFrame();
     }
 
-    return NULL;
+    return null;
   }
 
   /**
@@ -177,7 +177,7 @@ class Connection extends \lang\Object implements Traceable {
    *
    * @param   string user
    * @param   string pass
-   * @param   string[] protoVersions list of supported protocol versions default NULL
+   * @param   string[] protoVersions list of supported protocol versions default null
    * @return  bool
    * @throws  peer.AuthenticationException if login failed
    */
@@ -212,7 +212,7 @@ class Connection extends \lang\Object implements Traceable {
       : 'did not indicate protocol version'
     ));
 
-    return TRUE;
+    return true;
   }
 
   /**
@@ -279,7 +279,7 @@ class Connection extends \lang\Object implements Traceable {
   /**
    * Receive a message
    *
-   * @param   double timeout default 0.2 pass NULL for no timeout
+   * @param   double timeout default 0.2 pass null for no timeout
    * @return  peer.stomp.frame.Frame
    */
   public function receive($timeout= 0.2) {
@@ -312,10 +312,10 @@ class Connection extends \lang\Object implements Traceable {
 
     if ($message instanceof ReceivedMessage) {
       $message->getSubscription()->process($message);
-      return TRUE;
+      return true;
     }
 
-    return FALSE;
+    return false;
   }
 
   /**

@@ -5,8 +5,8 @@
  * 
  */
 class Destination extends \lang\Object {
-  protected $name   = NULL;
-  protected $conn   = NULL;
+  protected $name   = null;
+  protected $conn   = null;
 
   /**
    * Constructor

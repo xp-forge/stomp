@@ -7,7 +7,7 @@ use peer\stomp\frame\Frame;
  * 
  */
 class Exception extends \io\IOException {
-  private $frame = NULL;
+  private $frame = null;
 
   /**
    * Set frame

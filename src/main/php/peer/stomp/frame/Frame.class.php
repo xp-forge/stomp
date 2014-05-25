@@ -9,9 +9,9 @@ use peer\stomp\Header;
  */
 abstract class Frame extends \lang\Object implements \util\log\Traceable {
   protected $headers  = array();
-  protected $body     = NULL;
+  protected $body     = null;
 
-  protected $cat      = NULL;
+  protected $cat      = null;
 
   /**
    * Retrieve frame command. Override this in derived implementations
@@ -57,7 +57,7 @@ abstract class Frame extends \lang\Object implements \util\log\Traceable {
    *
    * @param boolean $r
    */
-  public function setWantReceipt($r= FALSE) {
+  public function setWantReceipt($r= false) {
     if ($r) {
       $this->addHeader(Header::RECEIPT, $this->hashCode());
       return;
@@ -174,7 +174,7 @@ abstract class Frame extends \lang\Object implements \util\log\Traceable {
       // Read byte-wise until we find \0
       $data= '';
       do {
-        if (NULL === ($c= $in->read(1))) throw new \peer\ProtocolException(
+        if (null === ($c= $in->read(1))) throw new \peer\ProtocolException(
           'Received EOF before payload end delimiter \0\n'
         );
         $data.= $c;

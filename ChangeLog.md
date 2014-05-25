@@ -3,6 +3,8 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 6.0.2 / 2014-05-25
+
 * Changed constructor to accept strings and peer.URL instances (@thekid)
 * Adjusted to new coding standards (@thekid)
 * Moved all tests to peer.stomp namespace (@thekid)

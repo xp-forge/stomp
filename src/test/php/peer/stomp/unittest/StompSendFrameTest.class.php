@@ -11,7 +11,6 @@ class StompSendFrameTest extends \unittest\TestCase {
 
   /**
    * Sets up unittest and creates fixture
-   *
    */
   public function setUp() {
     $this->fixture= new \peer\stomp\frame\SendFrame('/queue/test');

@@ -24,103 +24,62 @@ class StompFrameTest extends \unittest\TestCase {
     }');
   }
 
-  /**
-   * Tests getHeaders()
-   *
-   */
   #[@test]
   public function getHeadersInitiallyEmpty() {
     $this->assertEquals(array(), $this->fixture->getHeaders());
   }
 
-  /**
-   * Tests addHeader() and hasHeader()
-   *
-   */
   #[@test]
   public function hasHeader() {
     $this->fixture->addHeader('content-length', 200);
-    $this->asserttrue($this->fixture->hasHeader('content-length'));
+    $this->assertTrue($this->fixture->hasHeader('content-length'));
   }
 
-  /**
-   * Tests addHeader() and getHeader()
-   *
-   */
   #[@test]
   public function getHeader() {
     $this->fixture->addHeader('content-length', 200);
     $this->assertEquals(200, $this->fixture->getHeader('content-length'));
   }
 
-  /**
-   * Tests getHeader()
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function getNonExistantHeader() {
     $this->fixture->getHeader('non-existant');
   }
 
-  /**
-   * Tests hasHeader()
-   *
-   */
   #[@test]
   public function hasNonExistantHeader() {
-    $this->assertfalse($this->fixture->hasHeader('non-existant'));
+    $this->assertFalse($this->fixture->hasHeader('non-existant'));
   }
 
-  /**
-   * Tests addHeader() and getHeaders()
-   *
-   */
   #[@test]
   public function getHeaders() {
     $this->fixture->addHeader('content-length', 200);
     $this->assertEquals(array('content-length' => 200), $this->fixture->getHeaders());
   }
 
-  /**
-   * Tests requiresImmediateResponse()
-   *
-   */
   #[@test]
   public function receiptHeader() {
     $this->fixture->addHeader('receipt', 'message-12345');
-    $this->asserttrue($this->fixture->requiresImmediateResponse());
+    $this->assertTrue($this->fixture->requiresImmediateResponse());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function set_want_receipt() {
     $this->fixture->setWantReceipt(true);
-    $this->asserttrue($this->fixture->hasHeader(Header::RECEIPT));
+    $this->assertTrue($this->fixture->hasHeader(Header::RECEIPT));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function set_no_want_receipt() {
     $this->fixture->addHeader(Header::RECEIPT, "foo");
     $this->fixture->setWantReceipt(false);
-    $this->assertfalse($this->fixture->hasHeader(Header::RECEIPT));
+    $this->assertFalse($this->fixture->hasHeader(Header::RECEIPT));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function clearHeader() {
     $this->fixture->addHeader("some-header", "some-value");
     $this->fixture->clearHeader("some-header");
-    $this->assertfalse($this->fixture->hasHeader("some-header"));
+    $this->assertFalse($this->fixture->hasHeader("some-header"));
   }
 }
-?>

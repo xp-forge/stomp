@@ -23,31 +23,41 @@ use peer\stomp\frame\MessageFrame;
  * API to the STOMP protocol
  *
  * @see   http://stomp.codehaus.org/Protocol
+ * @test  xp://peer.stomp.unittest.ConnectionTest
  * @test  xp://peer.stomp.unittest.StompTest
  */
 class Connection extends \lang\Object implements Traceable {
-  protected $url  = null;
-
-  protected
-    $socket = null,
-    $in     = null,
-    $out    = null,
-    $subscriptions = array();
-
-  protected $cat  = null;
+  protected $url           = null;
+  protected $socket        = null;
+  protected $in            = null;
+  protected $out           = null;
+  protected $subscriptions = array();
+  protected $cat           = null;
 
   /**
    * Constructor
    *
-   * @param   string server
-   * @param   int port
+   * @param   var $url either a URL object or a string
+   * @throws  lang.IllegalArgumentException if string given is unparseable
    */
-  public function __construct(URL $url) {
-    $this->url= $url;
+  public function __construct($url) {
+    if ($url instanceof URL) {
+      $this->url= $url;
+    } else {
+      try {
+        $this->url= new URL((string)$url);
+      } catch (\lang\FormatException $e) {
+        throw new \lang\IllegalArgumentException('Invalid URL given', $e);
+      }
+    }
+
     if ($this->url->hasParam('log')) {
       $this->setTrace(\util\log\Logger::getInstance()->getCategory($this->url->getParam('log')));
     }
   }
+
+  /** @return peer.URL */
+  public function url() { return $this->url; }
 
   /**
    * Set trace

@@ -1,4 +1,4 @@
-<?php namespace org\codehaus\stomp\unittest;
+<?php namespace peer\stomp\unittest;
 
 use peer\stomp\Connection;
 
@@ -10,10 +10,6 @@ use peer\stomp\Connection;
  */
 class StompTest extends BaseTest {
 
-  /**
-   * Tests connect message
-   *
-   */
   #[@test]
   public function connect() {
     $this->fixture->setResponseBytes("CONNECTED\n".
@@ -32,10 +28,6 @@ class StompTest extends BaseTest {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function login_without_credentials() {
     $this->fixture= $this->newConnection(new \peer\URL('stomp://localhost/'));
@@ -54,10 +46,6 @@ class StompTest extends BaseTest {
     );
   }
 
-  /**
-   * Tests connect message when login fails
-   *
-   */
   #[@test, @expect('peer.AuthenticationException')]
   public function loginFailed() {
     $this->fixture->setResponseBytes("ERROR\n".
@@ -67,10 +55,6 @@ class StompTest extends BaseTest {
     $this->fixture->connect();
   }
 
-  /**
-   * Tests connect message
-   *
-   */
   #[@test]
   public function connect_and_negotiate_version() {
     $this->fixture= $this->newConnection(new \peer\URL('stomp://user:pass@host?vhost=localhost&versions=1.0,1.1'));
@@ -91,10 +75,6 @@ class StompTest extends BaseTest {
     );
   }
 
-  /**
-   * Tests connect message
-   *
-   */
   #[@test, @expect('peer.AuthenticationException')]
   public function connect_and_negotiate_version_but_fails() {
     $this->fixture= $this->newConnection(new \peer\URL('stomp://user:pass@host?vhost=localhost&versions=1.0,1.1'));
@@ -117,19 +97,11 @@ class StompTest extends BaseTest {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= '/Invalid protocol version/')]
   public function connect_requires_valid_version() {
     $this->newConnection(new \peer\URL('stomp://user:pass@host?versions='))->connect();
   }
 
-  /**
-   * Tests send message
-   *
-   */
   #[@test]
   public function sendFrame() {
     $this->fixture->setResponseBytes("RECEIPT\n".
@@ -148,10 +120,6 @@ class StompTest extends BaseTest {
     $this->assertInstanceOf('peer.stomp.frame.ReceiptFrame', $response);
   }
 
-  /**
-   * Tests error message
-   *
-   */
   #[@test]
   public function receiveError() {
     $this->fixture->setResponseBytes("ERROR\n".
@@ -164,10 +132,6 @@ class StompTest extends BaseTest {
     $this->assertEquals("Line1\nLine2", $response->getBody());
   }
 
-  /**
-   * Tests error message w/ content-length
-   *
-   */
   #[@test]
   public function receiveErrorWithContentLengthGiven() {
     $this->fixture->setResponseBytes("ERROR\n".
@@ -183,10 +147,6 @@ class StompTest extends BaseTest {
     $this->assertEquals("Line1\nLine2", $response->getBody());
   }
 
-  /**
-   * Tests message with invalid content-length
-   *
-   */
   #[@test, @expect('peer.ProtocolException')]
   public function catchInvalidContentLength() {
     $this->fixture->setResponseBytes("ERROR\n".
@@ -198,10 +158,6 @@ class StompTest extends BaseTest {
     $response= $this->fixture->recvFrame();
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function recv_eats_any_empty_line() {
     $this->fixture->setResponseBytes("\n\n\n\n".
@@ -214,10 +170,6 @@ class StompTest extends BaseTest {
     $this->assertInstanceOf('peer.stomp.frame.ReceiptFrame', $recvd);
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect(class= 'peer.stomp.Exception', withMessage= '/ACK received without/')]
   public function receive_throws_exception_on_error_frame() {
     $this->fixture->setResponseBytes("ERROR\n".
@@ -244,10 +196,6 @@ class StompTest extends BaseTest {
     return $this->fixture->sendFrame($frame);
   }
 
-  /**
-   * Tests subscription
-   *
-   */
   #[@test]
   public function subscribe() {
     $this->sendWithReceiptFrame(new \peer\stomp\frame\SubscribeFrame('/queue/a'));
@@ -260,10 +208,6 @@ class StompTest extends BaseTest {
     );
   }
 
-  /**
-   * Tests subscription
-   *
-   */
   #[@test]
   public function unsubscribe() {
     $this->sendWithReceiptFrame(new \peer\stomp\frame\UnsubscribeFrame('/queue/a'));
@@ -275,10 +219,6 @@ class StompTest extends BaseTest {
     );
   }
 
-  /**
-   * Tests beginning a transaction
-   *
-   */
   #[@test]
   public function beginTransaction() {
     $this->sendWithReceiptFrame(new \peer\stomp\frame\BeginFrame('my-transaction'));
@@ -288,10 +228,6 @@ class StompTest extends BaseTest {
     );
   }
 
-  /**
-   * Tests aborting a transaction
-   *
-   */
   #[@test]
   public function abortTransaction() {
     $this->sendWithReceiptFrame(new \peer\stomp\frame\AbortFrame('my-transaction'));
@@ -301,10 +237,6 @@ class StompTest extends BaseTest {
     );
   }
 
-  /**
-   * Tests committing a transaction
-   *
-   */
   #[@test]
   public function commitTransaction() {
     $this->sendWithReceiptFrame(new \peer\stomp\frame\CommitFrame('my-transaction'));
@@ -314,10 +246,6 @@ class StompTest extends BaseTest {
     );
   }
 
-  /**
-   * Tests ack message
-   *
-   */
   #[@test]
   public function ack() {
     $this->sendWithReceiptFrame(new \peer\stomp\frame\AckFrame('0xefefef', '1x1x1x1x1x1'));
@@ -329,10 +257,6 @@ class StompTest extends BaseTest {
     );
   }
 
-  /**
-   * Tests ack message
-   *
-   */
   #[@test]
   public function nack() {
     $this->sendWithReceiptFrame(new \peer\stomp\frame\NackFrame('0xefefef', '0x0x0x0x0'));
@@ -344,10 +268,6 @@ class StompTest extends BaseTest {
     );
   }
 
-  /**
-   * Tests ack message
-   *
-   */
   #[@test]
   public function ackWithinTransaction() {
     $this->sendWithReceiptFrame(new \peer\stomp\frame\AckFrame('0xefefef', 'some-subscription', "some-transaction"));
@@ -360,10 +280,6 @@ class StompTest extends BaseTest {
     );
   }
 
-  /**
-   * Tests ack message
-   *
-   */
   #[@test]
   public function nackWithinTransaction() {
     $this->sendWithReceiptFrame(new \peer\stomp\frame\NackFrame('0xefefef', 'some-subscription', "some-transaction"));
@@ -376,10 +292,6 @@ class StompTest extends BaseTest {
     );
   }
 
-  /**
-   * Tests disconnect
-   *
-   */
   #[@test]
   public function disconnect() {
     $this->fixture->disconnect();
@@ -387,10 +299,6 @@ class StompTest extends BaseTest {
     $this->assertEquals("DISCONNECT\n\n\0", $this->fixture->readSentBytes());
   }
 
-  /**
-   * Tests message without trailing "\n"
-   *
-   */
   #[@test]
   public function noTrailingEOL() {
     $this->fixture->setResponseBytes(
@@ -404,10 +312,6 @@ class StompTest extends BaseTest {
     $this->assertEquals('', $receipt->getBody());
   }
 
-  /**
-   * Tests message without trailing "\n"
-   *
-   */
   #[@test]
   public function withContentLengthNoTrailingEOL() {
     $this->fixture->setResponseBytes(
@@ -421,10 +325,6 @@ class StompTest extends BaseTest {
     $this->assertEquals('', $receipt->getBody());
   }
 
-  /**
-   * Tests message with one trailing "\n"
-   *
-   */
   #[@test]
   public function oneTrailingEOL() {
     $this->fixture->setResponseBytes(
@@ -438,10 +338,6 @@ class StompTest extends BaseTest {
     $this->assertEquals('', $receipt->getBody());
   }
 
-  /**
-   * Tests message with one trailing "\n"
-   *
-   */
   #[@test]
   public function withContentLengthOneTrailingEOL() {
     $this->fixture->setResponseBytes(
@@ -455,10 +351,6 @@ class StompTest extends BaseTest {
     $this->assertEquals('', $receipt->getBody());
   }
 
-  /**
-   * Tests message with two trailing "\n"s
-   *
-   */
   #[@test]
   public function twoTrailingEOLs() {
     $this->fixture->setResponseBytes(
@@ -472,10 +364,6 @@ class StompTest extends BaseTest {
     $this->assertEquals('', $receipt->getBody());
   }
 
-  /**
-   * Tests message with two trailing "\n"s
-   *
-   */
   #[@test]
   public function withContentLengthTwoTrailingEOLs() {
     $this->fixture->setResponseBytes(
@@ -489,19 +377,11 @@ class StompTest extends BaseTest {
     $this->assertEquals('', $receipt->getBody());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function acquire_destination() {
     $this->assertInstanceOf('peer.stomp.Destination', $this->fixture->getDestination('/queue/unittest'));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function destination_holds_name() {
     $this->assertEquals(
@@ -510,10 +390,6 @@ class StompTest extends BaseTest {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function destination_holds_connection() {
     $this->assertEquals(

@@ -1,4 +1,4 @@
-<?php namespace org\codehaus\stomp\unittest;
+<?php namespace peer\stomp\unittest;
 
 use peer\stomp\Message;
 use peer\stomp\SendableMessage;
@@ -8,19 +8,11 @@ use peer\stomp\Transaction;
 
 class MessageTest extends BaseTest {
   
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function create() {
     new SendableMessage();
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function receive_message() {
     $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
@@ -36,10 +28,6 @@ class MessageTest extends BaseTest {
     $this->assertInstanceOf('peer.stomp.Message', $m);
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function receive_message_with_subscription() {
     $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
@@ -57,10 +45,6 @@ class MessageTest extends BaseTest {
   }
 
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function receive_message_has_destination() {
     $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
@@ -77,10 +61,6 @@ class MessageTest extends BaseTest {
     $this->assertInstanceOf('peer.stomp.Destination', $m->getDestination());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function ack() {
     $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
@@ -105,10 +85,6 @@ class MessageTest extends BaseTest {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function nack() {
     $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
@@ -133,10 +109,6 @@ class MessageTest extends BaseTest {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function ack_in_transaction() {
     $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
@@ -163,10 +135,6 @@ class MessageTest extends BaseTest {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function nack_in_transaction() {
     $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
@@ -193,30 +161,18 @@ class MessageTest extends BaseTest {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect(class= 'lang.IllegalStateException', withMessage= '/Cannot ack message without connection/')]
   public function ack_fails_without_connection() {
     $m= new ReceivedMessage();
     $m->ack();
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect(class= 'lang.IllegalStateException', withMessage= '/Cannot ack message without connection/')]
   public function nack_fails_without_connection() {
     $m= new ReceivedMessage();
     $m->nack();
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function send() {
     $m= new SendableMessage('Hello World.', 'text/plain');
@@ -234,10 +190,6 @@ class MessageTest extends BaseTest {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function send_with_content_length() {
     $m= new SendableMessage('Hello World.', 'text/plain');
@@ -255,10 +207,6 @@ class MessageTest extends BaseTest {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function receive_and_resend() {
     $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
@@ -290,10 +238,6 @@ class MessageTest extends BaseTest {
   }
 
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function receive_and_resend_nonpersistence() {
     $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
@@ -325,7 +269,7 @@ class MessageTest extends BaseTest {
   }
 
   private function subscriptionWithAckMode($ackMode) {
-    $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar', NULL, $ackMode));
+    $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar', null, $ackMode));
     $this->fixture->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "message-id:12345\n".
@@ -338,30 +282,18 @@ class MessageTest extends BaseTest {
     return $this->fixture->receive();
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function not_ackable_with_auto_subscription() {
-    $this->assertEquals(FALSE, $this->subscriptionWithAckMode(\peer\stomp\AckMode::AUTO)->ackable());
+    $this->assertEquals(false, $this->subscriptionWithAckMode(\peer\stomp\AckMode::AUTO)->ackable());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function ackable_with_client_subscription() {
-    $this->assertEquals(TRUE, $this->subscriptionWithAckMode(\peer\stomp\AckMode::CLIENT)->ackable());
+    $this->assertEquals(true, $this->subscriptionWithAckMode(\peer\stomp\AckMode::CLIENT)->ackable());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function ackable_with_clientindividual_subscription() {
-    $this->assertEquals(TRUE, $this->subscriptionWithAckMode(\peer\stomp\AckMode::INDIVIDUAL)->ackable());
+    $this->assertEquals(true, $this->subscriptionWithAckMode(\peer\stomp\AckMode::INDIVIDUAL)->ackable());
   }
 }

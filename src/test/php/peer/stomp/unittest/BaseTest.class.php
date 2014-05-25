@@ -1,7 +1,7 @@
-<?php namespace org\codehaus\stomp\unittest;
+<?php namespace peer\stomp\unittest;
 
 abstract class BaseTest extends \unittest\TestCase {
-  protected $fixture= NULL;
+  protected $fixture= null;
 
   /**
    * Sets up unittest and creates fixture
@@ -14,7 +14,7 @@ abstract class BaseTest extends \unittest\TestCase {
   protected function newConnection(\peer\URL $url) {
     return newinstance('peer.stomp.Connection', array($url), '{
       protected $response= "";
-      protected $sent= NULL;
+      protected $sent= null;
 
       public function __construct(\\peer\\URL $url) {
         parent::__construct($url);
@@ -30,8 +30,8 @@ abstract class BaseTest extends \unittest\TestCase {
 
       protected function _disconnect() {
         $this->sent= $this->out->getStream()->getBytes();
-        $this->in= NULL;
-        $this->out= NULL;
+        $this->in= null;
+        $this->out= null;
       }
 
       public function setResponseBytes($s) {
@@ -42,9 +42,9 @@ abstract class BaseTest extends \unittest\TestCase {
       public function readSentBytes() {
 
         // Case of DISCONNECT
-        if (NULL !== $this->sent) {
+        if (null !== $this->sent) {
           $sent= $this->sent;
-          $this->sent= NULL;
+          $this->sent= null;
           return $sent;
         }
 
@@ -53,7 +53,7 @@ abstract class BaseTest extends \unittest\TestCase {
 
       public function clearSentBytes() {
         $this->_connect();
-        $this->sent= NULL;
+        $this->sent= null;
       }
     }');
   }

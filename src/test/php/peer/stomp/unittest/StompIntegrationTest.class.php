@@ -7,8 +7,13 @@ use peer\stomp\frame\ReceiptFrame;
 class StompIntegrationTest extends \unittest\TestCase {
   const QUEUE = '/queue/unittest';
 
-  protected
-    $fixture  = NULL;
+  protected $fixture= null;
+  protected $host= null;
+
+  public function __construct($name, $host= null) {
+    parent::__construct($name);
+    $this->host= $host;
+  }
 
   #[@beforeClass]
   public static function logger() {
@@ -16,7 +21,11 @@ class StompIntegrationTest extends \unittest\TestCase {
   }
 
   public function setUp() {
-    $this->fixture= new Connection('localhost', 61613);
+    if (null === $this->host) {
+      throw new \unittest\PrerequisitesNotMetError('Needs argument "host"');
+    }
+
+    $this->fixture= new Connection(new \peer\URL('stomp://'.$this->host));
     $this->fixture->setTrace(\util\log\Logger::getInstance()->getCategory());
     $this->fixture->connect('system', 'manager');
   }
@@ -27,7 +36,7 @@ class StompIntegrationTest extends \unittest\TestCase {
 
   #[@test, @ignore, @expect('peer.AuthenticationException')]
   public function invalidCredentials() {
-    $conn= new Connection('localhost', 61613);
+    $conn= new Connection(new \peer\URL('stomp://'.$this->host));
     $conn->connect('unknownuser', 'invalidpass');
   }
 
@@ -46,7 +55,7 @@ class StompIntegrationTest extends \unittest\TestCase {
 
   #[@test]
   public function receiveReceipt() {
-    $frame= new org·codehaus·stomp·frame·SendFrame(self::QUEUE, 'body');
+    $frame= new \peer\stomp\SendFrame(self::QUEUE, 'body');
     $frame->addHeader('receipt', 'some-message-receipt');
 
     $response= $this->fixture->sendFrame($frame);

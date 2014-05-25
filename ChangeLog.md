@@ -3,6 +3,9 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+* Adjusted to new coding standards (@thekid)
+* Moved all tests to peer.stomp namespace (@thekid)
+
 ## 6.0.1 / 2013-10-23
 
 * Fixed header literal (`persistence` -> `persistent`) - (@iigorr)

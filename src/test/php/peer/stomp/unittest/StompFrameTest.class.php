@@ -1,4 +1,4 @@
-<?php namespace org\codehaus\stomp\unittest;
+<?php namespace peer\stomp\unittest;
   
 use peer\stomp\frame\Frame;
 use peer\stomp\Header;
@@ -10,7 +10,7 @@ use peer\stomp\Header;
  * @see   xp://peer.stomp.frame.Frame
  */
 class StompFrameTest extends \unittest\TestCase {
-  protected $fixture= NULL;
+  protected $fixture= null;
 
   /**
    * Sets up unittest and creates fixture
@@ -40,7 +40,7 @@ class StompFrameTest extends \unittest\TestCase {
   #[@test]
   public function hasHeader() {
     $this->fixture->addHeader('content-length', 200);
-    $this->assertTrue($this->fixture->hasHeader('content-length'));
+    $this->asserttrue($this->fixture->hasHeader('content-length'));
   }
 
   /**
@@ -68,7 +68,7 @@ class StompFrameTest extends \unittest\TestCase {
    */
   #[@test]
   public function hasNonExistantHeader() {
-    $this->assertFalse($this->fixture->hasHeader('non-existant'));
+    $this->assertfalse($this->fixture->hasHeader('non-existant'));
   }
 
   /**
@@ -88,7 +88,7 @@ class StompFrameTest extends \unittest\TestCase {
   #[@test]
   public function receiptHeader() {
     $this->fixture->addHeader('receipt', 'message-12345');
-    $this->assertTrue($this->fixture->requiresImmediateResponse());
+    $this->asserttrue($this->fixture->requiresImmediateResponse());
   }
 
   /**
@@ -97,8 +97,8 @@ class StompFrameTest extends \unittest\TestCase {
    */
   #[@test]
   public function set_want_receipt() {
-    $this->fixture->setWantReceipt(TRUE);
-    $this->assertTrue($this->fixture->hasHeader(Header::RECEIPT));
+    $this->fixture->setWantReceipt(true);
+    $this->asserttrue($this->fixture->hasHeader(Header::RECEIPT));
   }
 
   /**
@@ -108,8 +108,8 @@ class StompFrameTest extends \unittest\TestCase {
   #[@test]
   public function set_no_want_receipt() {
     $this->fixture->addHeader(Header::RECEIPT, "foo");
-    $this->fixture->setWantReceipt(FALSE);
-    $this->assertFalse($this->fixture->hasHeader(Header::RECEIPT));
+    $this->fixture->setWantReceipt(false);
+    $this->assertfalse($this->fixture->hasHeader(Header::RECEIPT));
   }
 
   /**
@@ -120,7 +120,7 @@ class StompFrameTest extends \unittest\TestCase {
   public function clearHeader() {
     $this->fixture->addHeader("some-header", "some-value");
     $this->fixture->clearHeader("some-header");
-    $this->assertFalse($this->fixture->hasHeader("some-header"));
+    $this->assertfalse($this->fixture->hasHeader("some-header"));
   }
 }
 ?>

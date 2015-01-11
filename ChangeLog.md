@@ -3,6 +3,9 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+* Heads up: Changed Stomp to depend on XP6 core (@thekid)
+* Made xp-forge/stomp available via Composer (@thekid)
+
 ## 6.0.2 / 2014-05-25
 
 * Changed constructor to accept strings and peer.URL instances (@thekid)

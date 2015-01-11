@@ -3,6 +3,8 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 7.0.0 / 2015-01-11
+
 * Heads up: Changed Stomp to depend on XP6 core (@thekid)
 * Made xp-forge/stomp available via Composer (@thekid)
 

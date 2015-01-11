@@ -3,6 +3,7 @@
 use peer\stomp\Connection;
 use peer\stomp\frame\MessageFrame;
 use peer\stomp\frame\ReceiptFrame;
+use unittest\PrerequisitesNotMetError;
 
 class StompIntegrationTest extends \unittest\TestCase {
   const QUEUE = '/queue/unittest';
@@ -22,7 +23,7 @@ class StompIntegrationTest extends \unittest\TestCase {
 
   public function setUp() {
     if (null === $this->host) {
-      throw new \unittest\PrerequisitesNotMetError('Needs argument "host"');
+      throw new PrerequisitesNotMetError('Needs argument "host"');
     }
 
     $this->fixture= new Connection(new \peer\URL('stomp://'.$this->host));

@@ -1,5 +1,7 @@
 <?php namespace peer\stomp\unittest;
 
+use peer\stomp\frame\SendFrame;
+
 /**
  * Tests STOMP SendFrame class
  *
@@ -13,7 +15,7 @@ class StompSendFrameTest extends \unittest\TestCase {
    * Sets up unittest and creates fixture
    */
   public function setUp() {
-    $this->fixture= new \peer\stomp\frame\SendFrame('/queue/test');
+    $this->fixture= new SendFrame('/queue/test');
   }
 
   #[@test]

@@ -26,7 +26,7 @@ class StompFrameTest extends \unittest\TestCase {
 
   #[@test]
   public function getHeadersInitiallyEmpty() {
-    $this->assertEquals(array(), $this->fixture->getHeaders());
+    $this->assertEquals([], $this->fixture->getHeaders());
   }
 
   #[@test]

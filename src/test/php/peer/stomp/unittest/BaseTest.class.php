@@ -1,5 +1,11 @@
 <?php namespace peer\stomp\unittest;
 
+use peer\URL;
+use io\streams\StringReader;
+use io\streams\StringWriter;
+use io\streams\MemoryInputStream;
+use io\streams\MemoryOutputStream;
+
 abstract class BaseTest extends \unittest\TestCase {
   protected $fixture= null;
 
@@ -8,38 +14,38 @@ abstract class BaseTest extends \unittest\TestCase {
    *
    */
   public function setUp() {
-    $this->fixture= $this->newConnection(new \peer\URL('stomp://user:pass@localhost:61613'));
+    $this->fixture= $this->newConnection(new URL('stomp://user:pass@localhost:61613'));
   }
 
-  protected function newConnection(\peer\URL $url) {
-    return newinstance('peer.stomp.Connection', array($url), '{
-      protected $response= "";
-      protected $sent= null;
+  protected function newConnection(URL $url) {
+    return newinstance('peer.stomp.Connection', [$url], [
+      'response' => '',
+      'sent'     => null,
+      'in'       => null,
+      'out'      => null,
 
-      public function __construct(\\peer\\URL $url) {
+      '__construct' => function(URL $url) {
         parent::__construct($url);
+        $this->_connect();    // FIXME: Required for unittest
+      },
 
-        // FIXME: Required for unittest
-        $this->_connect();
-      }
+      '_connect' => function() {
+        $this->in= new StringReader(new MemoryInputStream($this->response));
+        $this->out= new StringWriter(new MemoryOutputStream());
+      },
 
-      protected function _connect() {
-        $this->in= new \\io\\streams\\StringReader(new \\io\\streams\\MemoryInputStream($this->response));
-        $this->out= new \\io\\streams\\StringWriter(new \\io\\streams\\MemoryOutputStream());
-      }
-
-      protected function _disconnect() {
+      '_disconnect' => function() {
         $this->sent= $this->out->getStream()->getBytes();
         $this->in= null;
         $this->out= null;
-      }
+      },
 
-      public function setResponseBytes($s) {
-        $this->in= new \\io\\streams\\StringReader(new \\io\\streams\\MemoryInputStream($s));
+      'setResponseBytes' => function($s) {
+        $this->in= new StringReader(new MemoryInputStream($s));
         $this->response= $s;
-      }
+      },
 
-      public function readSentBytes() {
+      'readSentBytes' => function() {
 
         // Case of DISCONNECT
         if (null !== $this->sent) {
@@ -49,12 +55,12 @@ abstract class BaseTest extends \unittest\TestCase {
         }
 
         return $this->out->getStream()->getBytes();
-      }
+      },
 
-      public function clearSentBytes() {
+      'clearSentBytes' => function() {
         $this->_connect();
         $this->sent= null;
       }
-    }');
+    ]);
   }
 }

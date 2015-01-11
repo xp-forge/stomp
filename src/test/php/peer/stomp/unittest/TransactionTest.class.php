@@ -1,6 +1,7 @@
 <?php namespace peer\stomp\unittest;
 
 use peer\stomp\Transaction;
+use lang\IllegalStateException;
 
 class TransactionTest extends BaseTest {
 
@@ -52,7 +53,7 @@ class TransactionTest extends BaseTest {
 
   #[@test, @expect('lang.IllegalStateException')]
   public function rollback_fails_when_not_begun() {
-    create(new Transaction())->rollback();
+    (new Transaction())->rollback();
   }
 
   #[@test]
@@ -72,7 +73,7 @@ class TransactionTest extends BaseTest {
 
   #[@test, @expect('lang.IllegalStateException')]
   public function commit_fails_when_not_begun() {
-    create(new Transaction())->commit();
+    (new Transaction())->commit();
   }
 
   #[@test, @expect('lang.IllegalStateException')]
@@ -80,7 +81,7 @@ class TransactionTest extends BaseTest {
     try {
       $transaction= $this->fixture->begin(new Transaction('mytransaction'));
       $transaction->commit();
-    } catch (\lang\IllegalStateException $e) {
+    } catch (IllegalStateException $e) {
       $this->fail('Expected exception occurred too early.', null, null);
     }
 

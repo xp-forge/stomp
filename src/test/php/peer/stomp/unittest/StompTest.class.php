@@ -1,6 +1,16 @@
 <?php namespace peer\stomp\unittest;
 
 use peer\stomp\Connection;
+use peer\stomp\frame\Frame;
+use peer\stomp\frame\SendFrame;
+use peer\stomp\frame\SubscribeFrame;
+use peer\stomp\frame\UnsubscribeFrame;
+use peer\stomp\frame\BeginFrame;
+use peer\stomp\frame\AbortFrame;
+use peer\stomp\frame\CommitFrame;
+use peer\stomp\frame\AckFrame;
+use peer\stomp\frame\NackFrame;
+use peer\URL;
 
 /**
  * Tests STOMP protocol
@@ -30,7 +40,7 @@ class StompTest extends BaseTest {
 
   #[@test]
   public function login_without_credentials() {
-    $this->fixture= $this->newConnection(new \peer\URL('stomp://localhost/'));
+    $this->fixture= $this->newConnection(new URL('stomp://localhost/'));
     $this->fixture->setResponseBytes("CONNECTED\n".
       "version:1.0\n".
       "session-id:0xdeadbeef\n".
@@ -57,7 +67,7 @@ class StompTest extends BaseTest {
 
   #[@test]
   public function connect_and_negotiate_version() {
-    $this->fixture= $this->newConnection(new \peer\URL('stomp://user:pass@host?vhost=localhost&versions=1.0,1.1'));
+    $this->fixture= $this->newConnection(new URL('stomp://user:pass@host?vhost=localhost&versions=1.0,1.1'));
     $this->fixture->setResponseBytes("CONNECTED\n".
       "session-id:0xdeadbeef\n".
       "version:1.1\n".
@@ -77,7 +87,7 @@ class StompTest extends BaseTest {
 
   #[@test, @expect('peer.AuthenticationException')]
   public function connect_and_negotiate_version_but_fails() {
-    $this->fixture= $this->newConnection(new \peer\URL('stomp://user:pass@host?vhost=localhost&versions=1.0,1.1'));
+    $this->fixture= $this->newConnection(new URL('stomp://user:pass@host?vhost=localhost&versions=1.0,1.1'));
     $this->fixture->setResponseBytes("ERROR\n".
       "version:1.1\n".
       "content-type:text/plain\n".
@@ -99,7 +109,7 @@ class StompTest extends BaseTest {
 
   #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= '/Invalid protocol version/')]
   public function connect_requires_valid_version() {
-    $this->newConnection(new \peer\URL('stomp://user:pass@host?versions='))->connect();
+    $this->newConnection(new URL('stomp://user:pass@host?versions='))->connect();
   }
 
   #[@test]
@@ -109,7 +119,7 @@ class StompTest extends BaseTest {
       "\n\0"
     );
 
-    $this->fixture->sendFrame(new \peer\stomp\frame\SendFrame('/queue/a', 'my-data'));
+    $this->fixture->sendFrame(new SendFrame('/queue/a', 'my-data'));
     $this->assertEquals("SEND\n".
       "destination:/queue/a\n".
       "\nmy-data\0",
@@ -187,7 +197,7 @@ class StompTest extends BaseTest {
    *
    * @param   peer.stomp.frame.Frame fram
    */
-  protected function sendWithReceiptFrame(\peer\stomp\frame\Frame $frame) {
+  protected function sendWithReceiptFrame(Frame $frame) {
     $this->fixture->setResponseBytes("RECEIPT\n".
       "receipt-id:message-id\n".
       "\n\0"
@@ -198,7 +208,7 @@ class StompTest extends BaseTest {
 
   #[@test]
   public function subscribe() {
-    $this->sendWithReceiptFrame(new \peer\stomp\frame\SubscribeFrame('/queue/a'));
+    $this->sendWithReceiptFrame(new SubscribeFrame('/queue/a'));
     $this->assertEquals("SUBSCRIBE\n".
       "destination:/queue/a\n".
       "ack:auto\n".
@@ -210,7 +220,7 @@ class StompTest extends BaseTest {
 
   #[@test]
   public function unsubscribe() {
-    $this->sendWithReceiptFrame(new \peer\stomp\frame\UnsubscribeFrame('/queue/a'));
+    $this->sendWithReceiptFrame(new UnsubscribeFrame('/queue/a'));
     $this->assertEquals("UNSUBSCRIBE\n".
       "destination:/queue/a\n".
       "\n".
@@ -221,7 +231,7 @@ class StompTest extends BaseTest {
 
   #[@test]
   public function beginTransaction() {
-    $this->sendWithReceiptFrame(new \peer\stomp\frame\BeginFrame('my-transaction'));
+    $this->sendWithReceiptFrame(new BeginFrame('my-transaction'));
     $this->assertEquals("BEGIN\n".
       "transaction:my-transaction\n\n\0"
       , $this->fixture->readSentBytes()
@@ -230,7 +240,7 @@ class StompTest extends BaseTest {
 
   #[@test]
   public function abortTransaction() {
-    $this->sendWithReceiptFrame(new \peer\stomp\frame\AbortFrame('my-transaction'));
+    $this->sendWithReceiptFrame(new AbortFrame('my-transaction'));
     $this->assertEquals("ABORT\n".
       "transaction:my-transaction\n\n\0"
       , $this->fixture->readSentBytes()
@@ -239,7 +249,7 @@ class StompTest extends BaseTest {
 
   #[@test]
   public function commitTransaction() {
-    $this->sendWithReceiptFrame(new \peer\stomp\frame\CommitFrame('my-transaction'));
+    $this->sendWithReceiptFrame(new CommitFrame('my-transaction'));
     $this->assertEquals("COMMIT\n".
       "transaction:my-transaction\n\n\0"
       , $this->fixture->readSentBytes()
@@ -248,7 +258,7 @@ class StompTest extends BaseTest {
 
   #[@test]
   public function ack() {
-    $this->sendWithReceiptFrame(new \peer\stomp\frame\AckFrame('0xefefef', '1x1x1x1x1x1'));
+    $this->sendWithReceiptFrame(new AckFrame('0xefefef', '1x1x1x1x1x1'));
     $this->assertEquals("ACK\n".
       "message-id:0xefefef\n".
       "subscription:1x1x1x1x1x1\n".
@@ -259,7 +269,7 @@ class StompTest extends BaseTest {
 
   #[@test]
   public function nack() {
-    $this->sendWithReceiptFrame(new \peer\stomp\frame\NackFrame('0xefefef', '0x0x0x0x0'));
+    $this->sendWithReceiptFrame(new NackFrame('0xefefef', '0x0x0x0x0'));
     $this->assertEquals("NACK\n".
       "message-id:0xefefef\n".
       "subscription:0x0x0x0x0\n".
@@ -270,7 +280,7 @@ class StompTest extends BaseTest {
 
   #[@test]
   public function ackWithinTransaction() {
-    $this->sendWithReceiptFrame(new \peer\stomp\frame\AckFrame('0xefefef', 'some-subscription', "some-transaction"));
+    $this->sendWithReceiptFrame(new AckFrame('0xefefef', 'some-subscription', "some-transaction"));
     $this->assertEquals("ACK\n".
       "message-id:0xefefef\n".
       "subscription:some-subscription\n".
@@ -282,7 +292,7 @@ class StompTest extends BaseTest {
 
   #[@test]
   public function nackWithinTransaction() {
-    $this->sendWithReceiptFrame(new \peer\stomp\frame\NackFrame('0xefefef', 'some-subscription', "some-transaction"));
+    $this->sendWithReceiptFrame(new NackFrame('0xefefef', 'some-subscription', "some-transaction"));
     $this->assertEquals("NACK\n".
       "message-id:0xefefef\n".
       "subscription:some-subscription\n".

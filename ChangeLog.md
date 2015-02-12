@@ -3,6 +3,10 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 7.0.1 / 2015-02-12
+
+* Changed dependency to use XP ~6.0 (instead of dev-master) - @thekid
+
 ## 7.0.0 / 2015-01-11
 
 * Heads up: Changed Stomp to depend on XP6 core (@thekid)

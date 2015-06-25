@@ -6,7 +6,7 @@
   "description" : "STOMP protocol implementation",
   "keywords": ["module", "xp"],
   "require" : {
-    "xp-framework/core": "~5.11",
+    "xp-framework/xp-framework": "~5.11",
     "php" : ">=5.3.0"
   },
   "autoload" : {

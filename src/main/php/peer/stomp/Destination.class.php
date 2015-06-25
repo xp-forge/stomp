@@ -2,7 +2,6 @@
 
 /**
  * STOMP Destination
- * 
  */
 class Destination extends \lang\Object {
   protected $name   = null;

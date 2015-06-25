@@ -2,7 +2,6 @@
 
 /**
  * Interface with shared constants
- * 
  */
 interface Header {
   const CONTENTTYPE   = 'content-type';

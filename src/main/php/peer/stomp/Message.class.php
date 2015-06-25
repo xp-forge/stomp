@@ -2,14 +2,13 @@
 
 /**
  * Message base class
- * 
  */
 abstract class Message extends \lang\Object {
   protected $messageId    = null;
   protected $contentType  = null;
   protected $body         = null;
   protected $persistence  = true;
-  protected $customHeader = array();
+  protected $customHeader = [];
 
   /**
    * Constructor

@@ -6,7 +6,6 @@ use peer\stomp\frame\NackFrame;
 
 /**
  * Message retrieved from server
- * 
  */
 class ReceivedMessage extends Message {
   protected $destination  = null;

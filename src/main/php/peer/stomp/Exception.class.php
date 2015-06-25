@@ -4,10 +4,9 @@ use peer\stomp\frame\Frame;
 
 /**
  * Exception base class
- * 
  */
 class Exception extends \io\IOException {
-  private $frame = null;
+  private $frame;
 
   /**
    * Set frame

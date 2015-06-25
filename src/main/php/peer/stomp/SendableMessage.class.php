@@ -4,7 +4,6 @@ use peer\stomp\frame\SendFrame;
 
 /**
  * Sendable message
- * 
  */
 class SendableMessage extends Message {
 

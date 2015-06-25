@@ -5,7 +5,6 @@ use peer\stomp\frame\UnsubscribeFrame;
 
 /**
  * Subscription
- * 
  */
 class Subscription extends \lang\Object {
   protected $id         = null;

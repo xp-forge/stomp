@@ -22,7 +22,7 @@ class ConnectionTest extends \unittest\TestCase {
 
   #[@test, @values('constructorArgs')]
   public function url_accessor_returns_url($arg) {
-    $this->assertEquals(new URL('stomp://localhost:61003'), create(new Connection($arg))->url());
+    $this->assertEquals(new URL('stomp://localhost:61003'), (new Connection($arg))->url());
   }
 
   #[@test, @values([null, 'localhost:61003']), @expect('lang.IllegalArgumentException')]

@@ -235,7 +235,7 @@ class Connection extends \lang\Object implements Traceable {
     if (!$this->out instanceof OutputStreamWriter) return;
 
     // Send disconnect frame and exit
-    create(new DisconnectFrame())->write($this->out);
+    (new DisconnectFrame())->write($this->out);
     $this->_disconnect();
   }
 
@@ -296,9 +296,7 @@ class Connection extends \lang\Object implements Traceable {
     $frame= $this->recvFrame($timeout);
 
     if ($frame instanceof ErrorFrame) {
-      throw create(new Exception($frame->getMessage()))
-        ->withFrame($frame)
-      ;
+      throw (new Exception($frame->getMessage()))->withFrame($frame);
     }
 
     if ($frame instanceof MessageFrame) {

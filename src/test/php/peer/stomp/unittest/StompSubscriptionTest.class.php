@@ -31,7 +31,7 @@ class StompSubscriptionTest extends BaseTest {
 
   #[@test, @expect('lang.IllegalStateException')]
   public function unsubscribe_not_possible_when_not_subscribed() {
-    create(new Subscription('foo'))->unsubscribe();
+    (new Subscription('foo'))->unsubscribe();
   }
 
   #[@test, @expect('lang.IllegalStateException')]
@@ -39,7 +39,7 @@ class StompSubscriptionTest extends BaseTest {
     $s= new Subscription('foo');
     $s->setId('foobar');
 
-    create(new Subscription('foo'))->unsubscribe();
+    (new Subscription('foo'))->unsubscribe();
   }
 
   #[@test]

@@ -3,6 +3,11 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 7.1.0 / 2015-09-26
+
+* Changed code to use PHP 5.4 short array syntax - @thekid
+* Use `::class` inside annotations
+
 ## 7.0.2 / 2015-07-12
 
 * Added forward compatibility with XP 6.4.0 - @thekid

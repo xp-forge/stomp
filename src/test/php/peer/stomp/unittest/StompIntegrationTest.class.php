@@ -1,5 +1,6 @@
 <?php namespace peer\stomp\unittest;
 
+use peer\AuthenticationException;
 use peer\stomp\Connection;
 use peer\stomp\frame\MessageFrame;
 use peer\stomp\frame\ReceiptFrame;
@@ -35,7 +36,7 @@ class StompIntegrationTest extends \unittest\TestCase {
     $this->fixture->disconnect();
   }
 
-  #[@test, @ignore, @expect('peer.AuthenticationException')]
+  #[@test, @ignore, @expect(AuthenticationException::class)]
   public function invalidCredentials() {
     $conn= new Connection(new \peer\URL('stomp://'.$this->host));
     $conn->connect('unknownuser', 'invalidpass');

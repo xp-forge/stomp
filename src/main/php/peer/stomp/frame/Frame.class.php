@@ -8,7 +8,7 @@ use peer\stomp\Header;
  * @test  xp://peer.stomp.unittest.StompFrameTest
  */
 abstract class Frame extends \lang\Object implements \util\log\Traceable {
-  protected $headers  = array();
+  protected $headers  = [];
   protected $body     = null;
 
   protected $cat      = null;
@@ -38,7 +38,7 @@ abstract class Frame extends \lang\Object implements \util\log\Traceable {
     if ($this->cat) {
       $args= func_get_args();
       array_unshift($args, $this->getClass()->getSimpleName());
-      call_user_func_array(array($this->cat, 'debug'), $args);
+      call_user_func_array([$this->cat, 'debug'], $args);
     }
   }
 

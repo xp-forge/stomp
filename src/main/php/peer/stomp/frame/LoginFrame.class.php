@@ -19,7 +19,7 @@ class LoginFrame extends Frame {
    * @param   string user
    * @param   string pass
    */
-  public function __construct($user, $pass, $host= null, $versions= array('1.0', '1.1')) {
+  public function __construct($user, $pass, $host= null, $versions= ['1.0', '1.1']) {
     if ($host && !$versions) {
       throw new \lang\IllegalArgumentException('Versions required when specifying hostname (stomp 1.1 feature)');
     }
@@ -67,7 +67,7 @@ class LoginFrame extends Frame {
    * @return  <string,string>[]
    */
   public function getHeaders() {
-    $hdrs= array();
+    $hdrs= [];
     $hdrs[Header::ACCEPTVERSION]= implode(',', $this->versions);
     $hdrs[Header::HOST]= $this->host;
 

@@ -1,5 +1,6 @@
 <?php namespace peer\stomp\unittest;
   
+use lang\IllegalArgumentException;
 use peer\stomp\frame\Frame;
 use peer\stomp\Header;
 
@@ -17,7 +18,7 @@ class StompFrameTest extends \unittest\TestCase {
    *
    */
   public function setUp() {
-    $this->fixture= newinstance('peer.stomp.frame.Frame', array(), '{
+    $this->fixture= newinstance('peer.stomp.frame.Frame', [], '{
       public function command() { 
         return "test"; 
       }
@@ -41,7 +42,7 @@ class StompFrameTest extends \unittest\TestCase {
     $this->assertEquals(200, $this->fixture->getHeader('content-length'));
   }
 
-  #[@test, @expect('lang.IllegalArgumentException')]
+  #[@test, @expect(IllegalArgumentException::class)]
   public function getNonExistantHeader() {
     $this->fixture->getHeader('non-existant');
   }
@@ -54,7 +55,7 @@ class StompFrameTest extends \unittest\TestCase {
   #[@test]
   public function getHeaders() {
     $this->fixture->addHeader('content-length', 200);
-    $this->assertEquals(array('content-length' => 200), $this->fixture->getHeaders());
+    $this->assertEquals(['content-length' => 200], $this->fixture->getHeaders());
   }
 
   #[@test]

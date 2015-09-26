@@ -51,7 +51,7 @@ class TransactionTest extends BaseTest {
     );
   }
 
-  #[@test, @expect('lang.IllegalStateException')]
+  #[@test, @expect(IllegalStateException::class)]
   public function rollback_fails_when_not_begun() {
     (new Transaction())->rollback();
   }
@@ -71,12 +71,12 @@ class TransactionTest extends BaseTest {
     );
   }
 
-  #[@test, @expect('lang.IllegalStateException')]
+  #[@test, @expect(IllegalStateException::class)]
   public function commit_fails_when_not_begun() {
     (new Transaction())->commit();
   }
 
-  #[@test, @expect('lang.IllegalStateException')]
+  #[@test, @expect(IllegalStateException::class)]
   public function commit_fails_on_second_call() {
     try {
       $transaction= $this->fixture->begin(new Transaction('mytransaction'));

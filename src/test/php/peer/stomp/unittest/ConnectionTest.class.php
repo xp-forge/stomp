@@ -1,5 +1,6 @@
 <?php namespace peer\stomp\unittest;
 
+use lang\IllegalArgumentException;
 use peer\URL;
 use peer\stomp\Connection;
 
@@ -12,7 +13,7 @@ class ConnectionTest extends \unittest\TestCase {
 
   /** @return  var[] */
   protected function constructorArgs() {
-    return array('stomp://localhost:61003', new URL('stomp://localhost:61003'));
+    return ['stomp://localhost:61003', new URL('stomp://localhost:61003')];
   }
 
   #[@test, @values('constructorArgs')]
@@ -25,7 +26,7 @@ class ConnectionTest extends \unittest\TestCase {
     $this->assertEquals(new URL('stomp://localhost:61003'), (new Connection($arg))->url());
   }
 
-  #[@test, @values([null, 'localhost:61003']), @expect('lang.IllegalArgumentException')]
+  #[@test, @values([null, 'localhost:61003']), @expect(IllegalArgumentException::class)]
   public function invalid_url_given_to_constructor($arg) {
     new Connection($arg);
   }

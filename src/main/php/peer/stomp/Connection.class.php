@@ -31,7 +31,7 @@ class Connection extends \lang\Object implements Traceable {
   protected $socket        = null;
   protected $in            = null;
   protected $out           = null;
-  protected $subscriptions = array();
+  protected $subscriptions = [];
   protected $cat           = null;
 
   /**
@@ -76,7 +76,7 @@ class Connection extends \lang\Object implements Traceable {
     if ($this->cat) {
       $args= func_get_args();
       array_unshift($args, $this->getClass()->getSimpleName());
-      call_user_func_array(array($this->cat, 'debug'), $args);
+      call_user_func_array([$this->cat, 'debug'], $args);
     }
   }
 
@@ -198,7 +198,7 @@ class Connection extends \lang\Object implements Traceable {
       $this->url->getUser(),
       $this->url->getPassword(),
       $this->url->getParam('vhost', $this->url->getHost()),
-      $this->url->hasParam('versions') ? explode(',', $this->url->getParam('versions')) : array('1.0', '1.1')
+      $this->url->hasParam('versions') ? explode(',', $this->url->getParam('versions')) : ['1.0', '1.1']
     ));
 
     if (!$frame instanceof Frame) {

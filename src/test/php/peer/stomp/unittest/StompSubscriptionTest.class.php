@@ -1,5 +1,8 @@
 <?php namespace peer\stomp\unittest;
 
+use lang\IllegalStateException;
+use peer\stomp\Exception;
+use lang\IllegalArgumentException;
 use peer\stomp\Subscription;
 
 class StompSubscriptionTest extends BaseTest {
@@ -29,12 +32,12 @@ class StompSubscriptionTest extends BaseTest {
     $this->assertEquals($subscription, $this->fixture->subscriptionById($subscription->getId()));
   }
 
-  #[@test, @expect('lang.IllegalStateException')]
+  #[@test, @expect(IllegalStateException::class)]
   public function unsubscribe_not_possible_when_not_subscribed() {
     (new Subscription('foo'))->unsubscribe();
   }
 
-  #[@test, @expect('lang.IllegalStateException')]
+  #[@test, @expect(IllegalStateException::class)]
   public function unsubscribe_not_possible_when_no_connection() {
     $s= new Subscription('foo');
     $s->setId('foobar');
@@ -71,7 +74,7 @@ class StompSubscriptionTest extends BaseTest {
     $this->assertInstanceOf('peer.stomp.Subscription', $this->fixture->subscriptionById($id));
   }
 
-  #[@test, @expect('peer.stomp.Exception')]
+  #[@test, @expect(Exception::class)]
   public function subscribe_also_unregisteres_in_connection() {
     $id= $this->createSubscription();
     $this->fixture->subscriptionById($id)->unsubscribe();
@@ -87,7 +90,7 @@ class StompSubscriptionTest extends BaseTest {
     $s->setAckMode(\peer\stomp\AckMode::INDIVIDUAL);
   }
 
-  #[@test, @expect('lang.IllegalArgumentException')]
+  #[@test, @expect(IllegalArgumentException::class)]
   public function invalid_ackmode() {
     $s= new Subscription('foobar');
     $s->setAckMode('automatic');

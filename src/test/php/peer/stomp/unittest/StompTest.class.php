@@ -1,5 +1,7 @@
 <?php namespace peer\stomp\unittest;
 
+use peer\AuthenticationException;
+use peer\ProtocolException;
 use peer\stomp\Connection;
 use peer\stomp\frame\Frame;
 use peer\stomp\frame\SendFrame;
@@ -56,7 +58,7 @@ class StompTest extends BaseTest {
     );
   }
 
-  #[@test, @expect('peer.AuthenticationException')]
+  #[@test, @expect(AuthenticationException::class)]
   public function loginFailed() {
     $this->fixture->setResponseBytes("ERROR\n".
       "message: Invalid credentials\n".
@@ -85,7 +87,7 @@ class StompTest extends BaseTest {
     );
   }
 
-  #[@test, @expect('peer.AuthenticationException')]
+  #[@test, @expect(AuthenticationException::class)]
   public function connect_and_negotiate_version_but_fails() {
     $this->fixture= $this->newConnection(new URL('stomp://user:pass@host?vhost=localhost&versions=1.0,1.1'));
     $this->fixture->setResponseBytes("ERROR\n".
@@ -157,7 +159,7 @@ class StompTest extends BaseTest {
     $this->assertEquals("Line1\nLine2", $response->getBody());
   }
 
-  #[@test, @expect('peer.ProtocolException')]
+  #[@test, @expect(ProtocolException::class)]
   public function catchInvalidContentLength() {
     $this->fixture->setResponseBytes("ERROR\n".
       "message:Unknown command\n".

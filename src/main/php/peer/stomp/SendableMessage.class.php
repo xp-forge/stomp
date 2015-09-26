@@ -14,7 +14,7 @@ class SendableMessage extends Message {
    * @return peer.stomp.frame.SendFrame
    */
   public function toFrame(Destination $dest) {
-    $headers= array();
+    $headers= [];
     if ($this->getMessageId()) {
       $headers[Header::MESSAGEID]= $this->getMessageId();
     }

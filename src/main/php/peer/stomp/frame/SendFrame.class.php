@@ -16,7 +16,7 @@ class SendFrame extends Frame {
    * @param   string data default null
    * @param   [:string] headers default array
    */
-  public function __construct($destination, $data= null, $headers= array()) {
+  public function __construct($destination, $data= null, $headers= []) {
     $this->headers= $headers;
     $this->setDestination($destination);
     $this->setBody($data);

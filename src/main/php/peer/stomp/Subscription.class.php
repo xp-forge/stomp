@@ -62,7 +62,7 @@ class Subscription extends \lang\Object {
    * @param int $ackMode
    */
   public function setAckMode($ackMode) {
-    if (!in_array($ackMode, array(AckMode::AUTO, AckMode::CLIENT, AckMode::INDIVIDUAL))) {
+    if (!in_array($ackMode, [AckMode::AUTO, AckMode::CLIENT, AckMode::INDIVIDUAL])) {
       throw new \lang\IllegalArgumentException('Invalid ackMode given: "'.$ackMode.'"');
     }
     $this->ackMode= $ackMode;
@@ -126,7 +126,7 @@ class Subscription extends \lang\Object {
    * @param  peer.stomp.ReceivedMessage $message
    */
   public function process(ReceivedMessage $message) {
-    call_user_func_array($this->callback, array($message));
+    call_user_func_array($this->callback, [$message]);
   }
 
   /**

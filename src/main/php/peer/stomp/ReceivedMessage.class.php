@@ -36,13 +36,13 @@ class ReceivedMessage extends Message {
       $this->setPersistence('true' === $frame->getHeader(Header::PERSISTENCE));
     }
 
-    $skipHeaders= array(
+    $skipHeaders= [
       Header::DESTINATION   => true,
       Header::MESSAGEID     => true,
       Header::CONTENTTYPE   => true,
       Header::SUBSCRIPTION  => true,
       Header::CONTENTLENGTH => true
-    );
+    ];
 
     foreach ($frame->getHeaders() as $name => $value) {
       if (isset($skipHeaders[$name])) continue;
@@ -134,10 +134,10 @@ class ReceivedMessage extends Message {
    * @return boolean
    */
   public function ackable() {
-    return in_array($this->getSubscription()->getAckMode(), array(
+    return in_array($this->getSubscription()->getAckMode(), [
       \peer\stomp\AckMode::CLIENT,
       \peer\stomp\AckMode::INDIVIDUAL
-    ));
+    ]);
   }
 
   /**

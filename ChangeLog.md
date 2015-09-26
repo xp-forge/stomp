@@ -5,6 +5,7 @@ stomp ChangeLog
 
 ## 7.1.0 / 2015-09-26
 
+* Added PHP 7 support - @thekid
 * Changed code to use PHP 5.4 short array syntax - @thekid
 * Use `::class` inside annotations
 

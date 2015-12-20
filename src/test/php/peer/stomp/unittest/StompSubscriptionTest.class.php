@@ -71,7 +71,7 @@ class StompSubscriptionTest extends BaseTest {
   #[@test]
   public function subscribe_registeres_in_connection() {
     $id= $this->createSubscription();
-    $this->assertInstanceOf('peer.stomp.Subscription', $this->fixture->subscriptionById($id));
+    $this->assertInstanceOf(Subscription::class, $this->fixture->subscriptionById($id));
   }
 
   #[@test, @expect(Exception::class)]

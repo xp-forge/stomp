@@ -1,5 +1,6 @@
 <?php namespace peer\stomp\unittest;
 
+use peer\stomp\Destination;
 use peer\stomp\Message;
 use peer\stomp\SendableMessage;
 use peer\stomp\ReceivedMessage;
@@ -25,7 +26,7 @@ class MessageTest extends BaseTest {
     );
 
     $m= $this->fixture->receive();
-    $this->assertInstanceOf('peer.stomp.Message', $m);
+    $this->assertInstanceOf(Message::class, $m);
   }
 
   #[@test]
@@ -58,7 +59,7 @@ class MessageTest extends BaseTest {
     );
 
     $m= $this->fixture->receive();
-    $this->assertInstanceOf('peer.stomp.Destination', $m->getDestination());
+    $this->assertInstanceOf(Destination::class, $m->getDestination());
   }
 
   #[@test]

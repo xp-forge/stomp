@@ -18,7 +18,7 @@ class StompFrameTest extends \unittest\TestCase {
    *
    */
   public function setUp() {
-    $this->fixture= newinstance('peer.stomp.frame.Frame', [], '{
+    $this->fixture= newinstance(Frame::class, [], '{
       public function command() { 
         return "test"; 
       }

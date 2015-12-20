@@ -1,5 +1,7 @@
 <?php namespace peer\stomp\unittest;
 
+use peer\stomp\frame\ReceiptFrame;
+use peer\stomp\Destination;
 use peer\AuthenticationException;
 use peer\ProtocolException;
 use peer\stomp\Connection;
@@ -129,7 +131,7 @@ class StompTest extends BaseTest {
     );
     $response= $this->fixture->recvFrame();
 
-    $this->assertInstanceOf('peer.stomp.frame.ReceiptFrame', $response);
+    $this->assertInstanceOf(ReceiptFrame::class, $response);
   }
 
   #[@test]
@@ -179,7 +181,7 @@ class StompTest extends BaseTest {
     );
 
     $recvd= $this->fixture->recvFrame();
-    $this->assertInstanceOf('peer.stomp.frame.ReceiptFrame', $recvd);
+    $this->assertInstanceOf(ReceiptFrame::class, $recvd);
   }
 
   #[@test, @expect(class= 'peer.stomp.Exception', withMessage= '/ACK received without/')]
@@ -391,7 +393,7 @@ class StompTest extends BaseTest {
 
   #[@test]
   public function acquire_destination() {
-    $this->assertInstanceOf('peer.stomp.Destination', $this->fixture->getDestination('/queue/unittest'));
+    $this->assertInstanceOf(Destination::class, $this->fixture->getDestination('/queue/unittest'));
   }
 
   #[@test]

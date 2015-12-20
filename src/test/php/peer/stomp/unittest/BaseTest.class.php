@@ -1,5 +1,6 @@
 <?php namespace peer\stomp\unittest;
 
+use peer\stomp\Connection;
 use peer\URL;
 use io\streams\StringReader;
 use io\streams\StringWriter;
@@ -18,7 +19,7 @@ abstract class BaseTest extends \unittest\TestCase {
   }
 
   protected function newConnection(URL $url) {
-    return newinstance('peer.stomp.Connection', [$url], [
+    return newinstance(Connection::class, [$url], [
       'response' => '',
       'sent'     => null,
       'in'       => null,

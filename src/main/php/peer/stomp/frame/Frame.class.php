@@ -205,7 +205,7 @@ abstract class Frame extends \lang\Object implements \util\log\Traceable {
    * @return  string
    */
   public function toString() {
-    $s= $this->getClassName().'@('.$this->hashCode().") {\n";
+    $s= nameof($this).'@('.$this->hashCode().") {\n";
     $s.= '  Stomp command=    "'.$this->command()."\"\n";
 
     foreach ($this->headers as $key => $value) {

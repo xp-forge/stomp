@@ -156,7 +156,7 @@ class ReceivedMessage extends Message {
   }
 
   public function toString() {
-    $s= $this->getClassName().'('.$this->hashCode().") {\n";
+    $s= nameof($this).'('.$this->hashCode().") {\n";
     $s.= "  [  destination ] ".\xp::stringOf($this->getDestination(), '  ')."\n";
     $s.= "  [ subscription ] ".\xp::stringOf($this->getSubscription(), '  ')."\n";
     $s.= "  [  persistence ] ".\xp::stringOf($this->getPersistence(), '  ')."\n";

@@ -136,7 +136,7 @@ class Subscription extends \lang\Object {
    */
   public function toString() {
     return sprintf('%s (dest= %s, ackmode= %s, selector= %s)',
-      $this->getClassName(),
+      nameof($this),
       $this->dest,
       $this->ackMode,
       \xp::stringOf($this->selector)

@@ -124,7 +124,7 @@ abstract class Message extends \lang\Object {
    * @return string
    */
   public function toString() {
-    $s= $this->getClassName().'('.$this->hashCode().") {\n";
+    $s= nameof($this).'('.$this->hashCode().") {\n";
     $s.= "  [  persistence ] ".\xp::stringOf($this->getPersistence())."\n";
     $s.= "  [ content-type ] ".$this->getContentType()."\n";
     $s.= "  [         body ] ".$this->getBody()."\n";

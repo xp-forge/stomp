@@ -149,7 +149,7 @@ class Connection extends \lang\Object implements Traceable {
       $this->debug('~ ate a byte: '.\xp::stringOf($c));
     }
 
-    $f= $this->in->getClass()->getField('buf')->setAccessible(true);
+    $f= typeof($this->in)->getField('buf')->setAccessible(true);
     $f->set($this->in, $c.$f->get($this->in));
 
     return $frame;

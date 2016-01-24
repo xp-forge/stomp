@@ -3,6 +3,10 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 8.0.2 / 2016-01-24
+
+* Fix pushing back newlines - @thekid
+
 ## 8.0.1 / 2016-01-24
 
 * Fix code to use `nameof()` instead of the deprecated `getClassName()`

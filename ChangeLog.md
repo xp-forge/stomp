@@ -3,6 +3,10 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 9.0.0 / 2016-02-21
+
+* Added version compatibility with XP 7 - @thekid
+
 ## 8.0.2 / 2016-01-24
 
 * Fix pushing back newlines - @thekid

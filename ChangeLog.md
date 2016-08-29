@@ -3,6 +3,10 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 9.1.0 / 2016-08-29
+
+* Added version compatibility with XP 8 - @thekid
+
 ## 9.0.0 / 2016-02-21
 
 * Added version compatibility with XP 7 - @thekid

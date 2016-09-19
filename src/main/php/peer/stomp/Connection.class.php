@@ -119,10 +119,11 @@ class Connection extends \lang\Object implements Traceable {
     }
 
     $line= null;
-    while (!$line) {
+    $tries= 0;
+    while (!$line && $tries++ < 1000) {
       $line= $this->in->readLine();
     }
-    $this->debug('<<<', 'Have "'.trim($line).'" command.');
+    $this->debug('<<<', 'Have "'.trim($line).'" command, tried', $tries, 'time(s).');
 
     if (0 == strlen($line)) throw new ProtocolException('Expected frame token, got '.\xp::stringOf($line));
 

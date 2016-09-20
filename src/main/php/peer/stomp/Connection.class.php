@@ -118,11 +118,14 @@ class Connection extends \lang\Object implements Traceable {
       return null;
     }
 
-    $line= null;
-    while (!$line) {
+    do {
       $line= $this->in->readLine();
-    }
-    $this->debug('<<<', 'Have "'.trim($line).'" command.');
+      if (null === $line) {
+        $this->_disconnect();
+        throw new ServerDisconnected('Got disconnected from '.$this->socket->toString());
+      }
+    } while ('' === $line);
+    $this->debug('<<<', 'Have "'.trim($line).'" command');
 
     if (0 == strlen($line)) throw new ProtocolException('Expected frame token, got '.\xp::stringOf($line));
 

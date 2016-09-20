@@ -3,6 +3,11 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 9.1.1 / 2016-09-20
+
+* Merged pull request #6: Prevent endless loop when server disconnects
+  (@kiesel, @thekid)
+
 ## 9.1.0 / 2016-08-29
 
 * Added version compatibility with XP 8 - @thekid

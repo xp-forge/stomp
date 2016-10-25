@@ -188,9 +188,6 @@ class Connection extends \lang\Object implements Traceable, IConnection {
   /**
    * Connect to server with given username and password
    *
-   * @param   string user
-   * @param   string pass
-   * @param   string[] protoVersions list of supported protocol versions default null
    * @return  bool
    * @throws  peer.AuthenticationException if login failed
    */
@@ -245,7 +242,8 @@ class Connection extends \lang\Object implements Traceable, IConnection {
   /**
    * Begin server transaction
    *
-   * @param   string transaction
+   * @param   peer.stomp.Transaction transaction
+   * @return  peer.stomp.Transaction
    */
   public function begin(Transaction $transaction) {
     $transaction->begin($this);

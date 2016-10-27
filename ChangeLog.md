@@ -3,6 +3,12 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 9.2.0 / 2016-10-27
+
+* Merged pull request #7: Implement failover connections / HA; introduces
+  `peer.stomp.Failover` class
+  (@kiesel, @thekid)
+
 ## 9.1.1 / 2016-09-20
 
 * Merged pull request #6: Prevent endless loop when server disconnects

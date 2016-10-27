@@ -53,6 +53,31 @@ $sub= $conn->subscribeTo(new Subscription('/queue/producer', function($message) 
 $conn->consume();
 ```
 
+### Multi-endpoint failover
+A consumer with a broker network may connect to any host when available:
+
+```php
+use peer\stomp\Connection;
+use peer\stomp\Subscription;
+use peer\stomp\Failover;
+use peer\URL;
+
+$conn= new Connection(Failover::using([
+  new URL('stomp://one.example.com:61613/'),
+  new URL('stomp://two.example.com:61613/')
+])->byRandom());
+
+// Connect randomly to one or the other
+$conn->connect();
+
+$sub= $conn->subscribeTo(new Subscription('/queue/producer', function($message) {
+  Console::writeLine('---> Received message: ', $message);
+  $message->ack();
+}));
+
+$conn->consume();
+```
+
 *For more examples, please see the `examples/` directory.*
 
 ### The connection URL

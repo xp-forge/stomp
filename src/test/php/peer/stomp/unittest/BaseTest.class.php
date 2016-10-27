@@ -25,12 +25,12 @@ abstract class BaseTest extends \unittest\TestCase {
       'in'       => null,
       'out'      => null,
 
-      '__construct' => function(URL $url) {
+      '__construct' => function($url) {
         parent::__construct($url);
-        $this->_connect();    // FIXME: Required for unittest
+        $this->_connect($url);    // FIXME: Required for unittest
       },
 
-      '_connect' => function() {
+      '_connect' => function(URL $url) {
         $this->in= new StringReader(new MemoryInputStream($this->response));
         $this->out= new StringWriter(new MemoryOutputStream());
       },
@@ -59,7 +59,7 @@ abstract class BaseTest extends \unittest\TestCase {
       },
 
       'clearSentBytes' => function() {
-        $this->_connect();
+        $this->_connect(new URL());
         $this->sent= null;
       }
     ]);

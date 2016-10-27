@@ -3,6 +3,7 @@
 use lang\IllegalArgumentException;
 use peer\URL;
 use peer\stomp\Connection;
+use peer\stomp\Failover;
 
 /**
  * Tests STOMP connection class
@@ -29,5 +30,11 @@ class ConnectionTest extends \unittest\TestCase {
   #[@test, @values([null, 'localhost:61003']), @expect(IllegalArgumentException::class)]
   public function invalid_url_given_to_constructor($arg) {
     new Connection($arg);
+  }
+
+  #[@test]
+  public function failover_url() {
+    $c= new Connection(Failover::using(['stomp://localhost:61001', 'stomp://localhost:61002'])->byRandom());
+    // $c->connect();
   }
 }

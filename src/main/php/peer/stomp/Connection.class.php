@@ -1,5 +1,6 @@
 <?php namespace peer\stomp;
 
+use util\log\Logger;
 use util\log\Traceable;
 use peer\URL;
 use peer\Socket;
@@ -27,6 +28,7 @@ use peer\stomp\frame\MessageFrame;
  * @test  xp://peer.stomp.unittest.StompTest
  */
 class Connection extends \lang\Object implements Traceable {
+  private $failover        = null;
   protected $url           = null;
   protected $socket        = null;
   protected $in            = null;
@@ -41,23 +43,46 @@ class Connection extends \lang\Object implements Traceable {
    * @throws  lang.IllegalArgumentException if string given is unparseable
    */
   public function __construct($url) {
-    if ($url instanceof URL) {
-      $this->url= $url;
+    if ($url instanceof Failover) {
+      $this->failover= $url;
+    } else {
+      $this->failover= Failover::using([$url])->byRandom();
+    }
+
+    // Walk through all failover members, to check they all have valid URLs; by returning
+    // false, indicate to failover to the next available member.
+    // For BC reasons, if one connection has a log=<category> parameter, read it
+    // and set it into this objects $cat member.
+    $this->failover->elect(function($url) {
+      $url= self::urlFrom($url);
+
+      if (!$this->cat && $url->hasParam('log')) {
+        $this->setTrace(Logger::getInstance()->getCategory($url->getParam('log')));
+      }
+      return false;
+    });
+  }
+
+  private static function urlFrom($thing) {
+    if ($thing instanceof URL) {
+      return $thing;
     } else {
       try {
-        $this->url= new URL((string)$url);
+        return new URL((string)$thing);
       } catch (\lang\FormatException $e) {
         throw new \lang\IllegalArgumentException('Invalid URL given', $e);
       }
     }
-
-    if ($this->url->hasParam('log')) {
-      $this->setTrace(\util\log\Logger::getInstance()->getCategory($this->url->getParam('log')));
-    }
   }
 
   /** @return peer.URL */
-  public function url() { return $this->url; }
+  public function url() {
+    if ($this->url) {
+      return $this->url;
+    }
+
+    return self::urlFrom($this->failover->member(0));
+  }
 
   /**
    * Set trace
@@ -78,28 +103,6 @@ class Connection extends \lang\Object implements Traceable {
       array_unshift($args, $this->getClass()->getSimpleName());
       call_user_func_array([$this->cat, 'debug'], $args);
     }
-  }
-
-  /**
-   * Connect to server
-   *
-   */
-  protected function _connect() {
-    $this->socket= new Socket($this->url->getHost(), $this->url->getPort(61612));
-    $this->socket->connect();
-
-    $this->in= new StringReader(new SocketInputStream($this->socket));
-    $this->out= new StringWriter(new SocketOutputStream($this->socket));
-  }
-
-  /**
-   * Disconnect from server
-   *
-   */
-  protected function _disconnect() {
-    $this->out= null;
-    $this->in= null;
-    $this->socket->close();
   }
 
   /**
@@ -186,22 +189,33 @@ class Connection extends \lang\Object implements Traceable {
   }
 
   /**
-   * Connect to server with given username and password
+   * Connect to server
    *
-   * @param   string user
-   * @param   string pass
-   * @param   string[] protoVersions list of supported protocol versions default null
-   * @return  bool
-   * @throws  peer.AuthenticationException if login failed
    */
-  public function connect() {
-    $this->_connect();
+  protected function _connect(URL $url) {
+    $this->socket= new Socket($url->getHost(), $url->getPort(61612));
+    $this->socket->connect();
 
+    $this->in= new StringReader(new SocketInputStream($this->socket));
+    $this->out= new StringWriter(new SocketOutputStream($this->socket));
+  }
+
+  /**
+   * Disconnect from server
+   *
+   */
+  protected function _disconnect() {
+    $this->out= null;
+    $this->in= null;
+    $this->socket->close();
+  }
+
+  private function _sendAuthenticateFrame(URL $url) {
     $frame= $this->sendFrame(new LoginFrame(
-      $this->url->getUser(),
-      $this->url->getPassword(),
-      $this->url->getParam('vhost', $this->url->getHost()),
-      $this->url->hasParam('versions') ? explode(',', $this->url->getParam('versions')) : ['1.0', '1.1']
+      $url->getUser(),
+      $url->getPassword(),
+      $url->getParam('vhost', $url->getHost()),
+      $url->hasParam('versions') ? explode(',', $url->getParam('versions')) : ['1.0', '1.1']
     ));
 
     if (!$frame instanceof Frame) {
@@ -209,14 +223,14 @@ class Connection extends \lang\Object implements Traceable {
     }
     if ($frame instanceof ErrorFrame) {
       throw new AuthenticationException(
-        'Could not establish connection to broker "'.$this->url->toString().'": '.$frame->getBody(),
-        $this->url->getUser(), (strlen($this->url->getPassword() > 0) ? 'with password' : 'no password')
+        'Could not establish connection to broker "'.$url->toString().'": '.$frame->getBody(),
+        $url->getUser(), (strlen($url->getPassword() > 0) ? 'with password' : 'no password')
       );
     }
     if (!$frame instanceof ConnectedFrame) {
       throw new AuthenticationException(
-        'Could not log in to stomp broker "'.$this->url->toString().'": Got "'.$frame->command().'" frame',
-        $this->url->getUser(), (strlen($this->url->getPassword() > 0) ? 'with password' : 'no password')
+        'Could not log in to stomp broker "'.$url->toString().'": Got "'.$frame->command().'" frame',
+        $url->getUser(), (strlen($url->getPassword() > 0) ? 'with password' : 'no password')
       );
     }
 
@@ -224,6 +238,23 @@ class Connection extends \lang\Object implements Traceable {
       ? 'chose protocol version '.$frame->getProtocolVersion()
       : 'did not indicate protocol version'
     ));
+  }
+
+  /**
+   * Connect to server with given username and password
+   *
+   * @return  bool
+   * @throws  peer.AuthenticationException if login failed
+   */
+  public function connect() {
+    $this->failover->elect(function($endpoint) {
+      $url= self::urlFrom($endpoint);
+
+      $this->_connect($url);
+      $this->_sendAuthenticateFrame($url);
+
+      $this->url= $url;
+    });
 
     return true;
   }
@@ -245,7 +276,8 @@ class Connection extends \lang\Object implements Traceable {
   /**
    * Begin server transaction
    *
-   * @param   string transaction
+   * @param   peer.stomp.Transaction transaction
+   * @return  peer.stomp.Transaction
    */
   public function begin(Transaction $transaction) {
     $transaction->begin($this);
@@ -345,11 +377,9 @@ class Connection extends \lang\Object implements Traceable {
    * @return  string
    */
   public function toString() {
-    return sprintf('%s(->%s://%s:%s)',
+    return sprintf('%s(->%s)',
       nameof($this),
-      $this->url->getScheme(),
-      $this->url->getHost(),
-      $this->url->getPort()
+      $this->failover->toString()
     );
   }
 }

@@ -4,36 +4,81 @@ use lang\Object;
 use lang\Throwable;
 use lang\IllegalArgumentException;
 
+/**
+ * Failover election strategy class
+ *
+ * This class contains algorithms to elect an endpoint (or, really, anything) from a list
+ * in different ways.
+ *
+ * Example:
+ * ```
+ * $conn= new \peer\stomp\Connection(Failover::using(['stomp://localhost/', 'stomp://other.example.com'])->byRandom()));
+ * ```
+ *
+ */
 class Failover extends Object {
   private $pool;
   private $strategy;
 
+  /**
+   * Constructor
+   *
+   * @param  var[] endpoints must not be empty list
+   */
   public function __construct(array $endpoints) {
-    if (sizeof($endpoints) == 0) {
+    if (empty($endpoints)) {
       throw new IllegalArgumentException('Failover expects at least 1 pool member, none given.');
     }
 
     $this->pool= $endpoints;
   }
 
+  /**
+   * Fluent interface factory method
+   *
+   * @return self
+   */
   public static function using(array $endpoints) {
     return new self($endpoints);
   }
 
+  /**
+   * Select `byRandom` election algorithm
+   *
+   * @return self
+   */
   public function byRandom() {
     $this->strategy= [$this, 'random'];
     return $this;
   }
 
+  /**
+   * Select `bySerial` election algorithm
+   *
+   * @return self
+   */
   public function bySerial() {
     $this->strategy= [$this, 'serial'];
     return $this;
   }
 
+  /**
+   * Perform election
+   *
+   * @return var elected member
+   */
   public function elect($callback) {
-    call_user_func_array($this->strategy, [$this->pool, $callback]);
+    return call_user_func_array($this->strategy, [$this->pool, $callback]);
   }
 
+  /**
+   * Random election
+   *
+   * @param   var[] pool
+   * @param   callable callback
+   * @return  var
+   * @throws  lang.Throwable
+   */
   private function random(array $pool, $callback) {
 
     // Shortcut special case
@@ -54,14 +99,10 @@ class Failover extends Object {
       $member= $pool[$idx];
 
       try {
-
-        // No exception means success, just return from here
-        $ret= $callback($member);
-
-        // If return value was trueish, return it, otherwise
-        // assume a failed connection
-        if ($ret) {
-          return $ret;
+        // A trueish return value from the callback indicates successful exection, so
+        // elect this member by returning it to the caller
+        if ($callback($member)) {
+          return $member;
         }
       } catch (Throwable $t) {
         $lastException= $t;
@@ -75,17 +116,24 @@ class Failover extends Object {
       throw $lastException;
     }
 
-    return false;
+    return null;
   }
 
+  /**
+   * Serial election
+   *
+   * @param   var[] pool
+   * @param   callable callback
+   * @return  var
+   * @throws  lang.Throwable
+   */
   private function serial(array $pool, $callback) {
     $lastException= null;
 
     foreach ($pool as $member) {
       try {
-        $ret= $callback($member);
-        if ($ret) {
-          return $ret;
+        if ($callback($member)) {
+          return $member;
         }
       } catch (Throwable $t) {
         $lastException= $t;
@@ -96,17 +144,32 @@ class Failover extends Object {
       throw $lastException;
     }
 
-    return false;
+    return null;
   }
 
+  /**
+   * Retrieve all members
+   *
+   * @return var[]
+   */
   public function members() {
     return sizeof($this->pool);
   }
   
+  /**
+   * Retrieve member at position
+   *
+   * @param int pos
+   * @return var
+   */
   public function member($pos= 0) {
     return $this->pool[$pos];
   }
 
+  /**
+   * Get string represntation
+   *
+   */
   public function toString() {
     return sprintf('%s(%d endpoints){ %s }',
       nameof($this),

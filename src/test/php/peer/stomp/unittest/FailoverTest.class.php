@@ -64,4 +64,16 @@ class FailoverTest extends TestCase {
 
     $this->assertEquals($items, $seen);
   }
+
+  #[@test]
+  public function elect_returns_elected_member() {
+    $f= Failover::using([1, 2, 3, 4, 5])->bySerial();
+    $this->assertEquals(1, $f->elect(function($member) { return true; }));
+  }
+
+  #[@test]
+  public function elect_returns_null_when_no_member_elected() {
+    $f= Failover::using([1, 2, 3, 4, 5])->bySerial();
+    $this->assertEquals(null, $f->elect(function($member) { return false; }));
+  }
 }

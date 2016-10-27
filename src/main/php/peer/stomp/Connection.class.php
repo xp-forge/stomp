@@ -27,7 +27,7 @@ use peer\stomp\frame\MessageFrame;
  * @test  xp://peer.stomp.unittest.ConnectionTest
  * @test  xp://peer.stomp.unittest.StompTest
  */
-class Connection extends \lang\Object implements Traceable, IConnection {
+class Connection extends \lang\Object implements Traceable {
   private $failover        = null;
   protected $url           = null;
   protected $socket        = null;
@@ -47,7 +47,6 @@ class Connection extends \lang\Object implements Traceable, IConnection {
       $this->failover= $url;
     } else {
       $this->failover= Failover::using([$url])->byRandom();
-      // $this->url= self::urlFrom($url);
     }
 
     // Walk through all failover members, to check they all have valid URLs; by returning

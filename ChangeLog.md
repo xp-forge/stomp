@@ -3,6 +3,11 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 9.2.1 / 2016-10-31
+
+* Made `toString()` output not leak credentials, indicate elected endpoint
+  (@kiesel)
+
 ## 9.2.0 / 2016-10-27
 
 * Merged pull request #7: Implement failover connections / HA; introduces

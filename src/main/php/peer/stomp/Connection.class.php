@@ -377,9 +377,10 @@ class Connection extends \lang\Object implements Traceable {
    * @return  string
    */
   public function toString() {
-    return sprintf('%s(->%s)',
+    return sprintf('%s (%s) { -> %s }',
       nameof($this),
-      \xp::stringOf($this->failover)
+      \xp::stringOf($this->failover),
+      \xp::stringOf($this->url())
     );
   }
 }

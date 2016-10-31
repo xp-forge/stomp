@@ -167,14 +167,14 @@ class Failover extends Object {
   }
 
   /**
-   * Get string represntation
+   * Get string representation
    *
    */
   public function toString() {
-    return sprintf('%s(%d endpoints){ %s }',
+    return sprintf('%s { %d endpoints, %s election }',
       nameof($this),
       sizeof($this->pool),
-      implode(', ', $this->pool)
+      (is_array($this->strategy) ? $this->strategy[1] : 'custom')
     );
   }
 }

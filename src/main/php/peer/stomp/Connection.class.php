@@ -379,7 +379,7 @@ class Connection extends \lang\Object implements Traceable {
   public function toString() {
     return sprintf('%s(->%s)',
       nameof($this),
-      $this->failover->toString()
+      \xp::stringOf($this->failover)
     );
   }
 }

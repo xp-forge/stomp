@@ -247,14 +247,14 @@ class Connection extends \lang\Object implements Traceable {
    * @throws  peer.AuthenticationException if login failed
    */
   public function connect() {
-    $this->failover->elect(function($endpoint) {
+    $this->url= self::urlFrom($this->failover->elect(function($endpoint) {
       $url= self::urlFrom($endpoint);
 
       $this->_connect($url);
       $this->_sendAuthenticateFrame($url);
 
-      $this->url= $url;
-    });
+      return true;
+    }));
 
     return true;
   }

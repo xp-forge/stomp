@@ -106,10 +106,10 @@ class Failover extends Object {
         }
       } catch (Throwable $t) {
         $lastException= $t;
-      } finally {
-        unset($pool[$idx]);
-        $pool= array_values($pool);
       }
+
+      unset($pool[$idx]);
+      $pool= array_values($pool);
     }
 
     if ($lastException !== null) {

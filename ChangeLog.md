@@ -3,6 +3,11 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 9.2.2 / 2016-11-02
+
+* Made compatible w/ PHP < 5.5
+  (@kiesel)
+
 ## 9.2.1 / 2016-10-31
 
 * Made `toString()` output not leak credentials, indicate elected endpoint

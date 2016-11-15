@@ -260,6 +260,15 @@ class Connection extends \lang\Object implements Traceable {
   }
 
   /**
+   * Returns true if connection is established
+   *
+   * @return bool
+   */
+  public function isConnected() {
+    return $this->socket != null && $this->socket->isConnected();
+  }
+
+  /**
    * Disconnect by sending disconnect frame
    *
    */

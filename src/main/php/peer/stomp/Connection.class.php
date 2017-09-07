@@ -33,6 +33,7 @@ class Connection extends \lang\Object implements Traceable {
   protected $socket        = null;
   protected $in            = null;
   protected $out           = null;
+  protected $timeout       = 0.2;
   protected $subscriptions = [];
   protected $cat           = null;
 
@@ -55,6 +56,9 @@ class Connection extends \lang\Object implements Traceable {
     // and set it into this objects $cat member.
     $this->failover->elect(function($url) {
       $url= self::urlFrom($url);
+      if ($url->hasParam('timeout')) {
+        $this->timeout= (float)$url->getParam('timeout');
+      }
 
       if (!$this->cat && $url->hasParam('log')) {
         $this->setTrace(Logger::getInstance()->getCategory($url->getParam('log')));
@@ -182,7 +186,7 @@ class Connection extends \lang\Object implements Traceable {
     $frame->write($this->out);
 
     if ($frame->requiresImmediateResponse()) {
-      return $this->recvFrame();
+      return $this->recvFrame($this->timeout);
     }
 
     return null;

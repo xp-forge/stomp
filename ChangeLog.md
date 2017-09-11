@@ -7,7 +7,7 @@ stomp ChangeLog
 
 * Made connection timeout configurable both via connection URL *and/or* by
   passing it to `connect()`. See pull request #9
-  (@treuter, @friebe)
+  (@treuter, @thekid)
 
 ## 9.2.2 / 2016-11-02
 

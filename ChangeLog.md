@@ -3,6 +3,12 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 9.3.0 / 2017-09-11
+
+* Made connection timeout configurable both via connection URL *and/or* by
+  passing it to `connect()`. See pull request #9
+  (@treuter, @friebe)
+
 ## 9.2.2 / 2016-11-02
 
 * Made compatible w/ PHP < 5.5

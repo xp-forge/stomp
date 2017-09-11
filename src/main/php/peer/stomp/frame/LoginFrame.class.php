@@ -54,14 +54,6 @@ class LoginFrame extends Frame {
   }
 
   /**
-   * Login frame followed by CONNECTED response
-   *
-   */
-  public function requiresImmediateResponse() {
-    return true;
-  }
-
-  /**
    * Retrieve headers
    *
    * @return  <string,string>[]

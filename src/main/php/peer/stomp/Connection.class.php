@@ -210,13 +210,15 @@ class Connection extends \lang\Object implements Traceable {
     $this->socket->close();
   }
 
-  private function _sendAuthenticateFrame(URL $url) {
-    $frame= $this->sendFrame(new LoginFrame(
+  private function _sendAuthenticateFrame(URL $url, $timeout) {
+    $this->sendFrame(new LoginFrame(
       $url->getUser(),
       $url->getPassword(),
       $url->getParam('vhost', $url->getHost()),
       $url->hasParam('versions') ? explode(',', $url->getParam('versions')) : ['1.0', '1.1']
     ));
+
+    $frame= $this->recvFrame($timeout);
 
     if (!$frame instanceof Frame) {
       throw new ProtocolException('Did not receive frame, got: '.\xp::stringOf($frame));
@@ -243,15 +245,16 @@ class Connection extends \lang\Object implements Traceable {
   /**
    * Connect to server with given username and password
    *
+   * @param   float $timeout Defaults to 2 seconds
    * @return  bool
    * @throws  peer.AuthenticationException if login failed
    */
-  public function connect() {
+  public function connect($timeout= null) {
     $this->url= self::urlFrom($this->failover->elect(function($endpoint) {
       $url= self::urlFrom($endpoint);
 
       $this->_connect($url);
-      $this->_sendAuthenticateFrame($url);
+      $this->_sendAuthenticateFrame($url, $timeout ?: (float)$url->getParam('timeout', 2.0));
 
       return true;
     }));

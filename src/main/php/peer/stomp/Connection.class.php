@@ -19,6 +19,7 @@ use peer\stomp\frame\DisconnectFrame;
 use peer\stomp\frame\ReceiptFrame;
 use peer\stomp\frame\ErrorFrame;
 use peer\stomp\frame\MessageFrame;
+use lang\reflect\Package;
 
 /**
  * API to the STOMP protocol
@@ -35,6 +36,12 @@ class Connection implements Traceable {
   protected $out           = null;
   protected $subscriptions = [];
   protected $cat           = null;
+
+  private static $frames;
+
+  static function __static() {
+    self::$frames= Package::forName('peer.stomp.frame');
+  }
 
   /**
    * Constructor
@@ -100,7 +107,7 @@ class Connection implements Traceable {
   private function debug() {
     if ($this->cat) {
       $args= func_get_args();
-      array_unshift($args, $this->getClass()->getSimpleName());
+      array_unshift($args, typeof($this)->getSimpleName());
       call_user_func_array([$this->cat, 'debug'], $args);
     }
   }
@@ -132,12 +139,7 @@ class Connection implements Traceable {
 
     if (0 == strlen($line)) throw new ProtocolException('Expected frame token, got '.\xp::stringOf($line));
 
-    $frame= $this->getClass()
-      ->getPackage()
-      ->getPackage('frame')
-      ->loadClass(ucfirst(strtolower(trim($line))).'Frame')
-      ->newInstance()
-    ;
+    $frame= self::$frames->loadClass(ucfirst(strtolower(trim($line))).'Frame')->newInstance();
     $frame->setTrace($this->cat);
     $frame->fromWire($this->in);
 

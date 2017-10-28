@@ -37,7 +37,7 @@ abstract class Frame implements \lang\Value, \util\log\Traceable {
   private function debug() {
     if ($this->cat) {
       $args= func_get_args();
-      array_unshift($args, $this->getClass()->getSimpleName());
+      array_unshift($args, typeof($this)->getSimpleName());
       call_user_func_array([$this->cat, 'debug'], $args);
     }
   }

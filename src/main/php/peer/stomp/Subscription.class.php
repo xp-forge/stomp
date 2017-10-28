@@ -126,7 +126,8 @@ class Subscription implements \lang\Value {
    * @param  peer.stomp.ReceivedMessage $message
    */
   public function process(ReceivedMessage $message) {
-    call_user_func_array($this->callback, [$message]);
+    $f= $this->callback;
+    $f($message);
   }
 
   /**

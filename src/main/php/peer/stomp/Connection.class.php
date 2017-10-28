@@ -44,7 +44,7 @@ class Connection implements Traceable {
 
   static function __static() {
     self::$frames= Package::forName('peer.stomp.frame');
-    self::$prefix= typeof($this)->getSimpleName();
+    self::$prefix= substr(self::class, strlen(__NAMESPACE__) + 1);
   }
 
   /**

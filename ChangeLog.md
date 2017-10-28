@@ -3,6 +3,8 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+* Added compatibility with XP9 - @thekid
+
 ## 9.3.0 / 2017-09-11
 
 * Made connection timeout configurable both via connection URL *and/or* by

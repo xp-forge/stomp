@@ -1,6 +1,5 @@
 <?php namespace peer\stomp;
 
-use lang\Object;
 use lang\Throwable;
 use lang\IllegalArgumentException;
 
@@ -12,11 +11,12 @@ use lang\IllegalArgumentException;
  *
  * Example:
  * ```
- * $conn= new \peer\stomp\Connection(Failover::using(['stomp://localhost/', 'stomp://other.example.com'])->byRandom()));
- * ```
+ * use peer\stomp\{Connection, Failover};
  *
+ * $conn= new Connection(Failover::using(['stomp://localhost/', 'stomp://other.example.com'])->byRandom()));
+ * ```
  */
-class Failover extends Object {
+class Failover {
   private $pool;
   private $strategy;
 

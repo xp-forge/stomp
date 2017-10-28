@@ -7,7 +7,7 @@ use peer\stomp\frame\CommitFrame;
 /**
  * Represent a STOMP transaction
  */
-class Transaction extends \lang\Object {
+class Transaction {
   protected $name = null;
   protected $conn = null;
 

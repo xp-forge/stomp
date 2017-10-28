@@ -6,7 +6,7 @@ use peer\stomp\frame\UnsubscribeFrame;
 /**
  * Subscription
  */
-class Subscription extends \lang\Object {
+class Subscription implements \lang\Value {
   protected $id         = null;
   protected $dest       = null;
   protected $destination= null;
@@ -141,5 +141,24 @@ class Subscription extends \lang\Object {
       $this->ackMode,
       \xp::stringOf($this->selector)
     );
+  }
+
+  /**
+   * Retrieve hashcode
+   * 
+   * @return string
+   */
+  public function hashCode() {
+    return 'S#'.md5($this->dest.$this->ackMode.$this->selector).$this->id;
+  }
+
+  /**
+   * Compare
+   *
+   * @param  var $value
+   * @return int
+   */
+  public function compareTo($value) {
+    return $this === $value ? 0 : 1;
   }
 }

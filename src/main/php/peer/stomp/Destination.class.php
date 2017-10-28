@@ -3,7 +3,7 @@
 /**
  * STOMP Destination
  */
-class Destination extends \lang\Object {
+class Destination {
   protected $name   = null;
   protected $conn   = null;
 

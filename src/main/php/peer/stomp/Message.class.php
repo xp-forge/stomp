@@ -3,7 +3,7 @@
 /**
  * Message base class
  */
-abstract class Message extends \lang\Object {
+abstract class Message implements \lang\Value {
   protected $messageId    = null;
   protected $contentType  = null;
   protected $body         = null;
@@ -124,12 +124,37 @@ abstract class Message extends \lang\Object {
    * @return string
    */
   public function toString() {
-    $s= nameof($this).'('.$this->hashCode().") {\n";
-    $s.= "  [  persistence ] ".\xp::stringOf($this->getPersistence())."\n";
-    $s.= "  [ content-type ] ".$this->getContentType()."\n";
-    $s.= "  [         body ] ".$this->getBody()."\n";
-    $s.= "  [      headers ] ".\xp::stringOf($this->getHeaders(), '  ')."\n";
+    return sprintf(
+      "%s@{\n".
+      "  [  persistence ] %s\n".
+      "  [ content-type ] %s\n".
+      "  [         body ] %s\n".
+      "  [      headers ] %s\n".
+      "}",
+      nameof($this),
+      $this->persistence ? 'true' : 'false',
+      $this->contentType,
+      $this->body,
+      \xp::stringOf($this->getHeaders(), '  ')
+    );
+  }
 
-    return $s.'}';
+  /**
+   * Retrieve hashcode
+   * 
+   * @return string
+   */
+  public function hashCode() {
+    return 'M#'.md5($this->persistence.$this->body.$this->contenttype.serialize($this->customHeader));
+  }
+
+  /**
+   * Compare
+   *
+   * @param  var $value
+   * @return int
+   */
+  public function compareTo($value) {
+    return $this === $value ? 0 : 1;
   }
 }

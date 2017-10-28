@@ -7,7 +7,7 @@ use peer\stomp\Header;
  *
  * @test  xp://peer.stomp.unittest.StompFrameTest
  */
-abstract class Frame extends \lang\Object implements \util\log\Traceable {
+abstract class Frame implements \lang\Value, \util\log\Traceable {
   protected $headers  = [];
   protected $body     = null;
 
@@ -219,5 +219,24 @@ abstract class Frame extends \lang\Object implements \util\log\Traceable {
     );
 
     return $s.'}';
+  }
+
+  /**
+   * Retrieve hashcode
+   * 
+   * @return string
+   */
+  public function hashCode() {
+    return 'F#'.md5($this->body.serialize($this->headers));
+  }
+
+  /**
+   * Compare
+   *
+   * @param  var $value
+   * @return int
+   */
+  public function compareTo($value) {
+    return $this === $value ? 0 : 1;
   }
 }

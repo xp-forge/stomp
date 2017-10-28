@@ -27,7 +27,7 @@ use peer\stomp\frame\MessageFrame;
  * @test  xp://peer.stomp.unittest.ConnectionTest
  * @test  xp://peer.stomp.unittest.StompTest
  */
-class Connection extends \lang\Object implements Traceable {
+class Connection implements Traceable {
   private $failover        = null;
   protected $url           = null;
   protected $socket        = null;

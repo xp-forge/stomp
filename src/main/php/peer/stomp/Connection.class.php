@@ -20,6 +20,8 @@ use peer\stomp\frame\ReceiptFrame;
 use peer\stomp\frame\ErrorFrame;
 use peer\stomp\frame\MessageFrame;
 use lang\reflect\Package;
+use lang\FormatException;
+use lang\IllegalArgumentException;
 
 /**
  * API to the STOMP protocol
@@ -78,8 +80,8 @@ class Connection implements Traceable {
     } else {
       try {
         return new URL((string)$thing);
-      } catch (\lang\FormatException $e) {
-        throw new \lang\IllegalArgumentException('Invalid URL given', $e);
+      } catch (FormatException $e) {
+        throw new IllegalArgumentException('Invalid URL given', $e);
       }
     }
   }

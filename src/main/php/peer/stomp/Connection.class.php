@@ -38,9 +38,11 @@ class Connection implements Traceable {
   protected $cat           = null;
 
   private static $frames;
+  private static $prefix;
 
   static function __static() {
     self::$frames= Package::forName('peer.stomp.frame');
+    self::$prefix= typeof($this)->getSimpleName();
   }
 
   /**
@@ -104,12 +106,8 @@ class Connection implements Traceable {
    * Helper method for logging
    * 
    */
-  private function debug() {
-    if ($this->cat) {
-      $args= func_get_args();
-      array_unshift($args, typeof($this)->getSimpleName());
-      call_user_func_array([$this->cat, 'debug'], $args);
-    }
+  private function debug(... $args) {
+    $this->cat && $this->cat->debug(self::$prefix, ...$args);
   }
 
   /**

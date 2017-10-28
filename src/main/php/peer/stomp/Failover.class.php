@@ -48,7 +48,7 @@ class Failover {
    * @return self
    */
   public function byRandom() {
-    $this->strategy= [$this, 'random'];
+    $this->strategy= 'random';
     return $this;
   }
 
@@ -58,7 +58,7 @@ class Failover {
    * @return self
    */
   public function bySerial() {
-    $this->strategy= [$this, 'serial'];
+    $this->strategy= 'serial';
     return $this;
   }
 
@@ -68,7 +68,7 @@ class Failover {
    * @return var elected member
    */
   public function elect($callback) {
-    return call_user_func_array($this->strategy, [$this->pool, $callback]);
+    return $this->{$this->strategy}($this->pool, $callback);
   }
 
   /**

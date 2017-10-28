@@ -3,6 +3,7 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+* **Heads up: Dropped PHP 5.5 support** - @thekid
 * Added compatibility with XP9 - @thekid
 
 ## 9.3.0 / 2017-09-11

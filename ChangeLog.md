@@ -3,14 +3,9 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
-<<<<<<< HEAD
-## 10.0.0 / 2017-10-28
-
-=======
 ## 10.0.0 / 2018-08-24
 
 * Made compatible with `xp-framework/logging` version 9.0.0 - @thekid
->>>>>>> 0ceb624765cc744e7e7f8d8571f4df2248edaab3
 * **Heads up: Dropped PHP 5.5 support** - @thekid
 * Added compatibility with XP9 - @thekid
 

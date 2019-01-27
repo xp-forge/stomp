@@ -5,6 +5,9 @@ stomp ChangeLog
 
 ## 10.1.0 / 2019-01-27
 
+* Changed `Connection::connect()` to return the connection itself,
+  enabling a fluent programming style.
+  (@thekid)
 * Added accessor for underlying socket to `peer.stomp.Connection` class
   to support `select()`ing on it.
   (@thekid)

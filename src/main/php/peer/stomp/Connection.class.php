@@ -251,7 +251,7 @@ class Connection implements Traceable {
    * Connect to server with given username and password
    *
    * @param   float $timeout Defaults to 2 seconds
-   * @return  bool
+   * @return  self
    * @throws  peer.AuthenticationException if login failed
    */
   public function connect($timeout= null) {
@@ -264,7 +264,7 @@ class Connection implements Traceable {
       return true;
     }));
 
-    return true;
+    return $this;
   }
 
   /**

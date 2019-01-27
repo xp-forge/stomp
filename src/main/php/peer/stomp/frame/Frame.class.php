@@ -6,6 +6,7 @@ use peer\stomp\Header;
  * Abstract frame base class
  *
  * @test  xp://peer.stomp.unittest.StompFrameTest
+ * @test  xp://peer.stomp.unittest.FrameFromWireTest
  */
 abstract class Frame implements \lang\Value, \util\log\Traceable {
   protected $headers  = [];

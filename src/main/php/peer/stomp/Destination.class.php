@@ -1,9 +1,11 @@
 <?php namespace peer\stomp;
 
+use lang\Value;
+
 /**
  * STOMP Destination
  */
-class Destination {
+class Destination implements Value {
   protected $name   = null;
   protected $conn   = null;
 
@@ -46,10 +48,25 @@ class Destination {
   }
 
   /**
-   * Retrieve string representation
-   * 
-   * @return string
+   * Compare
+   *
+   * @param  var $value
+   * @return int
    */
+  public function compareTo($value) {
+    if ($value instanceof self && $this->conn === $value->conn) {
+      return strcmp($this->name, $value->name);
+    } else {
+      return 1;
+    }
+  }
+
+  /** @return string */
+  public function hashCode() {
+    return '@'.$this->name;
+  }
+
+  /** @return string */
   public function toString() {
     return $this->name.' -> '.\xp::stringOf($this->conn, '  ');
   }

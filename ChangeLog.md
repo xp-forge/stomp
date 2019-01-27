@@ -3,6 +3,8 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 10.0.1 / 2019-01-27
+
 * Fixed value encoding in headers, see "Value Encoding" in specification:
   https://stomp.github.io/stomp-specification-1.2.html#Value_Encoding
   (@thekid)

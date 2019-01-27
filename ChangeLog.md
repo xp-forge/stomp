@@ -5,6 +5,7 @@ stomp ChangeLog
 
 ## 10.1.0 / 2019-01-27
 
+* Added `Message::getHeader()` to access a header by its name - @thekid
 * Fixed `Destintation` instances' string representations - @thekid
 * Changed `Connection::connect()` to return the connection itself,
   enabling a fluent programming style.

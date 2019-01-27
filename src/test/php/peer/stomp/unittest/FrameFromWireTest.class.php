@@ -43,4 +43,16 @@ class FrameFromWireTest extends TestCase {
     $frame= $this->frame("message-id:1\ncontent-length:4\n\nbody\0");
     $this->assertEquals('1', $frame->getHeader(Header::MESSAGEID));
   }
+
+  #[@test, @values([
+  #  ['x-test:\c', ':'],
+  #  ['x-test:\r', "\r"],
+  #  ['x-test:\n', "\n"],
+  #  ['x-test:\\\\', '\\'],
+  #  ['x-test:a\cb', 'a:b'],
+  #])]
+  public function header_with_escape_sequence($header, $expected) {
+    $frame= $this->frame("message-id:1\n".$header."\ncontent-length:4\n\nbody\0");
+    $this->assertEquals($expected, $frame->getHeader('x-test'));
+  }
 }

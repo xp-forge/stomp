@@ -3,6 +3,9 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+* Fixed value encoding in headers, see "Value Encoding" in specification:
+  https://stomp.github.io/stomp-specification-1.2.html#Value_Encoding
+  (@thekid)
 * Fixed reading frames with `content-length:0` - @thekid
 
 ## 10.0.0 / 2018-08-24

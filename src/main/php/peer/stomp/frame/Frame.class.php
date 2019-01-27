@@ -142,13 +142,13 @@ abstract class Frame implements \lang\Value, \util\log\Traceable {
    */
   public function fromWire(\io\streams\InputStreamReader $in) {
 
-    // Read headers
+    // Read headers. See https://stomp.github.io/stomp-specification-1.2.html#Value_Encoding
     $line= $in->readLine();
-    while (0 != strlen($line)) {
+    while (0 !== strlen($line)) {
       $this->debug('<<<', $line);
 
       list($key, $value)= explode(':', $line, 2);
-      $this->addHeader($key, $value);
+      $this->addHeader($key, strtr($value, ['\\\\' => '\\', '\c' => ':', '\r' => "\r", '\n' => "\n"]));
 
       // Next line
       $line= $in->readLine();

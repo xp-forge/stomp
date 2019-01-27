@@ -3,6 +3,12 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 10.1.1 / 2019-01-28
+
+* Fixed buffering issue which would lead to `recvFrame()` not returning
+  sent STOMP frames in certain situations
+  (@thekid)
+
 ## 10.1.0 / 2019-01-27
 
 * Added `Message::getHeader()` to access a header by its name - @thekid

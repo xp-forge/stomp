@@ -22,11 +22,9 @@ Examples
 A message producer
 
 ```php
-use peer\stomp\Connection;
-use peer\stomp\SendableMessage;
-use peer\URL;
+use peer\stomp\{Connection, SendableMessage};
 
-$conn= new Connection(new URL('stomp://localhost:61613/'));
+$conn= new Connection('stomp://localhost:61613/');
 $conn->connect();
 
 $conn->getDestination('/queue/producer')->send(
@@ -38,14 +36,12 @@ $conn->getDestination('/queue/producer')->send(
 A simple message consumer (subscriber):
 
 ```php
-use peer\stomp\Connection;
-use peer\stomp\Subscription;
-use peer\URL;
+use peer\stomp\{Connection, Subscription};
 
-$conn= new Connection(new URL('stomp://localhost:61613/'));
+$conn= new Connection('stomp://localhost:61613/');
 $conn->connect();
 
-$sub= $conn->subscribeTo(new Subscription('/queue/producer', function($message) {
+$conn->subscribeTo(new Subscription('/queue/producer', function($message) {
   Console::writeLine('---> Received message: ', $message);
   $message->ack();
 }));
@@ -57,20 +53,15 @@ $conn->consume();
 A consumer with a broker network may connect to any host when available:
 
 ```php
-use peer\stomp\Connection;
-use peer\stomp\Subscription;
-use peer\stomp\Failover;
-use peer\URL;
+use peer\stomp\{Connection, Subscription, Failover};
 
-$conn= new Connection(Failover::using([
-  new URL('stomp://one.example.com:61613/'),
-  new URL('stomp://two.example.com:61613/')
-])->byRandom());
+$nodes= ['stomp://one.example.com:61613/', 'stomp://two.example.com:61613/'];
 
 // Connect randomly to one or the other
+$conn= new Connection(Failover::using($nodes)->byRandom());
 $conn->connect();
 
-$sub= $conn->subscribeTo(new Subscription('/queue/producer', function($message) {
+$conn->subscribeTo(new Subscription('/queue/producer', function($message) {
   Console::writeLine('---> Received message: ', $message);
   $message->ack();
 }));

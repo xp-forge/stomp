@@ -1,14 +1,17 @@
 <?php namespace peer\stomp\frame;
 
+use lang\Value;
 use peer\stomp\Header;
+use util\log\Traceable;
 
 /**
  * Abstract frame base class
  *
  * @test  xp://peer.stomp.unittest.StompFrameTest
  * @test  xp://peer.stomp.unittest.FrameFromWireTest
+ * @test  xp://peer.stomp.unittest.FrameToWireTest
  */
-abstract class Frame implements \lang\Value, \util\log\Traceable {
+abstract class Frame implements Value, Traceable {
   protected $headers  = [];
   protected $body     = null;
 
@@ -195,7 +198,7 @@ abstract class Frame implements \lang\Value, \util\log\Traceable {
     $out->write($this->command()."\n");
 
     foreach ($this->getHeaders() as $key => $value) {
-      $out->write($key.':'.$value."\n");
+      $out->write($key.':'.strtr($value, ['\\' => '\\\\', ':' => '\c', "\r" => '\r', "\n" => '\n'])."\n");
     }
 
     $out->write("\n".$this->getBody().chr(0));

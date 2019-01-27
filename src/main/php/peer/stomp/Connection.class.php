@@ -1,27 +1,27 @@
 <?php namespace peer\stomp;
 
-use util\log\Logger;
-use util\log\Traceable;
-use peer\URL;
-use peer\Socket;
-use peer\SocketInputStream;
-use peer\SocketOutputStream;
-use peer\ProtocolException;
-use peer\AuthenticationException;
 use io\streams\MemoryOutputStream;
 use io\streams\OutputStreamWriter;
 use io\streams\StringReader;
 use io\streams\StringWriter;
-use peer\stomp\frame\Frame;
-use peer\stomp\frame\LoginFrame;
-use peer\stomp\frame\ConnectedFrame;
-use peer\stomp\frame\DisconnectFrame;
-use peer\stomp\frame\ReceiptFrame;
-use peer\stomp\frame\ErrorFrame;
-use peer\stomp\frame\MessageFrame;
-use lang\reflect\Package;
 use lang\FormatException;
 use lang\IllegalArgumentException;
+use lang\reflect\Package;
+use peer\AuthenticationException;
+use peer\ProtocolException;
+use peer\Socket;
+use peer\SocketInputStream;
+use peer\SocketOutputStream;
+use peer\URL;
+use peer\stomp\frame\ConnectedFrame;
+use peer\stomp\frame\DisconnectFrame;
+use peer\stomp\frame\ErrorFrame;
+use peer\stomp\frame\Frame;
+use peer\stomp\frame\LoginFrame;
+use peer\stomp\frame\MessageFrame;
+use peer\stomp\frame\ReceiptFrame;
+use util\log\Logger;
+use util\log\Traceable;
 
 /**
  * API to the STOMP protocol
@@ -73,6 +73,9 @@ class Connection implements Traceable {
       return false;
     });
   }
+
+  /** @return ?peer.Socket */
+  public function socket() { return $this->socket; }
 
   private static function urlFrom($thing) {
     if ($thing instanceof URL) {

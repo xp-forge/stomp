@@ -3,8 +3,11 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
-## 10.0.1 / 2019-01-27
+## 10.1.0 / 2019-01-27
 
+* Added accessor for underlying socket to `peer.stomp.Connection` class
+  to support `select()`ing on it.
+  (@thekid)
 * Fixed value encoding in headers, see "Value Encoding" in specification:
   https://stomp.github.io/stomp-specification-1.2.html#Value_Encoding
   (@thekid)

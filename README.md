@@ -74,12 +74,11 @@ $conn->consume();
 ### The connection URL
 The URL specifies the options how and where to connect:
 
-* `protocol` should be `stomp` or `stomp+ssl` (not implemented yet)
+* `protocol` should be `stomp` or `stomp+ssl` (*SSL not implemented yet*)
 * `host` is the hostname to connect
 * `port` is the port to connect (default: 61613)
 * `user`, `pass` can be given in the URL and will be used for authentication
 * Supported parameters:
-  * `log` - pass a log category to log protocol debug output (eg: `?log=default`)
   * `vhost` - virtual host name, since STOMP 1.1 (eg. `?vhost=example.com`)
   * `versions` - to specify list of supported versions (eg. `?versions=1.0,1.1`); default is to support 1.0, 1.1
 

@@ -160,7 +160,12 @@ abstract class Frame implements \lang\Value, \util\log\Traceable {
 
       // If content-length is given, read that many bytes as body from
       // stream and assert that it is followed by a chr(0) byte.
-      $data= $in->read($this->getHeader(Header::CONTENTLENGTH));
+      $length= (int)$this->getHeader(Header::CONTENTLENGTH);
+      if ($length > 0) {
+        $data= $in->read($length);
+      } else {
+        $data= null;
+      }
 
       if ("\0" != $in->read(1)) throw new \peer\ProtocolException(
         'Expected chr(0) after frame w/ given content-length'

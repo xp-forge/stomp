@@ -3,6 +3,10 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 10.0.1 / 2020-04-04
+
+* Made compatible with XP 10 - @thekid
+
 ## 10.0.0 / 2018-08-24
 
 * Made compatible with `xp-framework/logging` version 9.0.0 - @thekid

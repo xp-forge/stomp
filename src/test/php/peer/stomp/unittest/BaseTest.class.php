@@ -1,11 +1,11 @@
 <?php namespace peer\stomp\unittest;
 
-use peer\stomp\Connection;
-use peer\URL;
-use io\streams\StringReader;
-use io\streams\StringWriter;
 use io\streams\MemoryInputStream;
 use io\streams\MemoryOutputStream;
+use io\streams\StringReader;
+use io\streams\StringWriter;
+use peer\URL;
+use peer\stomp\Connection;
 
 abstract class BaseTest extends \unittest\TestCase {
   protected $fixture= null;

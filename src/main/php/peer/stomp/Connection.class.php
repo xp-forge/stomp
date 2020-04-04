@@ -21,6 +21,7 @@ use peer\stomp\frame\LoginFrame;
 use peer\stomp\frame\MessageFrame;
 use peer\stomp\frame\ReceiptFrame;
 use util\Objects;
+use util\log\Logger;
 use util\log\Traceable;
 
 /**
@@ -36,6 +37,7 @@ class Connection implements Traceable {
   protected $socket        = null;
   protected $in            = null;
   protected $out           = null;
+  protected $buffered      = null;
   protected $subscriptions = [];
   protected $cat           = null;
 
@@ -73,6 +75,9 @@ class Connection implements Traceable {
       return false;
     });
   }
+
+  /** @return ?peer.Socket */
+  public function socket() { return $this->socket; }
 
   private static function urlFrom($thing) {
     if ($thing instanceof URL) {
@@ -121,13 +126,19 @@ class Connection implements Traceable {
    * @return  peer.stomp.frame.Frame or null
    */
   public function recvFrame($timeout= 0.2) {
-
-    // Check whether we can read, before we actually read...
-    if ($this->socket instanceof Socket && !$this->socket->canRead($timeout)) {
-      $this->debug('<<<', '0 bytes - reading no frame.');
-      return null;
+    if (null === $this->buffered) {
+      $this->buffered= typeof($this->in)->getField('buf')->setAccessible(true);
     }
 
+    // Check whether we can read, before we actually read...
+    if ('' === trim($this->buffered->get($this->in))) {
+      if ($this->socket instanceof Socket && !$this->socket->canRead($timeout)) {
+        $this->debug('<<<', '0 bytes - reading no frame.');
+        return null;
+      }
+    }
+
+    // Swallow any empty newlines on the socket, these are used for heartbeat purposes
     do {
       $line= $this->in->readLine();
       if (null === $line) {
@@ -135,31 +146,11 @@ class Connection implements Traceable {
         throw new ServerDisconnected('Got disconnected from '.$this->socket->toString());
       }
     } while ('' === $line);
-    $this->debug('<<<', 'Have "'.trim($line).'" command');
 
-    if (0 == strlen($line)) throw new ProtocolException('Expected frame token, got '.Objects::stringOf($line));
-
-    $frame= self::$frames->loadClass(ucfirst(strtolower(trim($line))).'Frame')->newInstance();
+    $this->debug('<<<', 'Have "'.$line.'" command');
+    $frame= self::$frames->loadClass(ucfirst(strtolower($line)).'Frame')->newInstance();
     $frame->setTrace($this->cat);
     $frame->fromWire($this->in);
-
-    // According to the STOMP protocol, the NUL ("\0") delimiter may be followed
-    // by any number of EOL ("\n") characters. Read them here but be careful not
-    // to read across past a socket's current stream end!
-    // FIXME: This conflicts with heart-beating, we might be swallowing that here
-    // but not reacting correctly in other places!
-    $c= '';
-    while (
-      ($this->socket instanceof Socket ? $this->socket->canRead(0.01) : $this->in->getStream()->available()) &&
-      "\n" === ($c= $this->in->read(1))
-    ) {
-      // Skip
-      $this->debug('~ ate a byte: '.Objects::stringOf($c));
-    }
-
-    $f= typeof($this->in)->getField('buf')->setAccessible(true);
-    $f->set($this->in, $c.$f->get($this->in));
-
     return $frame;
   }
 
@@ -200,6 +191,7 @@ class Connection implements Traceable {
 
     $this->in= new StringReader(new SocketInputStream($this->socket));
     $this->out= new StringWriter(new SocketOutputStream($this->socket));
+    $this->buffered= null;
   }
 
   /**
@@ -209,6 +201,7 @@ class Connection implements Traceable {
   protected function _disconnect() {
     $this->out= null;
     $this->in= null;
+    $this->buffered= null;
     $this->socket->close();
   }
 
@@ -248,7 +241,7 @@ class Connection implements Traceable {
    * Connect to server with given username and password
    *
    * @param   float $timeout Defaults to 2 seconds
-   * @return  bool
+   * @return  self
    * @throws  peer.AuthenticationException if login failed
    */
   public function connect($timeout= null) {
@@ -261,7 +254,7 @@ class Connection implements Traceable {
       return true;
     }));
 
-    return true;
+    return $this;
   }
 
   /**

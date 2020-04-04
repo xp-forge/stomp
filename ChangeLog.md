@@ -3,9 +3,31 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
-## 10.0.1 / 2020-04-04
+## 10.1.2 / 2020-04-04
 
 * Made compatible with XP 10 - @thekid
+
+## 10.1.1 / 2019-01-28
+
+* Fixed buffering issue which would lead to `recvFrame()` not returning
+  sent STOMP frames in certain situations
+  (@thekid)
+
+## 10.1.0 / 2019-01-27
+
+* Added `Message::getHeader()` to access a header by its name - @thekid
+* Fixed `Destination` instances' string representations - @thekid
+* Changed `Connection::connect()` to return the connection itself,
+  enabling a fluent programming style.
+  (@thekid)
+* Added accessor for underlying socket to `peer.stomp.Connection` class
+  to support `select()`ing on it.
+  (@thekid)
+* Fixed value encoding in headers, see "Value Encoding" in specification:
+  https://stomp.github.io/stomp-specification-1.2.html#Value_Encoding
+  (@thekid)
+* Fixed reading frames with `content-length:0` - @thekid
+>>>>>>> b5e5f7a80d640a7169eeea7eb38c3a0056bcafb2
 
 ## 10.0.0 / 2018-08-24
 
@@ -77,7 +99,7 @@ stomp ChangeLog
 
 ## 7.0.1 / 2015-02-12
 
-* Changed dependency to use XP ~6.0 (instead of dev-master) - @thekid
+* Changed dependency to use `XP ~6.0` (instead of dev-master) - @thekid
 
 ## 7.0.0 / 2015-01-11
 

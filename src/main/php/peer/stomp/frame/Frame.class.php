@@ -1,13 +1,17 @@
 <?php namespace peer\stomp\frame;
 
+use lang\Value;
 use peer\stomp\Header;
+use util\log\Traceable;
 
 /**
  * Abstract frame base class
  *
  * @test  xp://peer.stomp.unittest.StompFrameTest
+ * @test  xp://peer.stomp.unittest.FrameFromWireTest
+ * @test  xp://peer.stomp.unittest.FrameToWireTest
  */
-abstract class Frame implements \lang\Value, \util\log\Traceable {
+abstract class Frame implements Value, Traceable {
   protected $headers  = [];
   protected $body     = null;
 
@@ -141,13 +145,13 @@ abstract class Frame implements \lang\Value, \util\log\Traceable {
    */
   public function fromWire(\io\streams\InputStreamReader $in) {
 
-    // Read headers
+    // Read headers. See https://stomp.github.io/stomp-specification-1.2.html#Value_Encoding
     $line= $in->readLine();
-    while (0 != strlen($line)) {
+    while (0 !== strlen($line)) {
       $this->debug('<<<', $line);
 
       list($key, $value)= explode(':', $line, 2);
-      $this->addHeader($key, $value);
+      $this->addHeader($key, strtr($value, ['\\\\' => '\\', '\c' => ':', '\r' => "\r", '\n' => "\n"]));
 
       // Next line
       $line= $in->readLine();
@@ -159,7 +163,12 @@ abstract class Frame implements \lang\Value, \util\log\Traceable {
 
       // If content-length is given, read that many bytes as body from
       // stream and assert that it is followed by a chr(0) byte.
-      $data= $in->read($this->getHeader(Header::CONTENTLENGTH));
+      $length= (int)$this->getHeader(Header::CONTENTLENGTH);
+      if ($length > 0) {
+        $data= $in->read($length);
+      } else {
+        $data= null;
+      }
 
       if ("\0" != $in->read(1)) throw new \peer\ProtocolException(
         'Expected chr(0) after frame w/ given content-length'
@@ -189,7 +198,7 @@ abstract class Frame implements \lang\Value, \util\log\Traceable {
     $out->write($this->command()."\n");
 
     foreach ($this->getHeaders() as $key => $value) {
-      $out->write($key.':'.$value."\n");
+      $out->write($key.':'.strtr($value, ['\\' => '\\\\', ':' => '\c', "\r" => '\r', "\n" => '\n'])."\n");
     }
 
     $out->write("\n".$this->getBody().chr(0));

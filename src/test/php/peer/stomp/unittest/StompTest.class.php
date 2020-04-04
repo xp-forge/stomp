@@ -1,20 +1,21 @@
 <?php namespace peer\stomp\unittest;
 
-use peer\stomp\frame\ReceiptFrame;
-use peer\stomp\Destination;
 use peer\AuthenticationException;
 use peer\ProtocolException;
+use peer\URL;
 use peer\stomp\Connection;
+use peer\stomp\Destination;
+use peer\stomp\frame\AbortFrame;
+use peer\stomp\frame\AckFrame;
+use peer\stomp\frame\BeginFrame;
+use peer\stomp\frame\CommitFrame;
 use peer\stomp\frame\Frame;
+use peer\stomp\frame\MessageFrame;
+use peer\stomp\frame\NackFrame;
+use peer\stomp\frame\ReceiptFrame;
 use peer\stomp\frame\SendFrame;
 use peer\stomp\frame\SubscribeFrame;
 use peer\stomp\frame\UnsubscribeFrame;
-use peer\stomp\frame\BeginFrame;
-use peer\stomp\frame\AbortFrame;
-use peer\stomp\frame\CommitFrame;
-use peer\stomp\frame\AckFrame;
-use peer\stomp\frame\NackFrame;
-use peer\URL;
 
 /**
  * Tests STOMP protocol
@@ -23,6 +24,7 @@ use peer\URL;
  * @see   xp://peer.stomp.Connection
  */
 class StompTest extends BaseTest {
+  const PINGS = "\n\n\n\n";
 
   #[@test]
   public function connect() {
@@ -173,8 +175,9 @@ class StompTest extends BaseTest {
   }
 
   #[@test]
-  public function recv_eats_any_empty_line() {
-    $this->fixture->setResponseBytes("\n\n\n\n".
+  public function recv_eats_any_empty_line_before_frame() {
+    $this->fixture->setResponseBytes(
+      self::PINGS.
       "RECEIPT\n".
       "message_id:12345\n".
       "\n\0"
@@ -182,6 +185,25 @@ class StompTest extends BaseTest {
 
     $recvd= $this->fixture->recvFrame();
     $this->assertInstanceOf(ReceiptFrame::class, $recvd);
+  }
+
+  #[@test]
+  public function recv_eats_any_empty_line_between_frames() {
+    $this->fixture->setResponseBytes(
+      "RECEIPT\n".
+      "message_id:12345\n".
+      "\n\0".
+      self::PINGS.
+      "MESSAGE\n".
+      "message_id:12345\n".
+      "\n\0"
+    );
+
+    $recvd= [];
+    $recvd[]= $this->fixture->recvFrame();
+    $recvd[]= $this->fixture->recvFrame();
+    $this->assertInstanceOf(ReceiptFrame::class, $recvd[0]);
+    $this->assertInstanceOf(MessageFrame::class, $recvd[1]);
   }
 
   #[@test, @expect(class= 'peer.stomp.Exception', withMessage= '/ACK received without/')]

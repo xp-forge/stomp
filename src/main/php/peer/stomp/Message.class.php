@@ -112,9 +112,19 @@ abstract class Message implements \lang\Value {
   }
 
   /**
+   * Get header
+   *
+   * @param  string $key
+   * @return ?string
+   */
+  public function getHeader($key) {
+    return isset($this->customHeader[$key]) ? $this->customHeader[$key] : null;
+  }
+
+  /**
    * Retrieve all headers
    * 
-   * @return <string,string>[]
+   * @return [:string]
    */
   public function getHeaders() {
     return $this->customHeader;

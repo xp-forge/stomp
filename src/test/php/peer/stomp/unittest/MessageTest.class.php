@@ -2,8 +2,8 @@
 
 use peer\stomp\Destination;
 use peer\stomp\Message;
-use peer\stomp\SendableMessage;
 use peer\stomp\ReceivedMessage;
+use peer\stomp\SendableMessage;
 use peer\stomp\Subscription;
 use peer\stomp\Transaction;
 
@@ -296,5 +296,31 @@ class MessageTest extends BaseTest {
   #[@test]
   public function ackable_with_clientindividual_subscription() {
     $this->assertEquals(true, $this->subscriptionWithAckMode(\peer\stomp\AckMode::INDIVIDUAL)->ackable());
+  }
+
+  #[@test]
+  public function headers_initially_empty() {
+    $m= new SendableMessage('body', 'text/plain');
+    $this->assertEquals([], $m->getHeaders());
+  }
+
+  #[@test]
+  public function headers() {
+    $m= new SendableMessage('body', 'text/plain');
+    $m->addHeader('x-test', 'test');
+    $this->assertEquals(['x-test' => 'test'], $m->getHeaders());
+  }
+
+  #[@test]
+  public function header() {
+    $m= new SendableMessage('body', 'text/plain');
+    $m->addHeader('x-test', 'test');
+    $this->assertEquals('test', $m->getHeader('x-test'));
+  }
+
+  #[@test]
+  public function non_existant_header() {
+    $m= new SendableMessage('body', 'text/plain');
+    $this->assertNull($m->getHeader('non-existant'));
   }
 }

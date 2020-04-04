@@ -1,5 +1,7 @@
 <?php namespace peer\stomp;
 
+use util\Objects;
+
 /**
  * STOMP Destination
  */
@@ -51,6 +53,6 @@ class Destination {
    * @return string
    */
   public function toString() {
-    return $this->name.' -> '.\xp::stringOf($this->conn, '  ');
+    return $this->name.' -> '.Objects::stringOf($this->conn, '  ');
   }
 }

@@ -1,5 +1,7 @@
 <?php namespace peer\stomp;
 
+use util\Objects;
+
 /**
  * Message base class
  */
@@ -135,7 +137,7 @@ abstract class Message implements \lang\Value {
       $this->persistence ? 'true' : 'false',
       $this->contentType,
       $this->body,
-      \xp::stringOf($this->getHeaders(), '  ')
+      Objects::stringOf($this->getHeaders(), '  ')
     );
   }
 

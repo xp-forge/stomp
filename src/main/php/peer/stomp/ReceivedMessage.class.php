@@ -1,8 +1,9 @@
 <?php namespace peer\stomp;
 
-use peer\stomp\frame\MessageFrame;
 use peer\stomp\frame\AckFrame;
+use peer\stomp\frame\MessageFrame;
 use peer\stomp\frame\NackFrame;
+use util\Objects;
 
 /**
  * Message retrieved from server
@@ -157,11 +158,11 @@ class ReceivedMessage extends Message {
 
   public function toString() {
     $s= nameof($this).'('.$this->hashCode().") {\n";
-    $s.= "  [  destination ] ".\xp::stringOf($this->getDestination(), '  ')."\n";
-    $s.= "  [ subscription ] ".\xp::stringOf($this->getSubscription(), '  ')."\n";
-    $s.= "  [  persistence ] ".\xp::stringOf($this->getPersistence(), '  ')."\n";
+    $s.= "  [  destination ] ".Objects::stringOf($this->getDestination(), '  ')."\n";
+    $s.= "  [ subscription ] ".Objects::stringOf($this->getSubscription(), '  ')."\n";
+    $s.= "  [  persistence ] ".Objects::stringOf($this->getPersistence(), '  ')."\n";
     $s.= "  [ content-type ] ".$this->getContentType()."\n";
-    $s.= "  [      headers ] ".\xp::stringOf($this->getHeaders(), '  ')."\n";
+    $s.= "  [      headers ] ".Objects::stringOf($this->getHeaders(), '  ')."\n";
     $s.= "  [         body ] ".$this->getBody()."\n";
 
     return $s.'}';

@@ -1,27 +1,27 @@
 <?php namespace peer\stomp;
 
-use util\log\Logger;
-use util\log\Traceable;
-use peer\URL;
-use peer\Socket;
-use peer\SocketInputStream;
-use peer\SocketOutputStream;
-use peer\ProtocolException;
-use peer\AuthenticationException;
 use io\streams\MemoryOutputStream;
 use io\streams\OutputStreamWriter;
 use io\streams\StringReader;
 use io\streams\StringWriter;
-use peer\stomp\frame\Frame;
-use peer\stomp\frame\LoginFrame;
-use peer\stomp\frame\ConnectedFrame;
-use peer\stomp\frame\DisconnectFrame;
-use peer\stomp\frame\ReceiptFrame;
-use peer\stomp\frame\ErrorFrame;
-use peer\stomp\frame\MessageFrame;
-use lang\reflect\Package;
 use lang\FormatException;
 use lang\IllegalArgumentException;
+use lang\reflect\Package;
+use peer\AuthenticationException;
+use peer\ProtocolException;
+use peer\Socket;
+use peer\SocketInputStream;
+use peer\SocketOutputStream;
+use peer\URL;
+use peer\stomp\frame\ConnectedFrame;
+use peer\stomp\frame\DisconnectFrame;
+use peer\stomp\frame\ErrorFrame;
+use peer\stomp\frame\Frame;
+use peer\stomp\frame\LoginFrame;
+use peer\stomp\frame\MessageFrame;
+use peer\stomp\frame\ReceiptFrame;
+use util\Objects;
+use util\log\Traceable;
 
 /**
  * API to the STOMP protocol
@@ -137,7 +137,7 @@ class Connection implements Traceable {
     } while ('' === $line);
     $this->debug('<<<', 'Have "'.trim($line).'" command');
 
-    if (0 == strlen($line)) throw new ProtocolException('Expected frame token, got '.\xp::stringOf($line));
+    if (0 == strlen($line)) throw new ProtocolException('Expected frame token, got '.Objects::stringOf($line));
 
     $frame= self::$frames->loadClass(ucfirst(strtolower(trim($line))).'Frame')->newInstance();
     $frame->setTrace($this->cat);
@@ -154,7 +154,7 @@ class Connection implements Traceable {
       "\n" === ($c= $this->in->read(1))
     ) {
       // Skip
-      $this->debug('~ ate a byte: '.\xp::stringOf($c));
+      $this->debug('~ ate a byte: '.Objects::stringOf($c));
     }
 
     $f= typeof($this->in)->getField('buf')->setAccessible(true);
@@ -223,7 +223,7 @@ class Connection implements Traceable {
     $frame= $this->recvFrame($timeout);
 
     if (!$frame instanceof Frame) {
-      throw new ProtocolException('Did not receive frame, got: '.\xp::stringOf($frame));
+      throw new ProtocolException('Did not receive frame, got: '.Objects::stringOf($frame));
     }
     if ($frame instanceof ErrorFrame) {
       throw new AuthenticationException(
@@ -393,8 +393,8 @@ class Connection implements Traceable {
   public function toString() {
     return sprintf('%s (%s) { -> %s }',
       nameof($this),
-      \xp::stringOf($this->failover),
-      \xp::stringOf($this->url())
+      Objects::stringOf($this->failover),
+      Objects::stringOf($this->url())
     );
   }
 }

@@ -1,6 +1,7 @@
 <?php namespace peer\stomp\frame;
 
 use peer\stomp\Header;
+use util\Objects;
 
 /**
  * Login frame
@@ -38,7 +39,7 @@ class LoginFrame extends Frame {
   public function setSupportedVersions(array $versions) {
     foreach ($versions as $v) {
       if (strlen($v) == 0) {
-        throw new \lang\IllegalArgumentException('Invalid protocol version: '.\xp::stringOf($v));
+        throw new \lang\IllegalArgumentException('Invalid protocol version: '.Objects::stringOf($v));
       }
     }
 

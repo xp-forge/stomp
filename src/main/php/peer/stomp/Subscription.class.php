@@ -2,6 +2,7 @@
 
 use peer\stomp\frame\SubscribeFrame;
 use peer\stomp\frame\UnsubscribeFrame;
+use util\Objects;
 
 /**
  * Subscription
@@ -140,7 +141,7 @@ class Subscription implements \lang\Value {
       nameof($this),
       $this->dest,
       $this->ackMode,
-      \xp::stringOf($this->selector)
+      Objects::stringOf($this->selector)
     );
   }
 

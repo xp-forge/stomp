@@ -33,7 +33,7 @@ class StompIntegrationTest extends \unittest\TestCase {
   }
 
   public function tearDown() {
-    $this->fixture->disconnect();
+    $this->fixture && $this->fixture->disconnect();
   }
 
   #[@test, @ignore, @expect(AuthenticationException::class)]

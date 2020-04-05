@@ -1,5 +1,6 @@
 <?php namespace peer\stomp\unittest;
 
+use lang\IllegalStateException;
 use peer\stomp\Destination;
 use peer\stomp\Message;
 use peer\stomp\ReceivedMessage;
@@ -162,13 +163,13 @@ class MessageTest extends BaseTest {
     );
   }
 
-  #[@test, @expect(class= 'lang.IllegalStateException', withMessage= '/Cannot ack message without connection/')]
+  #[@test, @expect(['class' => IllegalStateException::class, 'withMessage' => '/Cannot ack message without connection/'])]
   public function ack_fails_without_connection() {
     $m= new ReceivedMessage();
     $m->ack();
   }
 
-  #[@test, @expect(class= 'lang.IllegalStateException', withMessage= '/Cannot ack message without connection/')]
+  #[@test, @expect(['class' => IllegalStateException::class, 'withMessage' => '/Cannot ack message without connection/'])]
   public function nack_fails_without_connection() {
     $m= new ReceivedMessage();
     $m->nack();

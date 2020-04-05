@@ -1,10 +1,12 @@
 <?php namespace peer\stomp\unittest;
 
+use lang\IllegalArgumentException;
 use peer\AuthenticationException;
 use peer\ProtocolException;
 use peer\URL;
 use peer\stomp\Connection;
 use peer\stomp\Destination;
+use peer\stomp\Exception;
 use peer\stomp\frame\AbortFrame;
 use peer\stomp\frame\AckFrame;
 use peer\stomp\frame\BeginFrame;
@@ -113,7 +115,7 @@ class StompTest extends BaseTest {
     );
   }
 
-  #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= '/Invalid protocol version/')]
+  #[@test, @expect(['class' => IllegalArgumentException::class, 'withMessage' => '/Invalid protocol version/'])]
   public function connect_requires_valid_version() {
     $this->newConnection(new URL('stomp://user:pass@host?versions='))->connect();
   }
@@ -206,7 +208,7 @@ class StompTest extends BaseTest {
     $this->assertInstanceOf(MessageFrame::class, $recvd[1]);
   }
 
-  #[@test, @expect(class= 'peer.stomp.Exception', withMessage= '/ACK received without/')]
+  #[@test, @expect(['class' => Exception::class, 'withMessage' => '/ACK received without/'])]
   public function receive_throws_exception_on_error_frame() {
     $this->fixture->setResponseBytes("ERROR\n".
       "message:ACK received without a subscription id for acknowledge!\n".

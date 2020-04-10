@@ -40,7 +40,6 @@ stomp ChangeLog
   https://stomp.github.io/stomp-specification-1.2.html#Value_Encoding
   (@thekid)
 * Fixed reading frames with `content-length:0` - @thekid
->>>>>>> b5e5f7a80d640a7169eeea7eb38c3a0056bcafb2
 
 ## 10.0.0 / 2018-08-24
 

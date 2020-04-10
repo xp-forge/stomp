@@ -118,7 +118,7 @@ abstract class Message implements \lang\Value {
    * @return ?string
    */
   public function getHeader($key) {
-    return isset($this->customHeader[$key]) ? $this->customHeader[$key] : null;
+    return $this->customHeader[$key] ?? null;
   }
 
   /**
@@ -147,7 +147,7 @@ abstract class Message implements \lang\Value {
       $this->persistence ? 'true' : 'false',
       $this->contentType,
       $this->body,
-      Objects::stringOf($this->getHeaders(), '  ')
+      Objects::stringOf($this->customHeader, '  ')
     );
   }
 

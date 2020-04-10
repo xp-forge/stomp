@@ -1,7 +1,7 @@
 <?php namespace peer\stomp\unittest;
 
-use unittest\TestCase;
 use peer\stomp\Failover;
+use unittest\TestCase;
 
 class FailoverTest extends TestCase {
 

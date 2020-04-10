@@ -1,23 +1,9 @@
 <?php namespace peer\stomp\unittest;
 
 use lang\IllegalArgumentException;
-use peer\AuthenticationException;
-use peer\ProtocolException;
-use peer\URL;
-use peer\stomp\Connection;
-use peer\stomp\Destination;
-use peer\stomp\Exception;
-use peer\stomp\frame\AbortFrame;
-use peer\stomp\frame\AckFrame;
-use peer\stomp\frame\BeginFrame;
-use peer\stomp\frame\CommitFrame;
-use peer\stomp\frame\Frame;
-use peer\stomp\frame\MessageFrame;
-use peer\stomp\frame\NackFrame;
-use peer\stomp\frame\ReceiptFrame;
-use peer\stomp\frame\SendFrame;
-use peer\stomp\frame\SubscribeFrame;
-use peer\stomp\frame\UnsubscribeFrame;
+use peer\{AuthenticationException, ProtocolException, URL};
+use peer\stomp\{Connection, Destination, Exception};
+use peer\stomp\frame\{AbortFrame, AckFrame, BeginFrame, CommitFrame, Frame, MessageFrame, NackFrame, ReceiptFrame, SendFrame, SubscribeFrame, UnsubscribeFrame};
 
 /**
  * Tests STOMP protocol

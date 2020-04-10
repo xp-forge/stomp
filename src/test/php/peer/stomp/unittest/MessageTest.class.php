@@ -1,12 +1,7 @@
 <?php namespace peer\stomp\unittest;
 
 use lang\IllegalStateException;
-use peer\stomp\Destination;
-use peer\stomp\Message;
-use peer\stomp\ReceivedMessage;
-use peer\stomp\SendableMessage;
-use peer\stomp\Subscription;
-use peer\stomp\Transaction;
+use peer\stomp\{Destination, Message, ReceivedMessage, SendableMessage, Subscription, Transaction};
 
 class MessageTest extends BaseTest {
   

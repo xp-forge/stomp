@@ -1,7 +1,6 @@
 <?php namespace peer\stomp;
 
-use peer\stomp\frame\SubscribeFrame;
-use peer\stomp\frame\UnsubscribeFrame;
+use peer\stomp\frame\{SubscribeFrame, UnsubscribeFrame};
 use util\Objects;
 
 /**

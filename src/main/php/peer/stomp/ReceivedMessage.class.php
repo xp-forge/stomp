@@ -1,8 +1,6 @@
 <?php namespace peer\stomp;
 
-use peer\stomp\frame\AckFrame;
-use peer\stomp\frame\MessageFrame;
-use peer\stomp\frame\NackFrame;
+use peer\stomp\frame\{AckFrame, MessageFrame, NackFrame};
 use util\Objects;
 
 /**

@@ -1,28 +1,12 @@
 <?php namespace peer\stomp;
 
-use io\streams\MemoryOutputStream;
-use io\streams\OutputStreamWriter;
-use io\streams\StringReader;
-use io\streams\StringWriter;
-use lang\FormatException;
-use lang\IllegalArgumentException;
+use io\streams\{MemoryOutputStream, OutputStreamWriter, StringReader, StringWriter};
+use lang\{FormatException, IllegalArgumentException};
 use lang\reflect\Package;
-use peer\AuthenticationException;
-use peer\ProtocolException;
-use peer\Socket;
-use peer\SocketInputStream;
-use peer\SocketOutputStream;
-use peer\URL;
-use peer\stomp\frame\ConnectedFrame;
-use peer\stomp\frame\DisconnectFrame;
-use peer\stomp\frame\ErrorFrame;
-use peer\stomp\frame\Frame;
-use peer\stomp\frame\LoginFrame;
-use peer\stomp\frame\MessageFrame;
-use peer\stomp\frame\ReceiptFrame;
+use peer\{AuthenticationException, ProtocolException, Socket, SocketInputStream, SocketOutputStream, URL};
+use peer\stomp\frame\{ConnectedFrame, DisconnectFrame, ErrorFrame, Frame, LoginFrame, MessageFrame, ReceiptFrame};
 use util\Objects;
-use util\log\Logger;
-use util\log\Traceable;
+use util\log\{Logger, Traceable};
 
 /**
  * API to the STOMP protocol

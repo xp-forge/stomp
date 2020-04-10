@@ -1,7 +1,6 @@
 <?php namespace peer\stomp;
 
-use lang\Throwable;
-use lang\IllegalArgumentException;
+use lang\{IllegalArgumentException, Throwable};
 
 /**
  * Failover election strategy class

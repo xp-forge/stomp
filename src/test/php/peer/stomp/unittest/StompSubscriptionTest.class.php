@@ -1,9 +1,7 @@
 <?php namespace peer\stomp\unittest;
 
-use lang\IllegalStateException;
-use peer\stomp\Exception;
-use lang\IllegalArgumentException;
-use peer\stomp\Subscription;
+use lang\{IllegalArgumentException, IllegalStateException};
+use peer\stomp\{Exception, Subscription};
 
 class StompSubscriptionTest extends BaseTest {
 

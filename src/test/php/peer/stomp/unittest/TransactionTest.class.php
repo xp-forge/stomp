@@ -1,7 +1,7 @@
 <?php namespace peer\stomp\unittest;
 
-use peer\stomp\Transaction;
 use lang\IllegalStateException;
+use peer\stomp\Transaction;
 
 class TransactionTest extends BaseTest {
 

@@ -1,7 +1,6 @@
 <?php namespace peer\stomp\unittest;
   
-use io\streams\MemoryOutputStream;
-use io\streams\StringWriter;
+use io\streams\{MemoryOutputStream, StringWriter};
 use peer\stomp\Header;
 use peer\stomp\frame\MessageFrame;
 use unittest\TestCase;

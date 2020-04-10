@@ -1,8 +1,6 @@
 <?php namespace peer\stomp;
 
-use peer\stomp\frame\BeginFrame;
-use peer\stomp\frame\AbortFrame;
-use peer\stomp\frame\CommitFrame;
+use peer\stomp\frame\{AbortFrame, BeginFrame, CommitFrame};
 
 /**
  * Represent a STOMP transaction

@@ -1,9 +1,6 @@
 <?php namespace peer\stomp\unittest;
 
-use io\streams\MemoryInputStream;
-use io\streams\MemoryOutputStream;
-use io\streams\StringReader;
-use io\streams\StringWriter;
+use io\streams\{MemoryInputStream, MemoryOutputStream, StringReader, StringWriter};
 use peer\URL;
 use peer\stomp\Connection;
 

@@ -2,8 +2,7 @@
 
 use lang\IllegalArgumentException;
 use peer\URL;
-use peer\stomp\Connection;
-use peer\stomp\Failover;
+use peer\stomp\{Connection, Failover};
 
 /**
  * Tests STOMP connection class

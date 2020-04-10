@@ -1,8 +1,8 @@
 <?php namespace peer\stomp\unittest;
   
 use lang\IllegalArgumentException;
-use peer\stomp\frame\Frame;
 use peer\stomp\Header;
+use peer\stomp\frame\Frame;
 
 /**
  * Tests STOMP frame class

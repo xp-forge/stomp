@@ -2,8 +2,7 @@
 
 use peer\AuthenticationException;
 use peer\stomp\Connection;
-use peer\stomp\frame\MessageFrame;
-use peer\stomp\frame\ReceiptFrame;
+use peer\stomp\frame\{MessageFrame, ReceiptFrame};
 use unittest\PrerequisitesNotMetError;
 
 class StompIntegrationTest extends \unittest\TestCase {

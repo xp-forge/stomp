@@ -16,34 +16,34 @@ abstract class BaseTest extends \unittest\TestCase {
   }
 
   protected function newConnection(URL $url) {
-    return newinstance(Connection::class, [$url], [
-      'response' => '',
-      'sent'     => null,
-      'in'       => null,
-      'out'      => null,
+    return new class($url) extends Connection {
+      public $response = '';
+      public $sent     = null;
+      public $in       = null;
+      public $out      = null;
 
-      '__construct' => function($url) {
+      public function __construct($url) {
         parent::__construct($url);
         $this->_connect($url);    // FIXME: Required for unittest
-      },
+      }
 
-      '_connect' => function(URL $url) {
+      public function _connect(URL $url) {
         $this->in= new StringReader(new MemoryInputStream($this->response));
         $this->out= new StringWriter(new MemoryOutputStream());
-      },
+      }
 
-      '_disconnect' => function() {
+      public function _disconnect() {
         $this->sent= $this->out->getStream()->getBytes();
         $this->in= null;
         $this->out= null;
-      },
+      }
 
-      'setResponseBytes' => function($s) {
+      public function setResponseBytes($s) {
         $this->in= new StringReader(new MemoryInputStream($s));
         $this->response= $s;
-      },
+      }
 
-      'readSentBytes' => function() {
+      public function readSentBytes() {
 
         // Case of DISCONNECT
         if (null !== $this->sent) {
@@ -53,12 +53,12 @@ abstract class BaseTest extends \unittest\TestCase {
         }
 
         return $this->out->getStream()->getBytes();
-      },
+      }
 
-      'clearSentBytes' => function() {
+      public function clearSentBytes() {
         $this->_connect(new URL());
         $this->sent= null;
       }
-    ]);
+    };
   }
 }

@@ -3,6 +3,7 @@
 use lang\IllegalArgumentException;
 use peer\stomp\Header;
 use peer\stomp\frame\Frame;
+use unittest\TestCase;
 
 /**
  * Tests STOMP frame class
@@ -10,19 +11,14 @@ use peer\stomp\frame\Frame;
  * @see   xp://peer.stomp.unittest.StompSendFrameTest
  * @see   xp://peer.stomp.frame.Frame
  */
-class StompFrameTest extends \unittest\TestCase {
-  protected $fixture= null;
+class StompFrameTest extends TestCase {
+  private $fixture= null;
 
-  /**
-   * Sets up unittest and creates fixture
-   *
-   */
+  /** @return void */
   public function setUp() {
-    $this->fixture= newinstance(Frame::class, [], '{
-      public function command() { 
-        return "test"; 
-      }
-    }');
+    $this->fixture= new class() extends Frame {
+      public function command() { return 'test'; }
+    };
   }
 
   #[@test]

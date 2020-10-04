@@ -2,15 +2,16 @@
 
 use lang\{IllegalArgumentException, IllegalStateException};
 use peer\stomp\{Exception, Subscription};
+use unittest\{Expect, Test};
 
 class StompSubscriptionTest extends BaseTest {
 
-  #[@test]
+  #[Test]
   public function create() {
     new Subscription($this->fixture->getDestination('/queue/foo'));
   }
 
-  #[@test]
+  #[Test]
   public function subscribe() {
     $subscription= $this->fixture->subscribeTo(new Subscription('/queue/foo'));
 
@@ -23,19 +24,19 @@ class StompSubscriptionTest extends BaseTest {
     );
   }
 
-  #[@test]
+  #[Test]
   public function subscription_registered_in_connection() {
     $subscription= $this->fixture->subscribeTo(new Subscription('/queue/foo'));
 
     $this->assertEquals($subscription, $this->fixture->subscriptionById($subscription->getId()));
   }
 
-  #[@test, @expect(IllegalStateException::class)]
+  #[Test, Expect(IllegalStateException::class)]
   public function unsubscribe_not_possible_when_not_subscribed() {
     (new Subscription('foo'))->unsubscribe();
   }
 
-  #[@test, @expect(IllegalStateException::class)]
+  #[Test, Expect(IllegalStateException::class)]
   public function unsubscribe_not_possible_when_no_connection() {
     $s= new Subscription('foo');
     $s->setId('foobar');
@@ -43,7 +44,7 @@ class StompSubscriptionTest extends BaseTest {
     (new Subscription('foo'))->unsubscribe();
   }
 
-  #[@test]
+  #[Test]
   public function unsubscribe() {
     $subscription= $this->fixture->subscribeTo(new Subscription('/queue/foo'));
     $id= $subscription->getId();
@@ -66,13 +67,13 @@ class StompSubscriptionTest extends BaseTest {
     return $this->fixture->subscribeTo(new Subscription('/queue/foo'))->getId();
   }
 
-  #[@test]
+  #[Test]
   public function subscribe_registeres_in_connection() {
     $id= $this->createSubscription();
     $this->assertInstanceOf(Subscription::class, $this->fixture->subscriptionById($id));
   }
 
-  #[@test, @expect(Exception::class)]
+  #[Test, Expect(Exception::class)]
   public function subscribe_also_unregisteres_in_connection() {
     $id= $this->createSubscription();
     $this->fixture->subscriptionById($id)->unsubscribe();
@@ -80,7 +81,7 @@ class StompSubscriptionTest extends BaseTest {
     $this->fixture->subscriptionById($id);
   }
 
-  #[@test]
+  #[Test]
   public function ackmode() {
     $s= new Subscription('foobar');
     $s->setAckMode(\peer\stomp\AckMode::AUTO);
@@ -88,13 +89,13 @@ class StompSubscriptionTest extends BaseTest {
     $s->setAckMode(\peer\stomp\AckMode::INDIVIDUAL);
   }
 
-  #[@test, @expect(IllegalArgumentException::class)]
+  #[Test, Expect(IllegalArgumentException::class)]
   public function invalid_ackmode() {
     $s= new Subscription('foobar');
     $s->setAckMode('automatic');
   }
 
-  #[@test]
+  #[Test]
   public function subscribe_with_callback() {
     $called= false;
     $sub= $this->fixture->subscribeTo(new Subscription('/queue/foobar', function($message) use(&$called) {

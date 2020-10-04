@@ -3,7 +3,7 @@
 use peer\AuthenticationException;
 use peer\stomp\Connection;
 use peer\stomp\frame\{MessageFrame, ReceiptFrame};
-use unittest\PrerequisitesNotMetError;
+use unittest\{BeforeClass, Expect, Ignore, PrerequisitesNotMetError, Test};
 
 class StompIntegrationTest extends \unittest\TestCase {
   const QUEUE = '/queue/unittest';
@@ -16,7 +16,7 @@ class StompIntegrationTest extends \unittest\TestCase {
     $this->host= $host;
   }
 
-  #[@beforeClass]
+  #[BeforeClass]
   public static function logger() {
     // \util\log\Logger::getInstance()->getCategory()->addAppender(new \util\log\ColoredConsoleAppender());
   }
@@ -35,18 +35,18 @@ class StompIntegrationTest extends \unittest\TestCase {
     $this->fixture && $this->fixture->disconnect();
   }
 
-  #[@test, @ignore, @expect(AuthenticationException::class)]
+  #[Test, Ignore, Expect(AuthenticationException::class)]
   public function invalidCredentials() {
     $conn= new Connection(new \peer\URL('stomp://'.$this->host));
     $conn->connect('unknownuser', 'invalidpass');
   }
 
-  #[@test]
+  #[Test]
   public function sendMessage() {
     $this->fixture->send(self::QUEUE, 'This is a text message');
   }
 
-  #[@test]
+  #[Test]
   public function subscribeAndReceive() {
     $this->fixture->subscribe(self::QUEUE, 'client');
 
@@ -54,7 +54,7 @@ class StompIntegrationTest extends \unittest\TestCase {
     $this->assertTrue($message instanceof MessageFrame);
   }
 
-  #[@test]
+  #[Test]
   public function receiveReceipt() {
     $frame= new \peer\stomp\SendFrame(self::QUEUE, 'body');
     $frame->addHeader('receipt', 'some-message-receipt');
@@ -64,7 +64,7 @@ class StompIntegrationTest extends \unittest\TestCase {
     $this->assertEquals($frame->getHeader('receipt'), $response->getHeader('receipt-id'));
   }
 
-  #[@test]
+  #[Test]
   public function emptyQueue() {
     $this->fixture->subscribe(self::QUEUE, 'client');
 

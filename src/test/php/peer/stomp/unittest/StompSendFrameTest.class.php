@@ -1,6 +1,7 @@
 <?php namespace peer\stomp\unittest;
 
 use peer\stomp\frame\SendFrame;
+use unittest\Test;
 
 /**
  * Tests STOMP SendFrame class
@@ -18,14 +19,14 @@ class StompSendFrameTest extends \unittest\TestCase {
     $this->fixture= new SendFrame('/queue/test');
   }
 
-  #[@test]
+  #[Test]
   public function setBodySetsContentLengthIfDefined() {
     $this->fixture->addHeader('content-length', 0);
     $this->fixture->setBody('Hello World');
     $this->assertEquals(11, $this->fixture->getHeader('content-length'));
   }
 
-  #[@test]
+  #[Test]
   public function setBodyDoesNotSetContentLengthIfUndefined() {
     $this->fixture->setBody('Hello World');
     $this->assertFalse($this->fixture->hasHeader('content-length'));

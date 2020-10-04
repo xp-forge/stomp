@@ -3,7 +3,7 @@
 use io\streams\{MemoryInputStream, StringReader};
 use peer\stomp\Header;
 use peer\stomp\frame\MessageFrame;
-use unittest\TestCase;
+use unittest\{Test, TestCase, Values};
 
 class FrameFromWireTest extends TestCase {
 
@@ -19,37 +19,31 @@ class FrameFromWireTest extends TestCase {
     return $frame;
   }
 
-  #[@test]
+  #[Test]
   public function frame_with_content_length() {
     $frame= $this->frame("message-id:1\ncontent-length:4\n\nbody\0");
     $this->assertEquals('body', $frame->getBody());
   }
 
-  #[@test]
+  #[Test]
   public function frame_without_content_length() {
     $frame= $this->frame("message-id:1\n\nbody\0");
     $this->assertEquals('body', $frame->getBody());
   }
 
-  #[@test]
+  #[Test]
   public function frame_with_zero_content_length() {
     $frame= $this->frame("message-id:1\ncontent-length:0\n\n\0");
     $this->assertEquals('', $frame->getBody());
   }
 
-  #[@test]
+  #[Test]
   public function message_id_header() {
     $frame= $this->frame("message-id:1\ncontent-length:4\n\nbody\0");
     $this->assertEquals('1', $frame->getHeader(Header::MESSAGEID));
   }
 
-  #[@test, @values([
-  #  ['x-test:\c', ':'],
-  #  ['x-test:\r', "\r"],
-  #  ['x-test:\n', "\n"],
-  #  ['x-test:\\\\', '\\'],
-  #  ['x-test:a\cb', 'a:b'],
-  #])]
+  #[Test, Values([['x-test:\c', ':'], ['x-test:\r', "\r"], ['x-test:\n', "\n"], ['x-test:\\\\', '\\'], ['x-test:a\cb', 'a:b'],])]
   public function header_with_escape_sequence($header, $expected) {
     $frame= $this->frame("message-id:1\n".$header."\ncontent-length:4\n\nbody\0");
     $this->assertEquals($expected, $frame->getHeader('x-test'));

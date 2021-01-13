@@ -3,7 +3,7 @@
 use io\streams\{MemoryOutputStream, OutputStreamWriter, StringReader, StringWriter};
 use lang\{FormatException, IllegalArgumentException};
 use lang\reflect\Package;
-use peer\{AuthenticationException, ProtocolException, Socket, SocketInputStream, SocketOutputStream, URL};
+use peer\{AuthenticationException, ProtocolException, Socket, SSLSocket, SocketInputStream, SocketOutputStream, URL};
 use peer\stomp\frame\{ConnectedFrame, DisconnectFrame, ErrorFrame, Frame, LoginFrame, MessageFrame, ReceiptFrame};
 use util\Objects;
 use util\log\{Logger, Traceable};
@@ -170,7 +170,11 @@ class Connection implements Traceable {
    *
    */
   protected function _connect(URL $url) {
-    $this->socket= new Socket($url->getHost(), $url->getPort(61612));
+    if ($url->getScheme() === 'stomp+ssl') {
+      $this->socket= new SSLSocket($url->getHost(), $url->getPort(61612));
+    } else {
+      $this->socket= new Socket($url->getHost(), $url->getPort(61612));
+    }
     $this->socket->connect();
 
     $this->in= new StringReader(new SocketInputStream($this->socket));

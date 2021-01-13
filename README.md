@@ -73,7 +73,7 @@ $conn->consume();
 ### The connection URL
 The URL specifies the options how and where to connect:
 
-* `protocol` should be `stomp` or `stomp+ssl` (*SSL not implemented yet*)
+* `protocol` should be `stomp` or `stomp+ssl`
 * `host` is the hostname to connect
 * `port` is the port to connect (default: 61613)
 * `user`, `pass` can be given in the URL and will be used for authentication

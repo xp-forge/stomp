@@ -2,7 +2,7 @@
 
 use lang\IllegalArgumentException;
 use peer\stomp\{Connection, Failover};
-use peer\{URL, Socket, SSLSocket};
+use peer\{URL, Socket, SSLSocket, TLSSocket};
 use unittest\{Expect, Test, Values};
 
 /**
@@ -12,17 +12,25 @@ use unittest\{Expect, Test, Values};
  */
 class ConnectionTest extends \unittest\TestCase {
 
-  /** @return  var[] */
-  protected function constructorArgs() {
-    return ['stomp://localhost:61003', new URL('stomp://localhost:61003')];
+  /** @return iterable */
+  private function uris() {
+    yield ['stomp://localhost:61003'];
+    yield [new URL('stomp://localhost:61003')];
   }
 
-  #[Test, Values('constructorArgs')]
+  /** @return iterable */
+  private function sockets() {
+    yield ['stomp://localhost', Socket::class];
+    yield ['stomp+ssl://localhost', SSLSocket::class];
+    yield ['stomp+tls://localhost', TLSSocket::class];
+  }
+
+  #[Test, Values('uris')]
   public function can_create($arg) {
     new Connection($arg);
   }
 
-  #[Test, Values('constructorArgs')]
+  #[Test, Values('uris')]
   public function url_accessor_returns_url($arg) {
     $this->assertEquals(new URL('stomp://localhost:61003'), (new Connection($arg))->url());
   }
@@ -38,7 +46,7 @@ class ConnectionTest extends \unittest\TestCase {
     // $c->connect();
   }
 
-  #[Test, Values([['stomp://localhost', Socket::class], ['stomp+ssl://localhost', SSLSocket::class]])]
+  #[Test, Values('sockets')]
   public function using_socket($connection, $type) {
     $this->assertInstanceOf($type, Connection::socketFor(new URL($connection)));
   }

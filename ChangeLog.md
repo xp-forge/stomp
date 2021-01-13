@@ -5,7 +5,8 @@ stomp ChangeLog
 
 ## 11.1.0 / 2020-04-10
 
-* Merged PR #10 Implement SSL support (*by using stomp+ssl:// in the URL*)
+* Implemented SSL and TLS support (*by using stomp+ssl:// or stomp+tls://
+  in the URL*). Based on PR #10
   (@treuter, @thekid)
 
 ## 11.0.0 / 2020-04-10

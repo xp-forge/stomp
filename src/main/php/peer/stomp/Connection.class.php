@@ -4,7 +4,7 @@ use io\streams\{MemoryOutputStream, OutputStreamWriter, StringReader, StringWrit
 use lang\reflect\Package;
 use lang\{FormatException, IllegalArgumentException};
 use peer\stomp\frame\{ConnectedFrame, DisconnectFrame, ErrorFrame, Frame, LoginFrame, MessageFrame, ReceiptFrame};
-use peer\{AuthenticationException, ProtocolException, Socket, SSLSocket, SocketInputStream, SocketOutputStream, URL};
+use peer\{AuthenticationException, ProtocolException, Socket, SSLSocket, TLSSocket, SocketInputStream, SocketOutputStream, URL};
 use util\Objects;
 use util\log\{Logger, Traceable};
 
@@ -174,6 +174,8 @@ class Connection implements Traceable {
   public static function socketFor(URL $url) {
     if ('stomp+ssl' === $url->getScheme()) {
       return new SSLSocket($url->getHost(), $url->getPort(61612));
+    } else if ('stomp+tls' === $url->getScheme()) {
+      return new TLSSocket($url->getHost(), $url->getPort(61612));
     } else {
       return new Socket($url->getHost(), $url->getPort(61612));
     }

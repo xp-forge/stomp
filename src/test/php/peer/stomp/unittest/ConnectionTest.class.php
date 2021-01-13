@@ -2,7 +2,7 @@
 
 use lang\IllegalArgumentException;
 use peer\stomp\{Connection, Failover};
-use peer\{URL, Socket, SSLSocket, TLSSocket};
+use peer\{URL, Socket, CryptoSocket};
 use unittest\{Expect, Test, Values};
 
 /**
@@ -19,10 +19,12 @@ class ConnectionTest extends \unittest\TestCase {
   }
 
   /** @return iterable */
-  private function sockets() {
-    yield ['stomp://localhost', Socket::class];
-    yield ['stomp+ssl://localhost', SSLSocket::class];
-    yield ['stomp+tls://localhost', TLSSocket::class];
+  private function crypto() {
+    yield ['stomp+ssl://localhost', STREAM_CRYPTO_METHOD_SSLv23_CLIENT];
+    yield ['stomp+sslv2://localhost', STREAM_CRYPTO_METHOD_SSLv2_CLIENT];
+
+    yield ['stomp+tls://localhost', STREAM_CRYPTO_METHOD_TLS_CLIENT];
+    yield ['stomp+tlsv12://localhost', STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT];
   }
 
   #[Test, Values('uris')]
@@ -46,8 +48,23 @@ class ConnectionTest extends \unittest\TestCase {
     // $c->connect();
   }
 
-  #[Test, Values('sockets')]
-  public function using_socket($connection, $type) {
-    $this->assertInstanceOf($type, Connection::socketFor(new URL($connection)));
+  #[Test]
+  public function uses_socket() {
+    $socket= Connection::socketFor(new URL('stomp://localhost'));
+
+    $this->assertInstanceOf(Socket::class, $socket);
+  }
+
+  #[Test, Values('crypto')]
+  public function uses_crypto_socket($connection, $impl) {
+    $socket= Connection::socketFor(new URL($connection));
+
+    $this->assertInstanceOf(CryptoSocket::class, $socket);
+    $this->assertEquals($impl, $socket->cryptoImpl);
+  }
+
+  #[Test, Expect(IllegalArgumentException::class)]
+  public function invalid_crypto_implementation() {
+    Connection::socketFor(new URL('stomp+tlsv999://localhost'));
   }
 }

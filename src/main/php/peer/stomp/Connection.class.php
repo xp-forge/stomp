@@ -4,7 +4,7 @@ use io\streams\{MemoryOutputStream, OutputStreamWriter, StringReader, StringWrit
 use lang\reflect\Package;
 use lang\{FormatException, IllegalArgumentException};
 use peer\stomp\frame\{ConnectedFrame, DisconnectFrame, ErrorFrame, Frame, LoginFrame, MessageFrame, ReceiptFrame};
-use peer\{AuthenticationException, ProtocolException, Socket, SSLSocket, TLSSocket, SocketInputStream, SocketOutputStream, URL};
+use peer\{AuthenticationException, ProtocolException, Socket, CryptoSocket, SocketInputStream, SocketOutputStream, URL};
 use util\Objects;
 use util\log\{Logger, Traceable};
 
@@ -27,6 +27,17 @@ class Connection implements Traceable {
 
   private static $frames;
   private static $prefix;
+  private static $crypto= [
+    'tls'    => 'TLS_CLIENT',
+    'ssl'    => 'SSLv23_CLIENT',
+    'tlsv10' => 'TLSv1_0_CLIENT',
+    'tlsv11' => 'TLSv1_1_CLIENT',
+    'tlsv12' => 'TLSv1_2_CLIENT',
+    'tlsv13' => 'TLSv1_3_CLIENT',
+    'sslv3'  => 'SSLv3_CLIENT',
+    'sslv23' => 'SSLv23_CLIENT',
+    'sslv2'  => 'SSLv2_CLIENT'
+  ];
 
   static function __static() {
     self::$frames= Package::forName('peer.stomp.frame');
@@ -170,15 +181,21 @@ class Connection implements Traceable {
    *
    * @param  peer.URL $url
    * @return peer.Socket
+   * @throws lang.IllegalArgumentException
    */
   public static function socketFor(URL $url) {
-    if ('stomp+ssl' === $url->getScheme()) {
-      return new SSLSocket($url->getHost(), $url->getPort(61612));
-    } else if ('stomp+tls' === $url->getScheme()) {
-      return new TLSSocket($url->getHost(), $url->getPort(61612));
-    } else {
+    if (-1 === sscanf($url->getScheme(), "stomp+%[^\r]", $arg)) {
       return new Socket($url->getHost(), $url->getPort(61612));
     }
+
+    $method= 'STREAM_CRYPTO_METHOD_'.(self::$crypto[$arg] ?? null);
+    if (defined($method)) {
+      $socket= new CryptoSocket($url->getHost(), $url->getPort(61612));
+      $socket->cryptoImpl= constant($method);
+      return $socket;
+    }
+
+    throw new IllegalArgumentException('Undefined crypto implementation '.$arg.' ('.$method.')');
   }
 
   /**

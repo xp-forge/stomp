@@ -1,10 +1,10 @@
 <?php namespace peer\stomp;
 
 use io\streams\{MemoryOutputStream, OutputStreamWriter, StringReader, StringWriter};
-use lang\{FormatException, IllegalArgumentException};
 use lang\reflect\Package;
-use peer\{AuthenticationException, ProtocolException, Socket, SSLSocket, SocketInputStream, SocketOutputStream, URL};
+use lang\{FormatException, IllegalArgumentException};
 use peer\stomp\frame\{ConnectedFrame, DisconnectFrame, ErrorFrame, Frame, LoginFrame, MessageFrame, ReceiptFrame};
+use peer\{AuthenticationException, ProtocolException, Socket, SSLSocket, SocketInputStream, SocketOutputStream, URL};
 use util\Objects;
 use util\log\{Logger, Traceable};
 
@@ -166,15 +166,25 @@ class Connection implements Traceable {
   }
 
   /**
+   * Creates socket for a given URL
+   *
+   * @param  peer.URL $url
+   * @return peer.Socket
+   */
+  public static function socketFor(URL $url) {
+    if ('stomp+ssl' === $url->getScheme()) {
+      return new SSLSocket($url->getHost(), $url->getPort(61612));
+    } else {
+      return new Socket($url->getHost(), $url->getPort(61612));
+    }
+  }
+
+  /**
    * Connect to server
    *
    */
   protected function _connect(URL $url) {
-    if ($url->getScheme() === 'stomp+ssl') {
-      $this->socket= new SSLSocket($url->getHost(), $url->getPort(61612));
-    } else {
-      $this->socket= new Socket($url->getHost(), $url->getPort(61612));
-    }
+    $this->socket= self::socketFor($url);
     $this->socket->connect();
 
     $this->in= new StringReader(new SocketInputStream($this->socket));

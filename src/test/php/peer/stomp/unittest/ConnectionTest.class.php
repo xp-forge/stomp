@@ -1,8 +1,8 @@
 <?php namespace peer\stomp\unittest;
 
 use lang\IllegalArgumentException;
-use peer\URL;
 use peer\stomp\{Connection, Failover};
+use peer\{URL, Socket, SSLSocket};
 use unittest\{Expect, Test, Values};
 
 /**
@@ -36,5 +36,10 @@ class ConnectionTest extends \unittest\TestCase {
   public function failover_url() {
     $c= new Connection(Failover::using(['stomp://localhost:61001', 'stomp://localhost:61002'])->byRandom());
     // $c->connect();
+  }
+
+  #[Test, Values([['stomp://localhost', Socket::class], ['stomp+ssl://localhost', SSLSocket::class]])]
+  public function using_socket($connection, $type) {
+    $this->assertInstanceOf($type, Connection::socketFor(new URL($connection)));
   }
 }

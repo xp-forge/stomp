@@ -3,7 +3,7 @@
 use io\streams\{MemoryOutputStream, OutputStreamWriter, StringReader, StringWriter};
 use lang\{FormatException, IllegalArgumentException};
 use lang\reflect\Package;
-use peer\{AuthenticationException, ProtocolException, Socket, SocketInputStream, SocketOutputStream, URL};
+use peer\{AuthenticationException, ProtocolException, Socket, SSLSocket, SocketInputStream, SocketOutputStream, URL};
 use peer\stomp\frame\{ConnectedFrame, DisconnectFrame, ErrorFrame, Frame, LoginFrame, MessageFrame, ReceiptFrame};
 use util\Objects;
 use util\log\{Logger, Traceable};

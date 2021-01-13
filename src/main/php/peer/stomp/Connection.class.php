@@ -28,15 +28,15 @@ class Connection implements Traceable {
   private static $frames;
   private static $prefix;
   private static $crypto= [
+    'ssl'    => 'ANY_CLIENT',
+    'sslv3'  => 'SSLv3_CLIENT',
+    'sslv23' => 'SSLv23_CLIENT',
+    'sslv2'  => 'SSLv2_CLIENT',
     'tls'    => 'TLS_CLIENT',
-    'ssl'    => 'SSLv23_CLIENT',
     'tlsv10' => 'TLSv1_0_CLIENT',
     'tlsv11' => 'TLSv1_1_CLIENT',
     'tlsv12' => 'TLSv1_2_CLIENT',
-    'tlsv13' => 'TLSv1_3_CLIENT',
-    'sslv3'  => 'SSLv3_CLIENT',
-    'sslv23' => 'SSLv23_CLIENT',
-    'sslv2'  => 'SSLv2_CLIENT'
+    'tlsv13' => 'TLSv1_3_CLIENT'
   ];
 
   static function __static() {

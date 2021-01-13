@@ -20,10 +20,10 @@ class ConnectionTest extends \unittest\TestCase {
 
   /** @return iterable */
   private function crypto() {
-    yield ['stomp+ssl://localhost', STREAM_CRYPTO_METHOD_SSLv23_CLIENT];
-    yield ['stomp+sslv2://localhost', STREAM_CRYPTO_METHOD_SSLv2_CLIENT];
-
+    yield ['stomp+ssl://localhost', STREAM_CRYPTO_METHOD_ANY_CLIENT];
     yield ['stomp+tls://localhost', STREAM_CRYPTO_METHOD_TLS_CLIENT];
+    yield ['stomp+sslv2://localhost', STREAM_CRYPTO_METHOD_SSLv2_CLIENT];
+    yield ['stomp+sslv23://localhost', STREAM_CRYPTO_METHOD_SSLv23_CLIENT];
     yield ['stomp+tlsv12://localhost', STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT];
   }
 

@@ -193,7 +193,11 @@ class Connection extends \lang\Object implements Traceable {
    *
    */
   protected function _connect(URL $url) {
-    $this->socket= new Socket($url->getHost(), $url->getPort(61612));
+    if ($url->getScheme() === 'stomp+ssl') {
+      $this->socket= new SSLSocket($url->getHost(), $url->getPort(61612));
+    } else {
+      $this->socket= new Socket($url->getHost(), $url->getPort(61612));
+    }
     $this->socket->connect();
 
     $this->in= new StringReader(new SocketInputStream($this->socket));

@@ -188,7 +188,7 @@ class Connection implements Traceable {
       return new Socket($url->getHost(), $url->getPort(61612));
     }
 
-    $method= 'STREAM_CRYPTO_METHOD_'.(self::$crypto[$arg] ?? null);
+    $method= 'STREAM_CRYPTO_METHOD_'.(self::$crypto[$arg] ?? 'UNKNOWN');
     if (defined($method)) {
       $socket= new CryptoSocket($url->getHost(), $url->getPort(61612));
       $socket->cryptoImpl= constant($method);

@@ -3,7 +3,7 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
-## 11.1.0 / 2020-04-10
+## 11.1.0 / 2021-01-13
 
 * Implemented SSL and TLS support (*by using stomp+ssl:// or stomp+tls://
   in the URL*). Based on PR #10

@@ -3,6 +3,11 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 11.1.0 / 2020-04-10
+
+* Merged PR #10 Implement SSL support (*by using stomp+ssl:// in the URL*)
+  (@treuter, @thekid)
+
 ## 11.0.0 / 2020-04-10
 
 * Implemented xp-framework/rfc#334: Drop PHP 5.6:

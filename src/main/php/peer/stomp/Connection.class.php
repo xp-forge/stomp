@@ -4,6 +4,7 @@ use util\log\Logger;
 use util\log\Traceable;
 use peer\URL;
 use peer\Socket;
+use peer\SSLSocket;
 use peer\SocketInputStream;
 use peer\SocketOutputStream;
 use peer\ProtocolException;

@@ -33,7 +33,7 @@ abstract class BaseTest extends \unittest\TestCase {
       }
 
       public function _disconnect() {
-        $this->sent= $this->out->getStream()->getBytes();
+        $this->sent= $this->out->stream()->bytes();
         $this->in= null;
         $this->out= null;
       }
@@ -52,7 +52,7 @@ abstract class BaseTest extends \unittest\TestCase {
           return $sent;
         }
 
-        return $this->out->getStream()->getBytes();
+        return $this->out->stream()->bytes();
       }
 
       public function clearSentBytes() {

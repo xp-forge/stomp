@@ -16,7 +16,7 @@ class FrameToWireTest extends TestCase {
   private function write($frame) {
     $out= new MemoryOutputStream();
     $frame->write(new StringWriter($out));
-    return $out->getBytes();
+    return $out->bytes();
   }
 
   #[Test]

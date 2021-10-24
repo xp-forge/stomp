@@ -3,6 +3,10 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+* Made library compatible with XP 11, `xp-framework/networking` version
+  11.0 and PHP 8.1
+  (@thekid)
+
 ## 11.1.0 / 2021-01-13
 
 * Implemented SSL and TLS support (*by using stomp+ssl:// or stomp+tls://

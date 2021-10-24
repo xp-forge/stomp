@@ -167,7 +167,7 @@ abstract class Frame implements Value, Traceable {
       if ($length > 0) {
         $data= $in->read($length);
       } else {
-        $data= null;
+        $data= '';
       }
 
       if ("\0" != $in->read(1)) throw new \peer\ProtocolException(

@@ -3,6 +3,10 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 12.0.1 / 2022-02-26
+
+* Fixed "Creation of dynamic property" warnings in PHP 8.2 - @thekid
+
 ## 12.0.0 / 2021-10-24
 
 * Made library compatible with XP 11, `xp-framework/networking` version

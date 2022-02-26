@@ -7,8 +7,7 @@ use util\Objects;
  * Message retrieved from server
  */
 class ReceivedMessage extends Message {
-  protected $destination  = null;
-  protected $subscription = null;
+  protected $frame, $destination, $subscription;
 
   /**
    * Fill message members from given frame.

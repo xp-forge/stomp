@@ -1,7 +1,8 @@
 <?php namespace peer\stomp\unittest;
 
+use lang\IllegalArgumentException;
 use peer\stomp\Failover;
-  use test\{Assert, Expect, Test};
+use test\{Assert, Expect, Test};
 
 class FailoverTest {
 
@@ -20,7 +21,7 @@ class FailoverTest {
     Assert::instance(Failover::class, Failover::using(['Foo'])->byRandom());
   }
 
-  #[Test, Expect(\lang\IllegalArgumentException::class)]
+  #[Test, Expect(IllegalArgumentException::class)]
   public function create_without_members_raises_exception() {
     new Failover([]);
   }

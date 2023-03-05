@@ -1,34 +1,30 @@
 <?php namespace peer\stomp\unittest;
 
 use peer\stomp\frame\SendFrame;
-use unittest\Test;
+use test\{Assert, Test};
 
 /**
  * Tests STOMP SendFrame class
  *
- * @see   xp://peer.stomp.unittest.StompFrameTest
- * @see   xp://peer.stomp.frame.SendFrame
+ * @see   peer.stomp.unittest.StompFrameTest
+ * @see   peer.stomp.frame.SendFrame
  */
-class StompSendFrameTest extends \unittest\TestCase {
-  protected $fixture= null;
-
-  /**
-   * Sets up unittest and creates fixture
-   */
-  public function setUp() {
-    $this->fixture= new SendFrame('/queue/test');
-  }
+class StompSendFrameTest {
 
   #[Test]
   public function setBodySetsContentLengthIfDefined() {
-    $this->fixture->addHeader('content-length', 0);
-    $this->fixture->setBody('Hello World');
-    $this->assertEquals(11, $this->fixture->getHeader('content-length'));
+    $frame= new SendFrame('/queue/test');
+    $frame->addHeader('content-length', 0);
+    $frame->setBody('Hello World');
+
+    Assert::equals(11, $frame->getHeader('content-length'));
   }
 
   #[Test]
   public function setBodyDoesNotSetContentLengthIfUndefined() {
-    $this->fixture->setBody('Hello World');
-    $this->assertFalse($this->fixture->hasHeader('content-length'));
+    $frame= new SendFrame('/queue/test');
+    $frame->setBody('Hello World');
+
+    Assert::false($frame->hasHeader('content-length'));
   }
 }

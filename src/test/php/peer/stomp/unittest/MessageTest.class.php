@@ -1,11 +1,26 @@
 <?php namespace peer\stomp\unittest;
 
 use lang\IllegalStateException;
-use peer\stomp\{Destination, Message, ReceivedMessage, SendableMessage, Subscription, Transaction};
-use unittest\{Expect, Test};
+use peer\stomp\{AckMode, Destination, Message, ReceivedMessage, SendableMessage, Subscription, Transaction};
+use test\{Assert, Expect, Test};
 
-class MessageTest extends BaseTest {
-  
+class MessageTest {
+
+  /** Helper */
+  private function subscriptionWithAckMode($conn, $ackMode) {
+    $s= $conn->subscribeTo(new Subscription('/queue/foobar', null, $ackMode));
+    $conn->setResponseBytes("MESSAGE\n".
+      "destination:/queue/foo\n".
+      "message-id:12345\n".
+      "subscription:".$s->getId()."\n".
+      "\n".
+      "Hello World!\n".
+      "\n\0"
+    );
+
+    return $conn->receive();
+  }
+
   #[Test]
   public function create() {
     new SendableMessage();
@@ -13,8 +28,9 @@ class MessageTest extends BaseTest {
 
   #[Test]
   public function receive_message() {
-    $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
-    $this->fixture->setResponseBytes("MESSAGE\n".
+    $conn= new TestingConnection();
+    $s= $conn->subscribeTo(new Subscription('/queue/foobar'));
+    $conn->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "message-id:12345\n".
       "\n".
@@ -22,14 +38,15 @@ class MessageTest extends BaseTest {
       "\n\0"
     );
 
-    $m= $this->fixture->receive();
-    $this->assertInstanceOf(Message::class, $m);
+    $m= $conn->receive();
+    Assert::instance(Message::class, $m);
   }
 
   #[Test]
   public function receive_message_with_subscription() {
-    $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
-    $this->fixture->setResponseBytes("MESSAGE\n".
+    $conn= new TestingConnection();
+    $s= $conn->subscribeTo(new Subscription('/queue/foobar'));
+    $conn->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "message-id:12345\n".
       "subscription:".$s->getId()."\n".
@@ -38,15 +55,15 @@ class MessageTest extends BaseTest {
       "\n\0"
     );
 
-    $m= $this->fixture->receive();
-    $this->assertEquals($s, $m->getSubscription());
+    $m= $conn->receive();
+    Assert::equals($s, $m->getSubscription());
   }
-
 
   #[Test]
   public function receive_message_has_destination() {
-    $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
-    $this->fixture->setResponseBytes("MESSAGE\n".
+    $conn= new TestingConnection();
+    $s= $conn->subscribeTo(new Subscription('/queue/foobar'));
+    $conn->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "message-id:12345\n".
       "subscription:".$s->getId()."\n".
@@ -55,14 +72,15 @@ class MessageTest extends BaseTest {
       "\n\0"
     );
 
-    $m= $this->fixture->receive();
-    $this->assertInstanceOf(Destination::class, $m->getDestination());
+    $m= $conn->receive();
+    Assert::instance(Destination::class, $m->getDestination());
   }
 
   #[Test]
   public function ack() {
-    $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
-    $this->fixture->setResponseBytes("MESSAGE\n".
+    $conn= new TestingConnection();
+    $s= $conn->subscribeTo(new Subscription('/queue/foobar'));
+    $conn->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "message-id:12345\n".
       "subscription:".$s->getId()."\n".
@@ -71,22 +89,23 @@ class MessageTest extends BaseTest {
       "\n\0"
     );
 
-    $m= $this->fixture->receive();
-    $this->fixture->clearSentBytes();
+    $m= $conn->receive();
+    $conn->clearSentBytes();
     $m->ack();
 
-    $this->assertEquals("ACK\n".
+    Assert::equals("ACK\n".
       "message-id:".$m->getMessageId()."\n".
       "subscription:".$m->getSubscription()->getId()."\n".
       "\n\0",
-      $this->fixture->readSentBytes()
+      $conn->readSentBytes()
     );
   }
 
   #[Test]
   public function nack() {
-    $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
-    $this->fixture->setResponseBytes("MESSAGE\n".
+    $conn= new TestingConnection();
+    $s= $conn->subscribeTo(new Subscription('/queue/foobar'));
+    $conn->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "message-id:12345\n".
       "subscription:".$s->getId()."\n".
@@ -95,23 +114,24 @@ class MessageTest extends BaseTest {
       "\n\0"
     );
 
-    $m= $this->fixture->receive();
-    $this->fixture->clearSentBytes();
+    $m= $conn->receive();
+    $conn->clearSentBytes();
     $m->nack();
 
-    $this->assertEquals("NACK\n".
+    Assert::equals("NACK\n".
       "message-id:".$m->getMessageId()."\n".
       "subscription:".$m->getSubscription()->getId()."\n".
       "\n\0",
-      $this->fixture->readSentBytes()
+      $conn->readSentBytes()
     );
   }
 
   #[Test]
   public function ack_in_transaction() {
-    $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
-    $t= $this->fixture->begin(new Transaction());
-    $this->fixture->setResponseBytes("MESSAGE\n".
+    $conn= new TestingConnection();
+    $s= $conn->subscribeTo(new Subscription('/queue/foobar'));
+    $t= $conn->begin(new Transaction());
+    $conn->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "message-id:12345\n".
       "subscription:".$s->getId()."\n".
@@ -120,24 +140,25 @@ class MessageTest extends BaseTest {
       "\n\0"
     );
 
-    $m= $this->fixture->receive();
-    $this->fixture->clearSentBytes();
+    $m= $conn->receive();
+    $conn->clearSentBytes();
     $m->ack($t);
 
-    $this->assertEquals("ACK\n".
+    Assert::equals("ACK\n".
       "message-id:".$m->getMessageId()."\n".
       "subscription:".$m->getSubscription()->getId()."\n".
       "transaction:".$t->getName()."\n".
       "\n\0",
-      $this->fixture->readSentBytes()
+      $conn->readSentBytes()
     );
   }
 
   #[Test]
   public function nack_in_transaction() {
-    $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
-    $t= $this->fixture->begin(new Transaction());
-    $this->fixture->setResponseBytes("MESSAGE\n".
+    $conn= new TestingConnection();
+    $s= $conn->subscribeTo(new Subscription('/queue/foobar'));
+    $t= $conn->begin(new Transaction());
+    $conn->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "message-id:12345\n".
       "subscription:".$s->getId()."\n".
@@ -146,37 +167,40 @@ class MessageTest extends BaseTest {
       "\n\0"
     );
 
-    $m= $this->fixture->receive();
-    $this->fixture->clearSentBytes();
+    $m= $conn->receive();
+    $conn->clearSentBytes();
     $m->nack($t);
 
-    $this->assertEquals("NACK\n".
+    Assert::equals("NACK\n".
       "message-id:".$m->getMessageId()."\n".
       "subscription:".$m->getSubscription()->getId()."\n".
       "transaction:".$t->getName()."\n".
       "\n\0",
-      $this->fixture->readSentBytes()
+      $conn->readSentBytes()
     );
   }
 
-  #[Test, Expect(['class' => IllegalStateException::class, 'withMessage' => '/Cannot ack message without connection/'])]
+  #[Test, Expect(class: IllegalStateException::class, message: '/Cannot ack message without connection/')]
   public function ack_fails_without_connection() {
+    $conn= new TestingConnection();
     $m= new ReceivedMessage();
     $m->ack();
   }
 
-  #[Test, Expect(['class' => IllegalStateException::class, 'withMessage' => '/Cannot ack message without connection/'])]
+  #[Test, Expect(class: IllegalStateException::class, message: '/Cannot ack message without connection/')]
   public function nack_fails_without_connection() {
+    $conn= new TestingConnection();
     $m= new ReceivedMessage();
     $m->nack();
   }
 
   #[Test]
   public function send() {
+    $conn= new TestingConnection();
     $m= new SendableMessage('Hello World.', 'text/plain');
 
-    $this->fixture->getDestination('/queue/foobar')->send($m);
-    $this->assertEquals("SEND\n".
+    $conn->getDestination('/queue/foobar')->send($m);
+    Assert::equals("SEND\n".
       "content-length:12\n".
       "content-type:text/plain\n".
       "persistent:true\n".
@@ -184,16 +208,17 @@ class MessageTest extends BaseTest {
       "\n".
       "Hello World.".
       "\0",
-      $this->fixture->readSentBytes()
+      $conn->readSentBytes()
     );
   }
 
   #[Test]
   public function send_with_content_length() {
+    $conn= new TestingConnection();
     $m= new SendableMessage('Hello World.', 'text/plain');
 
-    $this->fixture->getDestination('/queue/foobar')->send($m);
-    $this->assertEquals("SEND\n".
+    $conn->getDestination('/queue/foobar')->send($m);
+    Assert::equals("SEND\n".
       "content-length:12\n".
       "content-type:text/plain\n".
       "persistent:true\n".
@@ -201,14 +226,15 @@ class MessageTest extends BaseTest {
       "\n".
       "Hello World.".
       "\0",
-      $this->fixture->readSentBytes()
+      $conn->readSentBytes()
     );
   }
 
   #[Test]
   public function receive_and_resend() {
-    $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
-    $this->fixture->setResponseBytes("MESSAGE\n".
+    $conn= new TestingConnection();
+    $s= $conn->subscribeTo(new Subscription('/queue/foobar'));
+    $conn->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "message-id:12345\n".
       "subscription:".$s->getId()."\n".
@@ -219,11 +245,11 @@ class MessageTest extends BaseTest {
       "\n\0"
     );
 
-    $m= $this->fixture->receive()->toSendable();
-    $this->fixture->clearSentBytes();
+    $m= $conn->receive()->toSendable();
+    $conn->clearSentBytes();
 
-    $this->fixture->getDestination('/queue/another')->send($m);
-    $this->assertEquals("SEND\n".
+    $conn->getDestination('/queue/another')->send($m);
+    Assert::equals("SEND\n".
       "message-id:12345\n".
       "content-length:12\n".
       "persistent:true\n".
@@ -231,15 +257,16 @@ class MessageTest extends BaseTest {
       "destination:/queue/another\n".
       "\n".
       "Hello World!\0",
-      $this->fixture->readSentBytes()
+      $conn->readSentBytes()
     );
   }
 
 
   #[Test]
   public function receive_and_resend_nonpersistence() {
-    $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar'));
-    $this->fixture->setResponseBytes("MESSAGE\n".
+    $conn= new TestingConnection();
+    $s= $conn->subscribeTo(new Subscription('/queue/foobar'));
+    $conn->setResponseBytes("MESSAGE\n".
       "destination:/queue/foo\n".
       "content-type:application/text; charset=utf-8\n".
       "message-id:12345\n".
@@ -250,11 +277,11 @@ class MessageTest extends BaseTest {
       "\n\0"
     );
 
-    $m= $this->fixture->receive()->toSendable();
-    $this->fixture->clearSentBytes();
+    $m= $conn->receive()->toSendable();
+    $conn->clearSentBytes();
 
-    $this->fixture->getDestination('/queue/another')->send($m);
-    $this->assertEquals("SEND\n".
+    $conn->getDestination('/queue/another')->send($m);
+    Assert::equals("SEND\n".
       "message-id:12345\n".
       "content-length:12\n".
       "content-type:application/text; charset=utf-8\n".
@@ -262,62 +289,55 @@ class MessageTest extends BaseTest {
       "destination:/queue/another\n".
       "\n".
       "Hello World!\0",
-      $this->fixture->readSentBytes()
+      $conn->readSentBytes()
     );
-  }
-
-  private function subscriptionWithAckMode($ackMode) {
-    $s= $this->fixture->subscribeTo(new Subscription('/queue/foobar', null, $ackMode));
-    $this->fixture->setResponseBytes("MESSAGE\n".
-      "destination:/queue/foo\n".
-      "message-id:12345\n".
-      "subscription:".$s->getId()."\n".
-      "\n".
-      "Hello World!\n".
-      "\n\0"
-    );
-
-    return $this->fixture->receive();
   }
 
   #[Test]
   public function not_ackable_with_auto_subscription() {
-    $this->assertEquals(false, $this->subscriptionWithAckMode(\peer\stomp\AckMode::AUTO)->ackable());
+    $conn= new TestingConnection();
+    Assert::equals(false, $this->subscriptionWithAckMode($conn, AckMode::AUTO)->ackable());
   }
 
   #[Test]
   public function ackable_with_client_subscription() {
-    $this->assertEquals(true, $this->subscriptionWithAckMode(\peer\stomp\AckMode::CLIENT)->ackable());
+    $conn= new TestingConnection();
+    Assert::equals(true, $this->subscriptionWithAckMode($conn, AckMode::CLIENT)->ackable());
   }
 
   #[Test]
   public function ackable_with_clientindividual_subscription() {
-    $this->assertEquals(true, $this->subscriptionWithAckMode(\peer\stomp\AckMode::INDIVIDUAL)->ackable());
+    $conn= new TestingConnection();
+    Assert::equals(true, $this->subscriptionWithAckMode($conn, AckMode::INDIVIDUAL)->ackable());
   }
 
   #[Test]
   public function headers_initially_empty() {
+    $conn= new TestingConnection();
     $m= new SendableMessage('body', 'text/plain');
-    $this->assertEquals([], $m->getHeaders());
+    Assert::equals([], $m->getHeaders());
   }
 
   #[Test]
   public function headers() {
+    $conn= new TestingConnection();
     $m= new SendableMessage('body', 'text/plain');
     $m->addHeader('x-test', 'test');
-    $this->assertEquals(['x-test' => 'test'], $m->getHeaders());
+    Assert::equals(['x-test' => 'test'], $m->getHeaders());
   }
 
   #[Test]
   public function header() {
+    $conn= new TestingConnection();
     $m= new SendableMessage('body', 'text/plain');
     $m->addHeader('x-test', 'test');
-    $this->assertEquals('test', $m->getHeader('x-test'));
+    Assert::equals('test', $m->getHeader('x-test'));
   }
 
   #[Test]
   public function non_existant_header() {
+    $conn= new TestingConnection();
     $m= new SendableMessage('body', 'text/plain');
-    $this->assertNull($m->getHeader('non-existant'));
+    Assert::null($m->getHeader('non-existant'));
   }
 }

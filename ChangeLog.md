@@ -3,6 +3,8 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+* Merged PR #12: Migrate to new testing library - @thekid
+
 ## 12.0.1 / 2022-02-26
 
 * Fixed "Creation of dynamic property" warnings in PHP 8.2 - @thekid

@@ -2,8 +2,7 @@
 
 use lang\{IllegalArgumentException, IllegalStateException};
 use peer\stomp\{AckMode, Connection, Exception, Subscription};
-use test\Assert;
-use test\{Expect, Test};
+use test\{Assert, Expect, Test};
 
 class StompSubscriptionTest {
 

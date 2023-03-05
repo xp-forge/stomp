@@ -8,13 +8,12 @@ use test\{Assert, Before, Expect, Test};
 /**
  * Tests STOMP frame class
  *
- * @see   xp://peer.stomp.unittest.StompSendFrameTest
- * @see   xp://peer.stomp.frame.Frame
+ * @see   peer.stomp.unittest.StompSendFrameTest
+ * @see   peer.stomp.frame.Frame
  */
 class StompFrameTest {
   private $fixture= null;
 
-  /** @return void */
   #[Before]
   public function setUp() {
     $this->fixture= new class() extends Frame {

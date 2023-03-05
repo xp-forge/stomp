@@ -3,8 +3,7 @@
 use io\streams\{MemoryInputStream, StringReader};
 use peer\stomp\Header;
 use peer\stomp\frame\MessageFrame;
-use test\Assert;
-use test\{Test, TestCase, Values};
+use test\{Assert, Test, Values};
 
 class FrameFromWireTest {
 

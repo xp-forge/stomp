@@ -3,14 +3,8 @@
 use lang\IllegalArgumentException;
 use peer\stomp\{Connection, Failover};
 use peer\{CryptoSocket, Socket, URL};
-use test\Assert;
-use test\{Expect, Test, Values};
+use test\{Assert, Expect, Test, Values};
 
-/**
- * Tests STOMP connection class
- *
- * @see   xp://peer.stomp.Connection
- */
 class ConnectionTest {
 
   /** @return iterable */

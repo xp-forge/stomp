@@ -3,6 +3,7 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+* Added PHP 8.4 to the test matrix - @thekid
 * Merged PR #12: Migrate to new testing library - @thekid
 
 ## 12.0.1 / 2022-02-26

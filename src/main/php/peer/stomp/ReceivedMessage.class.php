@@ -101,9 +101,9 @@ class ReceivedMessage extends Message {
   /**
    * Acknowledge given message
    * 
-   * @param  peer.stomp.Transaction $t
+   * @param  ?peer.stomp.Transaction $t
    */
-  public function ack(Transaction $t= null) {
+  public function ack($t= null) {
     $this->assertConnection();
     $frame= new AckFrame($this->getMessageId(), $this->getSubscription()->getId());
     if ($t) {
@@ -115,9 +115,9 @@ class ReceivedMessage extends Message {
   /**
    * Reject given message
    * 
-   * @param  peer.stomp.Transaction $t
+   * @param  ?peer.stomp.Transaction $t
    */
-  public function nack(Transaction $t= null) {
+  public function nack($t= null) {
     $this->assertConnection();
     $frame= new NackFrame($this->getMessageId(), $this->getSubscription()->getId());
     if ($t) {
@@ -129,18 +129,16 @@ class ReceivedMessage extends Message {
   /**
    * Determine whether message is ackable
    * 
-   * @return boolean
+   * @return bool
    */
   public function ackable() {
-    return in_array($this->getSubscription()->getAckMode(), [
-      \peer\stomp\AckMode::CLIENT,
-      \peer\stomp\AckMode::INDIVIDUAL
-    ]);
+    return in_array($this->getSubscription()->getAckMode(), [AckMode::CLIENT, AckMode::INDIVIDUAL]);
   }
 
   /**
-   * 
-   * @return [type]
+   * Creates a sendable message
+   *
+   * @return  peer.stomp.SendableMessage
    */
   public function toSendable() {
     $message= new SendableMessage($this->getBody(), $this->getContentType());
@@ -153,6 +151,7 @@ class ReceivedMessage extends Message {
     return $message;
   }
 
+  /** @return string */
   public function toString() {
     $s= nameof($this).'('.$this->hashCode().") {\n";
     $s.= "  [  destination ] ".Objects::stringOf($this->getDestination(), '  ')."\n";
@@ -161,7 +160,6 @@ class ReceivedMessage extends Message {
     $s.= "  [ content-type ] ".$this->getContentType()."\n";
     $s.= "  [      headers ] ".Objects::stringOf($this->getHeaders(), '  ')."\n";
     $s.= "  [         body ] ".$this->getBody()."\n";
-
     return $s.'}';
   }
 }

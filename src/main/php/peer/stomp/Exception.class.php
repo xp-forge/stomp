@@ -1,11 +1,10 @@
 <?php namespace peer\stomp;
 
+use io\OperationFailed;
 use peer\stomp\frame\Frame;
 
-/**
- * Exception base class
- */
-class Exception extends \io\IOException {
+/** Exception base class */
+class Exception extends OperationFailed {
   private $frame;
 
   /**

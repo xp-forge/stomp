@@ -3,6 +3,13 @@ stomp ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 12.2.0 / 2026-06-21
+
+* Merged PR #13: Refactor I/O exceptions, dropping XP 10 support in the
+  doing. See xp-framework/core#363 for a write-up on the reason behind
+  this and the plan to move forward.
+  (@thekid)
+
 ## 12.1.0 / 2024-03-24
 
 * Made compatible with XP 12 - @thekid
